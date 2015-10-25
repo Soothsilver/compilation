@@ -105,9 +105,15 @@ public class Environment {
         		return tree;
         	}
         	else if (decl.getSig().compareTo(this.decl.getSig()) < 0)
-        		return new ScopeTree<T>(add(decl, left), right, this.decl, scope);
+        		if (left == null)
+        			return new ScopeTree<T>(new ScopeTree<T>(decl), right, this.decl, scope);
+        		else 
+        			return new ScopeTree<T>(left.add(decl, left), right, this.decl, scope);
         	else
-        		return new ScopeTree<T>(left, add(decl, right), this.decl, scope);
+        		if (right == null)
+        			return new ScopeTree<T>(left, new ScopeTree<T>(decl), this.decl, scope);
+        		else
+        			return new ScopeTree<T>(left, right.add(decl, right), this.decl, scope);
         }
     }
     
@@ -180,6 +186,9 @@ public class Environment {
 
 
     public void enterScope() {
+    	ScopeTree<Subroutine> subroutineTemp = subroutineTable;
+    	ScopeTree<Variable> variableTemp = variableTable;
+    	ScopeTree<TypeOrTypeTemplate> typeTemp = typeTable;
         subroutineStack.addFirst(subroutineTable);
         variableStack.addFirst(variableTable);
         typeStack.addFirst(typeTable);
