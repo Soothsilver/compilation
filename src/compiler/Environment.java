@@ -6,6 +6,9 @@ import compiler.nodes.declarations.*;
 import compiler.nodes.statements.Statement;
 
 public class Environment {
+	boolean inProcedure = false;
+	boolean inFunction = false;
+	TypeOrTypeTemplate returnType = null;
     private Compilation compilation;
     private ScopeTree<Subroutine> subroutineTable = null;
     private ScopeTree<Variable> variableTable = null;
@@ -173,14 +176,18 @@ public class Environment {
     
     /* TODO */
     public void enterFunction(String name) {
+    	inFunction = true;
         enterScope();
         // Add parameters here
     }
     public void enterProcedure(String name) {
+    	inProcedure = true;
         enterScope();
         // Add parameters here
     }
     public void leaveSubroutine() {
+    	inFunction = inProcedure = false;
+    	returnType = null;
         leaveScope();
     }
     /* TODO */
