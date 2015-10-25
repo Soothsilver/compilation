@@ -1,0 +1,7 @@
+//EXPECT-SYNTAX-ERROR: Syntax error
+
+procedure a () 
+{
+   stop;
+   bdfgdfsg  : integer;
+}

@@ -1,0 +1,10 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+function get() : integer { return 1; }
+function get() : string { return "a"; }
+function get() : float { return 2.0; }
+function get() : boolean { return true; }
+
+procedure main()
+{
+   get();
+}

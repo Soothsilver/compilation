@@ -1,0 +1,9 @@
+int1 : integer;
+int2 : integer;
+
+
+// COmment
+
+
+procedure hello () { }
+function hello2() : integer { }

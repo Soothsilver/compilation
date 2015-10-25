@@ -1,0 +1,6 @@
+procedure a [[ T ]] ( t : T ) { }
+
+procedure main()
+{
+    a ( 5 );
+}

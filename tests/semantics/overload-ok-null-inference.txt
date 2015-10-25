@@ -1,0 +1,8 @@
+type s = structure { };
+procedure a [[ T ]] ( t : T, t2 : T ) { }
+
+procedure main()
+{
+    a ( null, new s() );
+
+}

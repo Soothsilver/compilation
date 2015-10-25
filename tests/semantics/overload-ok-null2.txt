@@ -1,0 +1,9 @@
+type s = structure {};
+type t = structure {};
+procedure a(a : s, b : s) { }
+procedure a(a : t, b : s) { }
+
+procedure main()
+{
+    a(new t(), null);
+}

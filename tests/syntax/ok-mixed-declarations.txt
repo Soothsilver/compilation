@@ -1,0 +1,5 @@
+a  : integer;
+type b  = structure { };
+c : b;
+
+procedure hello () { }

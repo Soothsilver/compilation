@@ -1,0 +1,22 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+type arraylist = class [[T]] {
+    array : list of T;
+
+    function get ( index : integer) : T {
+        return array [ index ] ;
+    }
+    procedure clearAndSetCapacity( capacity : integer ) {
+        array = new T [ capacity ];
+    }
+    function set ( index : integer, t : T) {
+        array[index] = t;
+    }
+};
+procedure main()
+{
+    l : arraylist[[integer]];
+    l.clearAndSetCapacity(4);
+    l.set(3, 5);
+    l.set(1, "NOT INTEGER");
+    l.set(2, l.get(1));
+}

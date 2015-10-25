@@ -1,0 +1,7 @@
+procedure a() { }
+procedure a(a : integer) { }
+
+procedure main()
+{
+    a();
+}

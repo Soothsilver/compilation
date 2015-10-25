@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main()
+{
+    a : list of integer;
+    a["NOT AN INTEGER"] = 5;
+}

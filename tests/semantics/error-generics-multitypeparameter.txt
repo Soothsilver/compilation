@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure bad[[T1,T1]]() { }
+procedure main()
+{
+
+}

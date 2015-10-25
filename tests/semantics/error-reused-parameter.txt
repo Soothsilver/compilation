@@ -1,0 +1,5 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main(argc : integer, argc : list of string)
+{
+
+}

@@ -1,0 +1,2 @@
+//EXPECT-SYNTAX-ERROR: PROCEDURE
+type a = structure { procedure a () { stop; } }

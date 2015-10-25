@@ -1,0 +1,5 @@
+//EXPECT-LEXICAL-ERROR: Unrecognized escape sequence
+procedure a()
+{
+  b = "hello \s, the previous escape sequence does not exist. This one does: \n";
+}

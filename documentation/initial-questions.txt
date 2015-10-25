@@ -1,0 +1,121 @@
+Commentaires: /* /* */ */ est /* /*  */!
+
+A definir ou demander:
+
+What case sensitivity? Yes.
+Quels caracteres sont possibles? ASCII only, alphanumeric only, or all? On accepte tout.
+Est-ce que c'est faux: Comme en C, la d´eclaration d’une fonction est suivie d’un point-virgule. C'est faux.
+Est-ce que "double" est passe par valeur ? Double n'existe pas.
+Qu'est-ce que string? Pointer sur un tableau de caracteres, dont le dernier est le zero binaire.
+Est-ce qu'il y a generique ? Non.
+Est-ce que c'est faux: — ‘<identifier> (variable de type) C'est faux.
+Faut-il qu'un type soit declare avant qu'il est utilise ? En semantique.
+Est-ce qu'on peut appeler une fonction sans qu'on utilise la valeur qu'elle retourne ? Ouoii.
+Est-ce qu'on peut ecrire "(2+2);" sans erreur ? Non.
+Est-ce qu'une liste peut contenir d'autre listes ? Oui.
+ Est-ce qu'il peut contenir des structures et des classes ? Oui.
+Comment est-ce qu'une instance de classe et de structure est instanciee ? Pour le moment, non.
+Comment fonctionne "=" avec les structures et les classes? Copie ou copie de reference? Copie de reference.
+Qu'est-ce que ca veut dire, "static"? Static ne fonctionne pas.
+Est-ce qu'il y a "private" et "public"? Ne fonctionne pas.
+Est-ce qu'il y a destructeur et si oui, comment fonctionne-t-il? Ne fonctionne pas.
+Est-ce qu'une fonction peut retourner un type complexe (string, array, structure, classe)? Oui, parce que ce sont des references seulement.
+"hiding" fonctionne comme en Java? (locals ont precedence contre les globals) Plus tard.
+Les instructions complexes, sont-elles suivies de ";"? Plus generalement, est-ce que la production "<smt>" contain toujours un ";"?
+Est-ce qu'on ajoute typedef? Faux.
+
+
+
+
+
+main est un mot-cle???????
+est-ce que true, false, null sont mots-cle ?
+Virgule flottante est "."?
+Est-ce que ++ et -- sont pre-increment et post-increment ?
+
+
+mots-cles selon enseignant:
+procedure, main, 
+
+/* ù */
+"gfdgd" 
+
+. 
+
+ERREUR:
+procedure salut();
+
+OK:
+procedure salut {
+}
+
+ERREUR:
+procedure salut {
+};
+
+ERREUR:
+function salut : integer;
+
+OK:
+function salut : integer { return 2 }
+salut();
+
+ERREUR:
+"2" + salut();
+
+OK:
+a = "2" + salut();
+
+OK:
+type person = structure { nom: string; }
+type person2 = person;
+
+OK???:
+{
+  p : person;
+  p2 : person2;
+  p = p2;
+}
+
+OK:
+{
+  p : person;
+  p.nom = "A";
+  p2 : person;
+  p2 = p;
+  p2.nom = "B";
+  // p.nom = B
+}
+
+
+
+OK:
+p: person;
+
+
+
+person : structure { nom: string; };
+listperson : list of person;
+ERREUR: listperson : list of `person;
+
+
+PLUS TARD:
+a : structure { otherb : b };
+b : structure { othera : a };
+
+
+?:
+{
+  if 2 + 2 == 5 salut();
+  if 2 + 2 == 5 { salut(); }
+}
+<stm>: APPELFONCTION;
+<stm>: { <stm>... }
+
+
+
+
+
+
+
+

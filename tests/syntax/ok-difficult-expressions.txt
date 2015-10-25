@@ -1,0 +1,14 @@
+procedure difficult()
+{
+  a : integer;
+  b : integer;
+  
+  a *= a -= a += a <<= 2;
+  
+  a = ( 2 + 3 * 5 ) / 8;
+  
+  b[2][3][4][5] = 2;
+   
+  b[2][3].c().d = 8;
+  
+}

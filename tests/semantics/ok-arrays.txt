@@ -1,0 +1,13 @@
+procedure main()
+{
+    a : list of integer;
+    b : list of integer;
+    c : list of integer;
+    a = [1, 5];
+    b = new integer [ 3 ];
+    b[0] = 1;
+    b[1] = 2;
+    b[2] = 3;
+    c = a @ b;
+    b[0] = a[0];
+}

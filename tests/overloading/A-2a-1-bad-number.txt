@@ -1,0 +1,6 @@
+//EXPECT-SEMANTIAL-ERROR: No overload of the
+procedure hello(a : integer) { }
+procedure main()
+{
+    hello();
+}

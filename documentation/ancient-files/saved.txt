@@ -1,0 +1,123 @@
+/*
+ 	expression PLUS expression |
+    PLUS expression
+	%prec UMINUS
+	;
+*/
+
+
+ 	/*
+	IDENTIFIER |
+ 	expression TIMES expression |
+ 	expression LBRACKET expression RBRACKET |
+ 	subroutine_call |
+ 	LPAR expression RPAR |
+ 	constant |
+ 	expression PERIOD IDENTIFIER
+ 	%prec PERIOD |
+ 	expression PERIOD subroutine_call
+ 	%prec PERIOD
+	|*/
+
+	/*
+ 	| MINUS expression
+	%prec UMINUS
+	| expression TIMES expression
+	| expression DIVIDE expression
+	| expression MODULO expression
+	| expression LESSTHAN expression
+	| expression LESSOREQUAL expression
+	| expression GREATERTHAN expression
+	| expression GREATEROREQUAL expression
+	| expression EQUALEQUAL expression
+	| expression UNEQUAL expression
+	| expression LOGICALAND expression
+	| expression LOGICALOR expression
+	| expression BITWISEAND expression
+	| expression BITWISEOR expression
+	| expression XOR expression
+	| expression SHIFTLEFT expression
+	| expression SHIFTRIGHT expression
+	| expression EQUAL expression
+	| expression MINUS expression
+	| expression PLUS expression
+	| expression UNARYPLUS expression
+	| expression UNARYMINUS expression
+	| expression UNARYTIMES expression
+	| expression UNARYDIVIDE expression
+	| expression UNARYMODULO expression
+	| expression UNARYSHIFTLEFT expression
+	| expression UNARYSHIFTRIGHT expression
+	| expression UNARYBITWISEAND expression
+	| expression UNARYXOR expression
+	| expression UNARYBITWISEOR expression
+	| INCREMENT expression
+	| DECREMENT expression
+	| expression INCREMENT
+	%prec LPAR
+	| expression DECREMENT
+	%prec LPAR
+	| LOGICALNEGATION expression
+	| BITWISENEGATION expression
+	;
+	*/
+
+
+ 	/*terminal TIMES, DIVIDE, MODULO;
+      terminal LESSTHAN, LESSOREQUAL, GREATERTHAN, GREATEROREQUAL;
+      terminal EQUALEQUAL, UNEQUAL;
+      terminal LOGICALAND, LOGICALOR;
+      terminal BITWISEAND, BITWISEOR, XOR, SHIFTLEFT, SHIFTRIGHT;
+      terminal EQUAL;
+      terminal UNARYPLUS, UNARYMINUS, UNARYTIMES, UNARYDIVIDE, UNARYMODULO;
+      terminal UNARYSHIFTLEFT, UNARYSHIFTRIGHT, UNARYBITWISEAND, UNARYXOR,
+      	 UNARYBITWISEOR;
+      terminal INCREMENT, DECREMENT;
+      terminal LOGICALNEGATION, BITWISENEGATION;
+      terminal MINUS, PLUS;*//*
+expression ::= expression PERIOD IDENTIFIER
+	   | expression PERIOD subroutine_call
+	   | constant
+	   | expression LBRACKET expression RBRACKET
+	   | IDENTIFIER
+	   | subroutine_call
+	   | LPAR expression RPAR
+
+
+	   | MINUS expression
+	   %prec INCREMENT
+	   | PLUS expression
+	   %prec INCREMENT
+	   | expression TIMES expression
+	   | expression DIVIDE expression
+	   | expression MODULO expression
+	   | expression LESSTHAN expression
+	   | expression LESSOREQUAL expression
+	   | expression GREATERTHAN expression
+	   | expression GREATEROREQUAL expression
+	   | expression EQUALEQUAL expression
+	   | expression UNEQUAL expression
+	   | expression LOGICALAND expression
+	   | expression LOGICALOR expression
+	   | expression BITWISEAND expression
+	   | expression BITWISEOR expression
+	   | expression XOR expression
+	   | expression SHIFTLEFT expression
+	   | expression SHIFTRIGHT expression
+	   | expression EQUAL expression
+	   | expression MINUS expression
+	   | expression PLUS expression
+	   | UNARYPLUS expression
+	   | UNARYMINUS expression
+	   | UNARYTIMES expression
+	   | UNARYDIVIDE expression
+	   | UNARYMODULO expression
+	   | UNARYSHIFTLEFT expression
+	   | UNARYSHIFTRIGHT expression
+	   | UNARYBITWISEAND expression
+	   | UNARYXOR expression
+	   | UNARYBITWISEOR expression
+	   | INCREMENT expression
+	   | DECREMENT expression
+	   | LOGICALNEGATION expression
+	   | BITWISENEGATION expression;*/

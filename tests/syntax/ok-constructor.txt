@@ -1,0 +1,6 @@
+type s = structure {};
+procedure main ()
+{
+    b : s;
+    b = new s();
+}

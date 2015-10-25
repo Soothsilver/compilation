@@ -1,0 +1,5 @@
+//EXPECT-SYNTAX-ERROR: ELSE
+procedure a()
+{
+ if ( 2 == 2 ) else stop;
+}

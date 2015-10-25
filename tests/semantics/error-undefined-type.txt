@@ -1,0 +1,5 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main()
+{
+    a : this_type_is_not_defined;
+}

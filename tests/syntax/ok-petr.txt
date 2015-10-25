@@ -1,0 +1,5 @@
+procedure a() {
+  major.field;
+  major.method();
+  major.method_with_args(argument);
+}

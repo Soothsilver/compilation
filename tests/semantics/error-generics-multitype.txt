@@ -1,0 +1,9 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+
+type a = structure { }
+type a = class [[ T1 ]] { };
+
+procedure main()
+{
+
+}

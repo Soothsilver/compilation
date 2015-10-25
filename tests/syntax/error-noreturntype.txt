@@ -1,0 +1,2 @@
+//EXPECT-SYNTAX-ERROR: LBRACE
+function name ( a : integer) { }

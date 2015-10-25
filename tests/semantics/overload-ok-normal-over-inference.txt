@@ -1,0 +1,12 @@
+type A = structure { };
+type B = structure { };
+type C = structure { };
+
+procedure set[[T]] ( a : T ) { }
+procedure set(a : A) { }
+
+procedure main()
+{
+   set(new A());
+   set(new B());
+}

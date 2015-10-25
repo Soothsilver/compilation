@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: The type 'huh'
+procedure hello(a : huh) { }
+procedure main()
+{
+    hello();
+}

@@ -1,0 +1,10 @@
+type s = class { a : integer; function b () : integer { } };
+
+
+procedure f()
+{
+  instance : s;
+  instance.a  = 2;
+  instance.a = instance.b() + instance.b();
+  instance.a = instance.b().a;
+}

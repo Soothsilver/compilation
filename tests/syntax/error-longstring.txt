@@ -1,0 +1,8 @@
+//EXPECT-LEXICAL-ERROR: End of file reached while parsing a string.
+procedure a ()
+{
+ b :string;
+ b = "sdfgdfs
+ gdfsgdfsg
+
+}

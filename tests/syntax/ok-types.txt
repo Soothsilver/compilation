@@ -1,0 +1,3 @@
+type a = structure { a : integer; };
+ b : list of a;
+ c : list of list of list of list of a;

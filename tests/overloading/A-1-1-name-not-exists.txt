@@ -1,0 +1,5 @@
+//EXPECT-SEMANTICAL-ERROR: no subroutine with the name 'hello'
+procedure main()
+{
+    hello();
+}

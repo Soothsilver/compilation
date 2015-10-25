@@ -1,0 +1,21 @@
+type c = class [[ T ]] {
+    a : T;
+    b : list of T;
+    d : c[[T]]; // <--- Will this work?
+    e : list of c[[T]];
+    function f() : T {
+        t : T;
+        t = new T();
+        return t;
+    }
+}
+
+procedure main()
+{
+    in : c [[integer];
+    out : c [[string]];
+    b : integer;
+    in.a = 5;
+    b = in.f();
+    out.a = "hello";
+}

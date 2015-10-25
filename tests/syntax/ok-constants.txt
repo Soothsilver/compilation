@@ -1,0 +1,10 @@
+procedure a()
+{
+ b = 02;
+ b = "hello";
+ b = 'c';
+ b = true;
+ b = false;
+ b = null;
+ b = -8;
+}

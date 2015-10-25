@@ -1,0 +1,11 @@
+
+
+
+procedure add ( a : integer, b : integer ) { }
+
+function add2 ( a : integer, b : integer) : float { }
+
+
+procedure takeString ( a : string ) { }
+
+function noParams () : integer { }

@@ -1,0 +1,10 @@
+//EXPECT-SEMANTICAL-ERROR: TO BE DEFINED
+type s = structure {};
+type t = structure {};
+procedure a(a : s, b : s) { }
+procedure a(a : t, b : t) { }
+
+procedure main()
+{
+    a(null, null);
+}

@@ -1,0 +1,10 @@
+type s = structure {
+    a : integer;
+    procedure func() { }
+};
+function returnS() : s { st : s; return st; }
+procedure main()
+{
+    returnS().func();
+    returnS().a = 5;
+}

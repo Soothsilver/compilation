@@ -1,0 +1,24 @@
+procedure a() 
+{ 
+ a : integer;
+ b : integer;
+ 
+ foreach ( a in b )
+ {
+ }
+ 
+ while (a)
+ {
+ }
+ 
+ repeat
+ {
+ 
+ } while (a);
+ 
+ 
+ for (a = 2; a < 5; a++)
+ {
+   b = a +1;
+ } 
+}

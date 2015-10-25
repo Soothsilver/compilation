@@ -1,0 +1,4 @@
+function a () : integer
+{
+ return 2;
+}

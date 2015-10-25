@@ -1,0 +1,3 @@
+//EXPECT-LEXICAL-ERROR: parsing a multiline comment
+//End of file reached while parsing a multiline comment.
+/*   

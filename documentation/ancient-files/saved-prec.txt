@@ -1,0 +1,81 @@
+/* -------------------------------------------------
+        Precedence
+   ------------------------------------------------- */
+
+/*
+precedence left COMMA;
+
+precedence right EQUAL, UNARYPLUS, UNARYMINUS, UNARYTIMES, UNARYDIVIDE, UNARYMODULO, UNARYSHIFTLEFT, UNARYSHIFTRIGHT,
+		UNARYBITWISEAND, UNARYXOR, UNARYBITWISEOR;
+precedence left LOGICALOR;
+precedence left LOGICALAND;
+precedence left BITWISEOR;
+precedence left XOR;
+precedence left BITWISEAND;
+precedence left EQUALEQUAL, UNEQUAL;
+precedence left LESSTHAN, LESSOREQUAL, GREATERTHAN, GREATEROREQUAL;
+precedence left SHIFTLEFT, SHIFTRIGHT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MODULO;
+precedence right INCREMENT, DECREMENT, BITWISENEGATION, LOGICALNEGATION; // Preincrement
+precedence left LBRACKET, RBRACKET, LPAR, RPAR, PERIOD; //Postincrement
+
+*/
+
+
+/*
+Old code:
+expression ::= 
+	IDENTIFIER |
+ 	expression LBRACKET expression RBRACKET |
+ 	subroutine_call |
+ 	LPAR expression RPAR |
+ 	constant |
+ 	expression PERIOD subroutine_call
+ 	%prec PERIOD 
+ 	|
+ 	expression PERIOD IDENTIFIER
+ 	%prec PERIOD
+ 	| MINUS expression
+	%prec UMINUS
+ 	| PLUS expression
+	%prec UMINUS
+	| expression TIMES expression
+	| expression DIVIDE expression
+	| expression MODULO expression
+	| expression LESSTHAN expression
+	| expression LESSOREQUAL expression
+	| expression GREATERTHAN expression
+	| expression GREATEROREQUAL expression
+	| expression EQUALEQUAL expression
+	| expression UNEQUAL expression
+	| expression LOGICALAND expression
+	| expression LOGICALOR expression
+	| expression BITWISEAND expression
+	| expression BITWISEOR expression
+	| expression XOR expression
+	| expression SHIFTLEFT expression
+	| expression SHIFTRIGHT expression
+	| expression EQUAL expression
+	| expression MINUS expression
+	| expression PLUS expression
+	| expression UNARYPLUS expression
+	| expression UNARYMINUS expression
+	| expression UNARYTIMES expression
+	| expression UNARYDIVIDE expression
+	| expression UNARYMODULO expression
+	| expression UNARYSHIFTLEFT expression
+	| expression UNARYSHIFTRIGHT expression
+	| expression UNARYBITWISEAND expression
+	| expression UNARYXOR expression
+	| expression UNARYBITWISEOR expression
+	| INCREMENT expression
+	| DECREMENT expression
+	| expression INCREMENT
+	%prec LPAR
+	| expression DECREMENT
+	%prec LPAR
+	| LOGICALNEGATION expression
+	| BITWISENEGATION expression
+	;
+*/

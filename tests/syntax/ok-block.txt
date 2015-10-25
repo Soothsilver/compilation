@@ -1,0 +1,20 @@
+procedure main () 
+{
+  a : integer;
+  {
+  	a = 2;
+  }
+}
+
+function other () : integer 
+  {
+    b : double;
+    {
+      b = 5;
+    }
+    {
+      {
+        b = 6;
+      }
+    }  
+  }

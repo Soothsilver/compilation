@@ -1,0 +1,2 @@
+//EXPECT-SYNTAX-ERROR: integer
+type t = integer;

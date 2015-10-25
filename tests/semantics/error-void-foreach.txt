@@ -1,0 +1,8 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main()
+{
+    foreach( identifier in main() )
+    {
+
+    }
+}

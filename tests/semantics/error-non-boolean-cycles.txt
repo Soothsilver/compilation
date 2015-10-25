@@ -1,0 +1,14 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure hello() { }
+procedure main()
+{
+    while(1) { }
+    repeat { } while (1);
+    if (1) {}
+    for ( hello() ; 1 ; hello() ) {
+
+    }
+}

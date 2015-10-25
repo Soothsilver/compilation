@@ -1,0 +1,7 @@
+type a = class {
+  b : integer;
+  procedure add ( c : integer) 
+  {
+    b = c;
+  }
+};

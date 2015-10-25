@@ -1,0 +1,2 @@
+//EXPECT-SYNTAX-ERROR: COLON
+procedure a () : integer { }

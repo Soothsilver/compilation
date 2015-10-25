@@ -1,0 +1,12 @@
+//EXPECT-SYNTAX-ERROR: column 7 at symbol
+//EXPECT-SYNTAX-ERROR: column 9 at symbol
+//EXPECT-SYNTAX-ERROR: column 10 at symbol
+//EXPECT-SYNTAX-ERROR: column 11 at symbol
+procedure a()
+{
+  b = ..;
+  b = 5..5;
+  b = 5.5.5;
+  b = 5e-5.5;
+  
+}

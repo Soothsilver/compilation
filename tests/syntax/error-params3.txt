@@ -1,0 +1,2 @@
+//EXPECT-SYNTAX-ERROR: COMMA
+function a ( a, b : integer ) : float  {}

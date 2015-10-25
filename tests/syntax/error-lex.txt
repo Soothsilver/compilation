@@ -1,0 +1,2 @@
+//EXPECT-LEXICAL-ERROR: Unknown character
+lex error : č

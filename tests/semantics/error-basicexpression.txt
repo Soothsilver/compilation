@@ -1,0 +1,8 @@
+//EXPECT-SEMANTICAL-ERROR: Only assignment, increment, decrement
+//EXPECT-SEMANTICAL-ERROR: Only assignment, increment, decrement
+procedure main() {
+    a : integer;
+    2;
+    4 + 3;
+    ++a;
+}

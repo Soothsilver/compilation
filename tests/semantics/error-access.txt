@@ -1,0 +1,14 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+type s = structure {
+    a : integer;
+    procedure func() { }
+};
+function returnS() : s { st : s; return st; }
+procedure main()
+{
+    returnS().funcG();
+    returnS().a = "sth";
+    returnS().b = 5;
+}

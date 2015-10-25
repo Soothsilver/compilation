@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+function hello() : integer;
+function hello() : integer;
+procedure main() {
+
+}

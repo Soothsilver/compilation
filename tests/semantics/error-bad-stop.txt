@@ -1,0 +1,8 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+function s() : integer {
+    stop; // stop from function
+}
+procedure main()
+{
+
+}

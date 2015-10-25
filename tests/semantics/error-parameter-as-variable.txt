@@ -1,0 +1,9 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure a(b : integer)
+{
+    b : float;
+}
+procedure main()
+{
+
+}

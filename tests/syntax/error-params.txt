@@ -1,0 +1,3 @@
+//EXPECT-SYNTAX-ERROR: COMMA
+
+procedure badparams (,) { }

@@ -1,0 +1,14 @@
+type A = class [[ T1, T2 ]] {
+    procedure s () { }
+    function t () : T1 { }
+    procedure u [[ T3 ]] () { }
+};
+function v [[ T4 ]] ( hello : T4 ) : T4 { return 0; }
+
+procedure main() {
+ instance_of_a : A[[integer, string]];
+ instance_of_a.u[[string]]();
+ v[[integer]]();
+ v();
+ v[[integer, noninteger, by]]();
+}

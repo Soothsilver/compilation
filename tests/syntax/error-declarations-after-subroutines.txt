@@ -1,0 +1,5 @@
+//EXPECT-SYNTAX-ERROR: Syntax error
+
+procedure hello ( ) { }
+
+number : integer;

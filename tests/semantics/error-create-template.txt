@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+type C = structure [[ T ]] { };
+procedure main()
+{
+   c : C;
+}

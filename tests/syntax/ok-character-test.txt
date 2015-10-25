@@ -1,0 +1,9 @@
+
+procedure a ()
+{
+  c : character;
+  c = '5';
+  c = '\n';
+  c = '\'';  
+  c = 0x0020E0E;
+}

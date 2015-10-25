@@ -1,0 +1,7 @@
+number : integer;
+
+procedure main () {
+	number : integer;
+	number = 2;
+	stop;
+}

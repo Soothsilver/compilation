@@ -1,0 +1,5 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main (number : integer, notstring : integer)
+{
+
+}

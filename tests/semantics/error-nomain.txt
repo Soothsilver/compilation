@@ -1,0 +1,4 @@
+//EXPECT-SEMANTICAL-ERROR: main
+procedure notMain() {
+
+}

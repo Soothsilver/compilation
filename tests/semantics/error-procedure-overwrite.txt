@@ -1,0 +1,8 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+
+procedure hello();
+procedure hello():
+
+procedure main() {
+
+}

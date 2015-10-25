@@ -1,0 +1,15 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+type C = structure [[ T ]] { };
+
+function getGrid [[T]] () : C[[C[[T]]]] { return null; }
+function getSource [[T]] ( c : C[[T]] ) : T { return null; }
+
+procedure main()
+{
+    grid : C[[C[[integer]]]];
+    grid = getGrid();
+    getSource(grid);
+    getSource(getSource(getSource(grid)));
+    getGrid();
+}

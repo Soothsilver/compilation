@@ -1,0 +1,8 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+function s() : integer { return 1; }
+procedure main()
+{
+    2 = 5;
+    s() = 8;
+}

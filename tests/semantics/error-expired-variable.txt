@@ -1,0 +1,9 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main()
+{
+    {
+        a : integer;
+        a = 3;
+    }
+    a = 5;
+}

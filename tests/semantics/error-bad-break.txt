@@ -1,0 +1,5 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main()
+{
+    break; // break outside a cycle (nothing to break from)
+}

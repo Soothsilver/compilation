@@ -1,0 +1,7 @@
+//EXPECT-SYNTAX-ERROR: TO DEFINE
+//EXPECT-SYNTAX-ERROR: TO DEFINE
+procedure main()
+{
+    if : integer;
+    null : string;
+}

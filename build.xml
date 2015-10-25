@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Yet Another Compiler" default="essai.txt">
+  <property name="JFlexLib" location="lib" />
+  <property name="CUPLib" location="lib" />
+  <property name="lib.dir" location="lib" />
+  <property name="src.dir" location="src" />
+  <property name="bin.dir" location="bin" />
+  <property name="parser.dir" location="parser" />
+  <property name="lexer.dir" location="lexer" />
+  <property name="tests.syntax.dir" location="tests/syntax" />
+  <property name="tests.semantics.dir" location="tests/semantics" />
+    <property name="tests.overloading.dir" location="tests/overloading" />
+
+    <path id="master-classpath">
+        <fileset dir="${lib.dir}">
+            <include name="java-cup-11a.jar"/>
+            <include name="junit-4.11.jar"/>
+        </fileset>
+        <pathelement path="${bin.dir}" />
+    </path>
+
+  
+  <description>
+    Yet Another Compiler Project
+  </description>
+  
+
+  
+  <!-- ================================= 
+       target: syntax-tests              
+       ================================= -->
+  <target name="syntax-tests" depends="parser, lexer, compile-all"
+      description="Creates the compiler and runs it against all tests in the directory tests/syntax.">
+	  <copy todir="${bin.dir}/syntax-tests">
+	      <fileset dir="${tests.syntax.dir}" />
+	  </copy>
+	  <java 
+	    fork = "true"
+	    dir = "${bin.dir}"
+		classname="compiler.SyntaxTests">
+          <classpath refid="master-classpath"/>
+      </java>
+  </target>
+
+    <!-- =================================
+       target: semantics-tests
+       ================================= -->
+    <target name="semantics-tests" depends="parser, lexer, compile-all"
+            description="Creates the compiler and runs it against all tests in the directory tests/syntax.">
+        <copy todir="${bin.dir}/semantics-tests">
+            <fileset dir="${tests.semantics.dir}" />
+        </copy>
+        <java
+                fork = "true"
+                dir = "${bin.dir}"
+                classname="compiler.SemanticTests">
+            <classpath refid="master-classpath"/>
+        </java>
+    </target>
+
+    <!-- =================================
+      target: overload-tests
+      ================================= -->
+    <target name="overload-tests" depends="parser, lexer, compile-all"
+            description="Creates the compiler and runs it against all tests in the directory tests/overloading.">
+        <copy todir="${bin.dir}/overloading-tests">
+            <fileset dir="${tests.overloading.dir}" />
+        </copy>
+        <java
+            fork = "true"
+            dir = "${bin.dir}"
+            classname="compiler.OverloadingTests">
+            <classpath refid="master-classpath"/>
+        </java>
+    </target>
+  
+  <!-- ================================= 
+       target: essai.txt (default)       
+       ================================= -->
+  <target name="essai.txt" depends="compile-all" 
+      description="Creates the compiler and runs it on file Essai.txt in the project directory.">    
+    <java classname="compiler.Main">
+        <classpath refid="master-classpath"/>
+        <arg value="Essai.txt"/>
+    </java>    
+  </target>
+  
+  <!-- ================================= 
+       target: compile-all
+       ================================= -->
+  <target name="compile-all" depends="parser, lexer"
+      description="Creates the compiler.">
+    <mkdir dir="${bin.dir}" />
+    <javac 
+	srcdir="${src.dir}"
+	destdir="${bin.dir}" 
+	includeantruntime="false"
+	debug="on">
+        <classpath refid="master-classpath"/>
+    </javac>
+  </target>
+  
+  <!-- =================================
+       target: lexer
+       ================================= -->
+  <target name="lexer"
+      description="Compiles the JFlex file.">    
+    <taskdef name="jflex" classname="JFlex.anttask.JFlexTask">
+      <classpath location="${JFlexLib}/JFlex.jar" />
+    </taskdef>
+    <jflex 
+	file="${lexer.dir}/compiler.jflex"
+	destdir="${src.dir}"/>
+  </target>
+  
+  <!-- ================================= 
+       target: parser              
+       ================================= -->
+  <target name="parser"
+      description="Compiles the CUP file.">
+    
+    <taskdef name="cup" classname="java_cup.anttask.CUPTask">
+      <classpath location="${CUPLib}/java-cup-11a.jar" />
+    </taskdef>
+    
+    <cup 
+		srcfile="${parser.dir}/compiler.cup"
+		destdir="${src.dir}"
+		parser="CompilerParser"
+		symbols="CompilerSymbol"
+		dump="false" />
+  </target>
+  
+ <!-- =================================
+      target: test
+      ================================= -->
+    <target name="test" depends="syntax-tests, semantics-tests"
+        description="Runs all tests. So far, it only runs lexical, syntax and semantics tests.">
+        <!-- This target is required by assignment. -->
+    </target>
+    
+ <!-- =================================
+      target: clean
+      ================================= -->
+    <target name="clean" 
+        description="Destroys all generated files.">
+    	<delete file="Output.txt" />
+    	<delete dir="${bin.dir}" />
+    	<delete file="${src.dir}/compiler/generated/CompilerLexer.java" />
+    	<delete file="${src.dir}/compiler/generated/CompilerParser.java" />
+    	<delete file="${src.dir}/compiler/generated/CompilerSymbol.java" />
+    </target>
+    
+ <!-- =================================
+      target: rebuild-all
+      ================================= -->
+    <target name="rebuild-all" depends="clean, syntax-tests" 
+        description="Destroys all generated files, then runs syntax tests.">
+    </target>
+</project>

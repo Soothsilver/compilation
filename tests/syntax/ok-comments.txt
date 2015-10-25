@@ -1,0 +1,9 @@
+/* a */ 
+
+// sdfhfghfdghfgdhgfjfdgfdgdfdgd4576547žřýřžýčřžýřč
+
+procedure /* a */ hello /* b */ ( //c
+  /* d*/ ) // e
+   {  //f
+     /*g*/
+     }

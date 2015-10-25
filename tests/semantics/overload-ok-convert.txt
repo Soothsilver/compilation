@@ -1,0 +1,7 @@
+procedure a(a : string) { }
+procedure a(a : float) { }
+
+procedure main()
+{
+    a(2);
+}

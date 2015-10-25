@@ -1,0 +1,10 @@
+
+type LinkedListNode = structure [[T]] {
+    data : T;
+    next : LinkedListNode[[T]];
+};
+
+procedure main()
+{
+
+}

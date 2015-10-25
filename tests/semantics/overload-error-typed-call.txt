@@ -1,0 +1,7 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure a [[ T ]] ( t : T ) { }
+
+procedure main()
+{
+    a [[ integer ]] ( "S" );
+}

@@ -1,0 +1,12 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE ambiguity
+
+function get(s : integer) : integer { return 1; }
+function get(s : integer) : string { return "a"; }
+function get(s : float) : float { return 2.0; }
+function get(s : float) : boolean { return true; }
+procedure set(f : float) { }
+
+procedure main()
+{
+   set(get(2));
+}

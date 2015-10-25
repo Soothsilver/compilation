@@ -1,0 +1,6 @@
+//EXPECT-SYNTAX-ERROR: Analysis continues at next semicolon
+procedure a() {
+  2**3;
+  a = a +5;
+  b = b * (a - 4);
+}

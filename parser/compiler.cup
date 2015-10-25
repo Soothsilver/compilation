@@ -1,0 +1,491 @@
+package compiler.generated;
+import java_cup.runtime.*;
+import java.util.*;
+import java.io.*;
+import compiler.*;
+import compiler.nodes.*;
+import compiler.nodes.statements.*;
+import compiler.nodes.declarations.*;
+import compiler.nodes.expressions.*;
+
+/* -------------------------------------------------
+        Code
+   ------------------------------------------------- */
+parser code {:
+  public Compilation compilation;
+  public boolean printNoErrors = false;
+  public boolean syntaxAnalysisFailed = false;
+    
+  @Override 
+  public void syntax_error(Symbol cur_token)
+  {
+    compilation.syntaxError(this, cur_token);
+  }
+  
+  @Override
+  public void report_error(String message, Object info)
+  {    
+  	compilation.reportSyntaxError(this, message, info); 
+  }
+
+  @Override
+  public void unrecovered_syntax_error(Symbol cur_token)
+  {
+    compilation.syntaxAnalysisFatalFailure = true;
+  }
+:};
+action code {:
+    Environment getEnvironment() {
+        return parser.compilation.environment;
+    }
+:};
+
+/* -------------------------------------------------
+        Terminals without values
+   ------------------------------------------------- */
+terminal TIMES, DIVIDE, MODULO;
+terminal LESSTHAN, LESSOREQUAL, GREATERTHAN, GREATEROREQUAL;
+terminal EQUALEQUAL, UNEQUAL;
+terminal LOGICALAND, LOGICALOR;
+terminal BITWISEAND, BITWISEOR, XOR, SHIFTLEFT, SHIFTRIGHT;
+terminal EQUAL;
+terminal UNARYPLUS, UNARYMINUS, UNARYTIMES, UNARYDIVIDE, UNARYMODULO;
+terminal UNARYSHIFTLEFT, UNARYSHIFTRIGHT, UNARYBITWISEAND, UNARYXOR,
+	 UNARYBITWISEOR;
+terminal INCREMENT, DECREMENT;
+terminal LOGICALNEGATION, BITWISENEGATION;
+terminal MINUS, PLUS;
+terminal CONCATENATE;
+
+terminal LBRACE, RBRACE, LPAR, RPAR, LBRACKET, RBRACKET;
+
+terminal COLON, SEMICOLON, COMMA, PERIOD;
+
+terminal LEFTTYPEBRACKET, RIGHTTYPEBRACKET;
+
+terminal PROCEDURE, FUNCTION, LIST, OF, CLASS, STRUCTURE, TYPE, RETURN, STOP,
+	 BREAK, IF, ELSE, FOREACH, FOR, IN, WHILE, REPEAT, NEW;
+	 
+	 
+
+
+/* -------------------------------------------------
+        Terminals with values
+   ------------------------------------------------- */
+terminal String IDENTIFIER;
+terminal Integer INTEGER;
+terminal Float FLOAT;
+terminal Character CHARACTER;
+terminal String STRING;
+
+
+/* -------------------------------------------------
+        Non terminals 
+   ------------------------------------------------- */
+non terminal program;
+non terminal global_declarations;
+non terminal global_declaration;
+non terminal type_declaration;
+non terminal variable_declaration;
+
+non terminal Subroutines subroutines;
+non terminal Subroutine subroutine;
+non terminal Subroutine function;
+non terminal Subroutine procedure;
+non terminal Subroutine procedure_header;
+non terminal Subroutine function_header;
+non terminal ArrayList<Parameter> parameters;
+non terminal Parameter parameter;
+
+non terminal Type type;
+non terminal list_type;
+non terminal structure_type;
+non terminal class_type;
+non terminal type_definition;
+non terminal type_instantiation;
+non terminal ArrayList<Type> type_arguments;
+non terminal ArrayList<String> type_parameters;
+
+non terminal BlockStatement block;
+non terminal Statements statements;
+non terminal Statement statement;
+non terminal Statement open_statement;
+non terminal Statement closed_statement;
+non terminal IfStatement if_short;
+non terminal IfStatement if_long_closed_open;
+non terminal loop_open;
+non terminal Statement simple_statement;
+non terminal IfStatement if_long_closed_closed;
+non terminal Statement loop_closed;
+non terminal foreach_head;
+non terminal while_head;
+non terminal for_head;
+
+non terminal Expressions expressions;
+non terminal Expression expression;
+non terminal Expression constant;
+non terminal new_list;
+
+non terminal local_declarations;
+non terminal local_declaration;
+
+non terminal Expression expr13_assignment, expr12_or, expr11_and, expr10_bitwise_or, expr9_xor, expr8_bitwise_and, expr7_equality, expr6_comparison, expr5_shift, expr4_addition, expr3_multiplication, expr2_prefix, expr1_postfix, expr0_simple;
+non terminal SubroutineGroup expr1_subroutinegroup;
+non terminal assignment_operator, relational_operator;
+
+
+
+/* -------------------------------------------------
+        Productions 
+   ------------------------------------------------- */
+   
+start with program;
+
+
+
+program		    ::= global_declarations subroutines:s
+					{:
+					    ProgramNode program = new ProgramNode();
+					    program.Subroutines = s;
+					    parser.compilation.abstractSyntaxTree = program;
+					    parser.compilation.completeAnalysis(this.parser);
+					:}
+					|
+					global_declarations
+					{:
+					    // This is only useful for syntax tests, because it will always fail in semantic analysis
+					    // due to not having a "main" procedure. But for syntax tests, it is useful.
+					    parser.compilation.abstractSyntaxTree = new ProgramNode();
+					    parser.compilation.completeAnalysis(this.parser);
+					:}
+					;
+
+// Subroutines
+subroutines     ::= subroutine:s
+                    {:
+                        Subroutines subroutines = new Subroutines();
+                        subroutines.addSubroutine(s); // TODO check for uniqueness
+                        RESULT = subroutines;
+                    :}
+                    | subroutines:ss subroutine:s
+                    {:
+                        ss.addSubroutine(s);
+                        RESULT = ss;
+                    :}
+                    ;
+subroutine      ::= function:f
+                    {: RESULT = f; :}
+                     | procedure:p
+                    {: RESULT = p; :}
+                    ;
+procedure       ::= procedure_header:p block:b {:
+                        getEnvironment().leaveSubroutine();
+                        p.block = b;
+                        RESULT = p;
+                    :};
+function        ::= function_header:h block:b {:
+                        getEnvironment().leaveSubroutine();
+                        h.block = b;
+                        RESULT = h;
+                    :};
+procedure_header    ::= PROCEDURE IDENTIFIER:name LPAR parameters:ps RPAR
+                    {:
+                        RESULT = Subroutine.create(
+                            SubroutineKind.PROCEDURE,
+                            name,
+                            null,
+                            ps,
+                            null,
+                            parser.compilation
+                            );
+                    :} |
+                    PROCEDURE IDENTIFIER:name LPAR RPAR
+                    {:
+                           RESULT = Subroutine.create(
+                                                     SubroutineKind.PROCEDURE,
+                                                     name,
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     parser.compilation
+                                                     );
+                    :} |
+                    PROCEDURE IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR parameters:ps RPAR
+                    {:
+                        RESULT = Subroutine.create(
+                                                  SubroutineKind.PROCEDURE,
+                                                  name,
+                                                  tp,
+                                                  ps,
+                                                  null,
+                                                  parser.compilation
+                                                  );
+                    :}
+                    |
+                    PROCEDURE IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR RPAR
+                    {:
+                         RESULT = Subroutine.create(
+                                                   SubroutineKind.PROCEDURE,
+                                                   name,
+                                                   tp,
+                                                   null,
+                                                   null,
+                                                   parser.compilation
+                                                   );
+                    :}
+                    ;
+function_header        ::=
+                    FUNCTION IDENTIFIER:name LPAR parameters:ps RPAR COLON type:t
+                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, ps, t, parser.compilation); :}
+				  | FUNCTION IDENTIFIER:name LPAR RPAR COLON type:t
+                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, null, t, parser.compilation); :}
+				  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR parameters:ps RPAR COLON type:t
+                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, tp, ps, t, parser.compilation); :}
+                  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR RPAR COLON type:t
+                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, tp, null, t, parser.compilation); :}
+                  ;
+
+parameters 	::= parameter:p
+                {: RESULT = new ArrayList<>(); RESULT.add(p); :}
+                |
+                parameters:ps COMMA parameter:p
+                {: ps.add(p); RESULT = ps; :}
+                ;
+
+parameter  	::= IDENTIFIER:id COLON type:t
+                {:
+                    RESULT = new Parameter(id, t);
+                    // TODO add parameter as variable to environment (perhaps do this inside parameter constructor)
+                 :}
+                 ;
+
+// Statements
+block	        	::= LBRACE local_declarations statements:s RBRACE
+                        {:
+                            // TODO make scoping work correctly
+                            RESULT = new BlockStatement();
+                            RESULT.statements = s;
+                        :}
+                        ;
+statements	   		::= statement:s statements:ss
+                        {:
+                            ss.addStatement(s);
+                            RESULT = ss;
+                        :} |
+                        {:
+                            RESULT = new Statements();
+                        :}
+                        ;
+statement	        ::= open_statement
+                        | closed_statement:s
+                        {:
+                            RESULT = s;
+                        :}
+                        ;
+open_statement	    ::= if_short | if_long_closed_open | loop_open;
+if_short	        ::= IF LPAR expression:ex RPAR statement:st
+                        {:
+                            RESULT = new IfStatement(ex, st, null, parser.compilation);
+                        :};
+if_long_closed_open ::= IF LPAR expression:ex RPAR closed_statement:st ELSE open_statement:st2
+                        {:
+                            RESULT = new IfStatement(ex, st, st2, parser.compilation);
+                        :};
+loop_open	        ::=   foreach_head open_statement
+		                | while_head open_statement
+		                | for_head open_statement;
+closed_statement       ::= simple_statement:s SEMICOLON
+                         {:
+                            RESULT = s;
+                         :}
+		                 | REPEAT statement:st WHILE LPAR expression:ex RPAR SEMICOLON
+		                 {:
+		                    RESULT = new RepeatStatement(ex, st);
+		                 :}
+		                 | block:b
+		                 {: RESULT = b; :}
+		                 | if_long_closed_closed:s
+		                 {: RESULT = s; :}
+		                 | loop_closed:s
+		                 {: RESULT = s; :}
+		                 | error SEMICOLON
+		                 {: 
+		                 	parser.compilation.addSuffix(" Analysis continues at next semicolon.");
+		                 :}
+		                 ;
+simple_statement       ::=  expression:ex
+                         {:
+                            RESULT = new ExpressionStatement(ex, parser.compilation);
+                         :}
+						 | RETURN expression
+ 						 | STOP:s
+ 						 {:
+ 						    RESULT = new StopStatement(sleft, sright);
+ 						 :}
+ 						 | BREAK;
+if_long_closed_closed  ::= IF LPAR expression:ex RPAR closed_statement:st ELSE closed_statement:stelse
+                        {:
+                            RESULT = new IfStatement(ex, st, stelse, parser.compilation);
+                        :};
+loop_closed	       ::= foreach_head closed_statement
+		    		   | while_head closed_statement
+		    		   | for_head closed_statement;
+		       
+foreach_head	       ::= FOREACH LPAR IDENTIFIER IN expression RPAR;
+while_head	       ::= WHILE LPAR expression RPAR;
+for_head	       ::= FOR LPAR IDENTIFIER EQUAL expression SEMICOLON expression SEMICOLON expression RPAR;
+
+
+// Types
+type_definition ::= structure_type | class_type;
+type		::=
+                IDENTIFIER:id {: RESULT = Type.findType(id, idleft, idright, parser.compilation); :}
+                 | list_type
+                 | type_instantiation;
+list_type	::= LIST OF type;
+structure_type	::= STRUCTURE LBRACE local_declarations RBRACE
+            | STRUCTURE LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations RBRACE
+            ;
+class_type	::= CLASS LBRACE local_declarations subroutines RBRACE
+            | CLASS LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations subroutines RBRACE
+            ;
+type_instantiation ::= IDENTIFIER LEFTTYPEBRACKET type_arguments RIGHTTYPEBRACKET;
+type_arguments ::= type | type_arguments COMMA type;
+type_parameters ::=
+    IDENTIFIER:id
+     {: RESULT = new ArrayList<>(); RESULT.add(id); /*TODO should be types rather than strings, I think */ :}
+     |
+    type_parameters:tp COMMA IDENTIFIER:id
+    {: tp.add(id); RESULT = tp; :}
+    ;
+
+// Declarations
+global_declarations     	   ::= global_declarations global_declaration | ;
+global_declaration            ::=
+	type_declaration | 
+	variable_declaration |
+	error SEMICOLON 
+	{:
+		parser.compilation.addSuffix(" Malformed declaration. Analysis continues at next semicolon.");
+	:}
+	;
+local_declarations ::= local_declarations local_declaration | ;
+local_declaration  ::= variable_declaration;
+
+type_declaration		::= TYPE IDENTIFIER EQUAL type_definition SEMICOLON;
+variable_declaration	::= IDENTIFIER COLON type SEMICOLON;
+
+
+/* -------------------------------------------------
+        Expression Productions
+   ------------------------------------------------- */
+// Expressions
+expressions	       ::=
+    expression:ex {: RESULT = new Expressions(); RESULT.add(ex); :}
+    | expressions:exs COMMA expression:ex {: exs.add(ex); RESULT = exs; :}
+    ;
+constant	       ::=
+                    INTEGER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    FLOAT:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    STRING:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    CHARACTER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    new_list;
+new_list	       ::= LBRACKET expressions RBRACKET
+		             | NEW IDENTIFIER LBRACKET INTEGER RBRACKET
+		             ;
+assignment_operator ::=
+    UNARYPLUS | UNARYMINUS | UNARYTIMES | UNARYDIVIDE |
+    UNARYMODULO | UNARYSHIFTLEFT | UNARYSHIFTRIGHT |
+    UNARYBITWISEAND | UNARYXOR | UNARYBITWISEOR |
+    EQUAL
+    ;
+relational_operator ::=
+    LESSTHAN | GREATERTHAN | LESSOREQUAL | GREATEROREQUAL
+    ;
+
+    /* TODO all the operators :), but that can wait */
+expression ::= expr13_assignment:e {: RESULT = e; :};
+expr13_assignment ::=
+    expr12_or assignment_operator expr13_assignment |
+    expr12_or:e {: RESULT = e; :}
+    ;
+expr12_or ::=
+    expr12_or LOGICALOR expr11_and |
+    expr11_and:e  {: RESULT = e; :}
+    ;
+expr11_and ::=
+    expr11_and LOGICALAND expr10_bitwise_or |
+    expr10_bitwise_or:e  {: RESULT = e; :}
+    ;
+expr10_bitwise_or ::=
+    expr9_xor:e  {: RESULT = e; :} |
+    expr10_bitwise_or BITWISEOR expr9_xor
+    ;
+expr9_xor ::=
+    expr8_bitwise_and:e  {: RESULT = e; :} |
+    expr9_xor XOR expr8_bitwise_and
+    ;
+expr8_bitwise_and ::=
+    expr7_equality:e  {: RESULT = e; :} |
+    expr8_bitwise_and BITWISEAND expr7_equality
+    ;
+expr7_equality ::=
+    expr7_equality:e1 EQUALEQUAL:op expr6_comparison:e2
+     {: RESULT = ArithmeticExpression.create(/*TODO*/e1, e2, opleft, opright); :} |
+    expr7_equality UNEQUAL expr6_comparison |
+    expr6_comparison:e  {: RESULT = e; :}
+    ;
+expr6_comparison ::=
+    expr6_comparison relational_operator expr5_shift |
+    expr5_shift:e  {: RESULT = e; :}
+    ;
+expr5_shift ::=
+    expr5_shift SHIFTLEFT expr4_addition |
+    expr5_shift SHIFTRIGHT expr4_addition |
+    expr4_addition:e  {: RESULT = e; :}
+    ;
+expr4_addition ::=
+    expr4_addition MINUS expr3_multiplication |
+    expr4_addition:e1 PLUS:op expr3_multiplication:e2 {: RESULT = ArithmeticExpression.create(/*TODO*/e1, e2, opleft, opright); :} |
+    expr4_addition CONCATENATE expr3_multiplication |
+    expr3_multiplication:e  {: RESULT = e; :}
+    ;
+expr3_multiplication ::=
+    expr3_multiplication TIMES expr2_prefix |
+    expr3_multiplication DIVIDE expr2_prefix |
+    expr3_multiplication MODULO expr2_prefix |
+    expr2_prefix:e  {: RESULT = e; :}
+    ;
+expr2_prefix ::=
+    INCREMENT expr2_prefix |
+    DECREMENT expr2_prefix |
+    LOGICALNEGATION expr2_prefix |
+    BITWISENEGATION expr2_prefix |
+    PLUS expr2_prefix |
+    MINUS expr2_prefix |
+    expr1_postfix:e  {: RESULT = e; :}
+    ;
+expr1_postfix ::=
+    expr0_simple:e  {: RESULT = e; :} |
+    expr1_subroutinegroup:id LPAR RPAR {: RESULT = CallExpression.create(id, null, null, idleft, idright, parser.compilation); :}  |
+    expr1_subroutinegroup:id LPAR expressions:args RPAR{: RESULT = CallExpression.create(id, null, args, idleft, idright, parser.compilation); :} |
+    expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR expressions:args RPAR
+     {: RESULT = CallExpression.create(id, targs, args, idleft, idright, parser.compilation); :}|
+    expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR RPAR
+    {: RESULT = CallExpression.create(id, targs, null, idleft, idright, parser.compilation); :}|
+    expr1_postfix PERIOD IDENTIFIER  /* Variable expression */
+    | expr1_postfix LBRACKET expression RBRACKET /* Variable expression */
+    | expr1_postfix INCREMENT
+    | expr1_postfix DECREMENT
+    ;
+
+expr1_subroutinegroup ::=
+    IDENTIFIER:id {: RESULT = SubroutineGroup.create(id, idleft, idright, parser.compilation); :} |
+    expr1_postfix:var PERIOD IDENTIFIER:id {: RESULT = SubroutineGroup.create(var, id, varleft, varright, parser.compilation); :}
+    ;
+expr0_simple ::=
+    LPAR expression:e RPAR {: RESULT = e; :}
+    | constant:e  {: RESULT = e; :}
+    | NEW IDENTIFIER LPAR RPAR
+    | IDENTIFIER:id {: RESULT = new VariableExpression(id, idleft, idright, parser.compilation); :}
+    ;

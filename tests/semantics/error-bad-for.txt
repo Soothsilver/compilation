@@ -1,0 +1,9 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+
+procedure main() {
+    for ( 2 ; 2 ; 2 ) {
+
+    }
+}

@@ -1,0 +1,6 @@
+procedure hello(a : integer) { }
+procedure hello(f : integer, b : integer) { }
+procedure main()
+{
+    hello();
+}

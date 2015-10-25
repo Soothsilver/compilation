@@ -1,0 +1,59 @@
+package compiler;
+
+import compiler.analysis.SubroutineGroup;
+import compiler.nodes.Node;
+import compiler.nodes.declarations.*;
+import compiler.nodes.statements.Statement;
+
+public class Environment {
+    private Compilation compilation;
+    public Environment(Compilation compilation) {
+        this.compilation = compilation;
+    }
+    // All "find" methods return null if they cannot find the thing specified.
+    // All "add" methods report an error if an attempt is made to add a thing that already exists (and in case of subroutines, is absolutely identical).
+    //  To report this error, use the Compilation class.
+
+    public TypeOrTypeTemplate findType(String identifier) {
+        // This means we don't support type overloading.
+        // i.e. this code is an error:
+        // class A { }
+        // class A<T> { }
+        return null;
+    }
+    public Variable findVariable(String identifier) {
+        return null;
+    }
+    public SubroutineGroup findSubroutines(String identifier) {
+        return null;
+    }
+    public void addSubroutine(Subroutine subroutine) {
+
+    }
+    public void addType(TypeOrTypeTemplate type) {
+
+    }
+    public void addVariable(Variable variable) {
+
+    }
+    public void enterFunction(String name) {
+        enterScope();
+        // Add parameters here
+    }
+    public void enterProcedure(String name) {
+        enterScope();
+        // Add parameters here
+    }
+    public void leaveSubroutine() {
+        leaveScope();
+    }
+    public void setSubroutineStatement(Statement statement) {
+
+    }
+    public void enterScope() {
+
+    }
+    public void leaveScope() {
+
+    }
+}

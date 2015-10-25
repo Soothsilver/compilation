@@ -1,0 +1,3 @@
+PROGRAM[
+procedure main() { stop; stop; stop; }
+]

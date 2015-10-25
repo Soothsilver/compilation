@@ -1,0 +1,9 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main()
+{
+    // First main
+}
+procedure main(argc : integer, argv : list of string)
+{
+    // Second main
+}

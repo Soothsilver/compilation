@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+procedure main()
+{
+    a : list of integer;
+    a[0][0] = "AN INTEGER IS NOT AN ARRAY.";
+}

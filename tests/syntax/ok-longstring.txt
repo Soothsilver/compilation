@@ -1,0 +1,6 @@
+procedure a ()
+{
+ b: string;
+ b = "a 
+ g";
+}
