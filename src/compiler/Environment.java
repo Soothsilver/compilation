@@ -6,9 +6,9 @@ import compiler.nodes.declarations.*;
 import compiler.nodes.statements.Statement;
 
 public class Environment {
-	boolean inProcedure = false;
-	boolean inFunction = false;
-	TypeOrTypeTemplate returnType = null;
+	public boolean inProcedure = false;
+	public boolean inFunction = false;
+	public TypeOrTypeTemplate returnType = null;
     private Compilation compilation;
     private ScopeTree<Subroutine> subroutineTable = null;
     private ScopeTree<Variable> variableTable = null;

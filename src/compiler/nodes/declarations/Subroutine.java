@@ -27,6 +27,7 @@ public class Subroutine extends Declaration {
         s.typeParameterNames = (typeParameters == null ? s.typeParameterNames : typeParameters);
         s.parameters = (parameters == null ? s.parameters : parameters);
         s.returnType = (returnType == null ? Type.voidType : returnType);
+        compilation.environment.returnType = s.returnType;
         compilation.environment.addSubroutine(s);
         compilation.environment.enterProcedure(name);
         return s;
