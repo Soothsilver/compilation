@@ -9,6 +9,7 @@ import compiler.generated.CompilerParser;
 import compiler.generated.CompilerSymbol;
 import compiler.nodes.*;
 import compiler.nodes.declarations.Subroutine;
+import compiler.nodes.declarations.SubroutineKind;
 import compiler.nodes.declarations.Type;
 import java_cup.runtime.*;
 
@@ -34,18 +35,27 @@ public class Compilation implements ErrorReporter {
         ProgramNode root = abstractSyntaxTree;
         // Final checks:
         // Is there a main procedure?
-        boolean mainFound = false;
-        if (root.Subroutines == null) return; // TODO debug only
-        for (Subroutine s : root.Subroutines) {
-            if (s == null) continue; // TODO debug only
-            if (Objects.equals(s.name, "main")) {
-                // TODO additional checks: is a procedure, has proper parameters
-                mainFound = true;
-            }
-        }
-        if (!mainFound) {
-            semanticError("The program does not contain the global procedure 'main'.");
-        }
+		int mainMethodsFound = 0;
+		for (Subroutine s : root.Subroutines) {
+			if (!s.name.equals("main")) continue;
+			if (s.kind == SubroutineKind.FUNCTION) continue;
+			if (s.typeParameterNames.size() != 0) continue;
+			switch (s.parameters.size())
+			{
+				case 0:
+					mainMethodsFound++;
+					break;
+				case 2:
+					if (s.parameters.get(0).type.equals(Type.integerType))
+						mainMethodsFound++; // TODO and the second type is "list of string"
+					break;
+			}
+		}
+		if (mainMethodsFound == 0) {
+			semanticError("The program does not contain the global procedure 'main'.");
+		} else if (mainMethodsFound > 1) {
+			semanticError("The program has more than one valid 'main' entry point.");
+		}
     }
 	
 	public boolean hasTestRunOkay() {
@@ -96,7 +106,7 @@ public class Compilation implements ErrorReporter {
 		}
 
 		// Start analysis
-		environment.addType(Type.integerType);
+		environment.addPredefinedTypesConstantsAndFunctions();
 	}
 
     public void semanticError(String message, int line, int column) {

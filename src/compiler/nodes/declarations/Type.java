@@ -21,21 +21,28 @@ public class Type extends TypeOrTypeTemplate {
     /**
      * BASIC TYPES
      */
-    public static Type errorType;
-    public static Type voidType;
-    public static Type booleanType;
-    public static Type integerType;
+    public static Type errorType =  Type.createPredefinedType("!error");
+    public static Type voidType = Type.createPredefinedType("!void");
+    public static Type booleanType = Type.createPredefinedType("boolean");
+    public static Type integerType = Type.createPredefinedType("integer");
+    public static Type stringType = Type.createPredefinedType("string");
+    public static Type characterType = Type.createPredefinedType("character");
+    public static Type floatType = Type.createPredefinedType("float");
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Type &&
+                name.equals(((Type)obj).name);
+    }
+
     public static Type getBooleanType() {
         return booleanType;
     }
+    public static Type createPredefinedType(String name) {
+        Type t = new Type();
+        t.name = name;
+        return t;
+    }
     static {
-        voidType = new Type();
-        voidType.name = "!void";
-        booleanType = new Type();
-        booleanType.name = "boolean";
-        errorType = new Type();
-        errorType.name = "!error";
-        integerType = new Type();
-        integerType.name = "integer";
     }
 }

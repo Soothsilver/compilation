@@ -1,7 +1,7 @@
 package compiler.nodes;
 
 public class ProgramNode extends Node {
-    public Subroutines Subroutines;
+    public Subroutines Subroutines = new Subroutines();
 
     @Override
     public String toString() {

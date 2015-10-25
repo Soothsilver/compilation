@@ -21,7 +21,8 @@ public class Environment {
         variableStack = new LinkedList<ScopeTree<Variable>>();
         typeStack = new LinkedList<ScopeTree<TypeOrTypeTemplate>>();
     }
-    // All "find" methods return null if they cannot find the thing specified.
+
+	// All "find" methods return null if they cannot find the thing specified.
     // All "add" methods report an error if an attempt is made to add a thing that already exists (and in case of subroutines, is absolutely identical).
     //  To report this error, use the Compilation class.
 
@@ -202,7 +203,14 @@ public class Environment {
     	typeTable = typeStack.removeFirst();
     }
 
+	public void addPredefinedTypesConstantsAndFunctions() {
+		addType(Type.integerType);
+		addType(Type.booleanType);
+		addType(Type.characterType);
+		addType(Type.floatType);
+		addType(Type.stringType);
+	}
 	private void debug(String line) {
-		System.out.println(line);
+		// System.out.println(line);
 	}
 }

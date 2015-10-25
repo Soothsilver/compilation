@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The type 'this_type_is_not_defined' could not be found.
 procedure main()
 {
     a : this_type_is_not_defined;
