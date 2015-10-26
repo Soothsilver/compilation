@@ -1,0 +1,7 @@
+//EXPECT-SEMANTICAL-ERROR: No subroutine with the name 'a' accepts arguments of the given types.
+procedure a(a : integer) { }
+
+procedure main()
+{
+    a(2.3);
+}

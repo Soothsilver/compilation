@@ -17,7 +17,9 @@ public abstract class LiteralExpression extends Expression {
 
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
-        // Ignore this call.
-        // Literal expressions are not vulnerable to overloading or inference. They only have one type.
+        if (!types.contains(this.type)) {
+            compilation.semanticError("A " + this.type.name + " cannot be converted to any of the following types: " + types, line, column);
+        }
+        // TODO but generics?
     }
 }

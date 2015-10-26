@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: Semantic error at line 4, column 5: There is no subroutine with the name 'main' at this point.
 procedure hello()
 {
     main();

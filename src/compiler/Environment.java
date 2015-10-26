@@ -25,6 +25,8 @@ public class Environment {
         typeStack = new LinkedList<ScopeTree<TypeOrTypeTemplate>>();
     }
 
+
+
 	// All "find" methods return null if they cannot find the thing specified.
     // All "add" methods report an error if an attempt is made to add a thing that already exists (and in case of subroutines, is absolutely identical).
     //  To report this error, use the Compilation class.
@@ -136,8 +138,7 @@ public class Environment {
     	else
     		return variableTable.find(identifier);
     }
-    
-    /* TODO : make this return a SubroutineGroup */
+
     public LinkedList<Subroutine> findSubroutines(String identifier) {
 		debug("ENV: Finding " + identifier + ".");
     	if (subroutineTable == null) {
@@ -188,7 +189,11 @@ public class Environment {
     	inFunction = inProcedure = false;
     	returnType = null;
         leaveScope();
+		leaveTypeScope();
     }
+
+
+
 	public int cycleDepth = 0;
 	public void enterCycle() {
 		cycleDepth++;
@@ -220,6 +225,21 @@ public class Environment {
     	typeTable = typeStack.removeFirst();
         debug("Leave scope.");
     }
+	public void enterTypeScope() {
+
+        ScopeTree<TypeOrTypeTemplate> typeTemp = typeTable;
+		typeStack.addFirst(typeTable);
+		depth++;
+		debug("Enter type scope.");
+
+	}
+	private void leaveTypeScope() {
+
+        depth--;
+		typeTable = typeStack.removeFirst();
+		debug("Leave type scope.");
+
+	}
 
 	public void addPredefinedTypesConstantsAndFunctions() {
 		addType(Type.integerType);
@@ -229,6 +249,6 @@ public class Environment {
 		addType(Type.stringType);
 	}
 	private void debug(String line) {
-		System.out.println(line);
+        //System.out.println(line);
 	}
 }

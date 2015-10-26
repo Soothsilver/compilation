@@ -10,16 +10,33 @@ public class Type extends TypeOrTypeTemplate {
     public boolean boundToNumeric;
     public boolean boundToReferenceType;
     public Type boundToSpecificType;
+    public boolean isReferenceType;
     // public String name; <-- inherited
     public Type copy() {
         Type clone = new Type();
         clone.name = this.name;
+        clone.isReferenceType = this.isReferenceType;
         clone.boundToNumeric = this.boundToNumeric;
         clone.boundToReferenceType = this.boundToReferenceType;
         clone.boundToSpecificType = this.boundToSpecificType;
         clone.kind = this.kind;
         clone.typeArguments = this.typeArguments; // TODO ATTENTION HERE!
         return clone;
+    }
+    public UnificationKind getUnificationKind() {
+        switch (kind) {
+            case ArrayType:
+            case GenericTypeInstance:
+                return UnificationKind.Structured;
+            case SimpleType:
+            case ClassTypeParameter:
+            case SubroutineTypeParameter:
+                return UnificationKind.Simple;
+            case TypeVariable:
+                return UnificationKind.Variable;
+
+        }
+        throw new EnumConstantNotPresentException(TypeKind.class, "kind");
     }
 
     public static Type findType(String identifier, int line, int column, Compilation compilation) {
@@ -68,16 +85,30 @@ public class Type extends TypeOrTypeTemplate {
         t.kind = TypeKind.TypeVariable;
         return t;
     }
+    public static Type createDebugStructure(String name) {
+        Type t = new Type();
+        t.name = name;
+        t.kind = TypeKind.SimpleType;
+        t.isReferenceType = true;
+        return t;
+    }
 
-    public static Type createSubroutineTypeVariable(String typename) {
+    public static Type createSubroutineTypeVariable(String typename, int line, int column) {
         Type t = new Type();
         t.name = typename;
+        t.line = line;
+        t.column = column;
         t.kind = TypeKind.SubroutineTypeParameter;
         return t;
     }
 
 
 
+    public static enum UnificationKind {
+        Variable,
+        Simple,
+        Structured
+    }
     public static enum TypeKind {
         ClassTypeParameter,
         SubroutineTypeParameter,

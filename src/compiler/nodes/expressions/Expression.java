@@ -34,13 +34,16 @@ public abstract class Expression extends Node {
         return new IntegerLiteralExpression(data, line, column, compilation);
     }
     public static Expression createFromConstant(Character data, int line, int column, Compilation compilation) {
-        return null;
+        return new CharacterLiteralExpression(data, line, column, compilation);
     }
     public static Expression createFromConstant(Float data, int line, int column, Compilation compilation) {
-        return null;
+        return new FloatLiteralExpression(data, line, column, compilation);
     }
     public static Expression createFromConstant(String data, int line, int column, Compilation compilation) {
         return new StringLiteralExpression(data, line, column, compilation);
+    }
+    public static Expression createFromConstant(Boolean data, int line, int column, Compilation compilation) {
+        return new BooleanLiteralExpression(data, line, column, compilation);
     }
 
     public abstract void propagateTypes(Set<Type> types, Compilation compilation);

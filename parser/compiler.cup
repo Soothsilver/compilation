@@ -64,7 +64,8 @@ terminal COLON, SEMICOLON, COMMA, PERIOD;
 terminal LEFTTYPEBRACKET, RIGHTTYPEBRACKET;
 
 terminal PROCEDURE, FUNCTION, LIST, OF, CLASS, STRUCTURE, TYPE, RETURN, STOP,
-	 BREAK, IF, ELSE, FOREACH, FOR, IN, WHILE, REPEAT, NEW;
+	 BREAK, IF, ELSE, FOREACH, FOR, IN, WHILE, REPEAT, NEW, NULL;
+terminal DEBUG_SPAWN_STRUCTURE;
 	 
 	 
 
@@ -77,14 +78,15 @@ terminal Integer INTEGER;
 terminal Float FLOAT;
 terminal Character CHARACTER;
 terminal String STRING;
+terminal Boolean BOOLEAN;
 
 
 /* -------------------------------------------------
         Non terminals 
    ------------------------------------------------- */
 non terminal program;
-non terminal global_declarations;
-non terminal global_declaration;
+non terminal Declarations global_declarations;
+non terminal Declaration global_declaration;
 non terminal type_declaration;
 non terminal variable_declaration;
 
@@ -98,7 +100,7 @@ non terminal ArrayList<Parameter> parameters;
 non terminal Parameter parameter;
 non terminal Subroutine procedure_name;
 non terminal Subroutine function_name;
-non terminal ArrayList<String> optional_subroutine_type_parameters;
+non terminal ArrayList<TypeParameter> optional_subroutine_type_parameters;
 non terminal ArrayList<Parameter> optional_parameters;
 
 non terminal Type type;
@@ -108,9 +110,9 @@ non terminal class_type;
 non terminal type_definition;
 non terminal type_instantiation;
 non terminal ArrayList<Type> type_arguments;
-non terminal ArrayList<String> type_parameters;
-non terminal ArrayList<String> subroutine_type_parameters;
-non terminal ArrayList<String> type_parameters_inner;
+non terminal ArrayList<TypeParameter> type_parameters;
+non terminal ArrayList<TypeParameter> subroutine_type_parameters;
+non terminal ArrayList<TypeParameter> type_parameters_inner;
 
 non terminal BlockStatement block;
 non terminal Statements statements;
@@ -150,19 +152,21 @@ start with program;
 
 
 
-program		    ::= global_declarations subroutines:s
+program		    ::= global_declarations:d subroutines:s
 					{:
 					    ProgramNode program = new ProgramNode();
+					    program.Declarations = d;
 					    program.Subroutines = s;
 					    parser.compilation.abstractSyntaxTree = program;
 					    parser.compilation.completeAnalysis(this.parser);
 					:}
 					|
-					global_declarations
+					global_declarations:d
 					{:
 					    // This is only useful for syntax tests, because it will always fail in semantic analysis
 					    // due to not having a "main" procedure. But for syntax tests, it is useful.
 					    parser.compilation.abstractSyntaxTree = new ProgramNode();
+					    parser.compilation.abstractSyntaxTree.Declarations = d;
 					    parser.compilation.completeAnalysis(this.parser);
 					:}
 					;
@@ -206,8 +210,12 @@ function        ::= function_header:h block:b {:
 
 procedure_header ::= PROCEDURE procedure_name:subroutine optional_subroutine_type_parameters:tp LPAR optional_parameters:ps RPAR
                     {:
-                        subroutine.typeParameterNames = (tp == null ? new ArrayList<String>() : tp);
+                        subroutine.setTypeParameters  (tp == null ? new ArrayList<TypeParameter>() : tp);
                         subroutine.parameters = (ps == null ? new ArrayList<Parameter>() : ps);
+                        subroutine.returnType = Type.voidType;
+                        getEnvironment().returnType = subroutine.returnType;
+                        getEnvironment().addSubroutine(subroutine);
+                        getEnvironment().enterProcedure();
                         RESULT = subroutine;
                     :}
                     ;
@@ -220,7 +228,8 @@ optional_parameters ::=  {: RESULT = new ArrayList<>(); :}
                     ;
 function_header ::= FUNCTION function_name:subroutine optional_subroutine_type_parameters:tp LPAR optional_parameters:ps RPAR COLON type:t
                     {:
-                         subroutine.typeParameterNames = (tp == null ? new ArrayList<String>() : tp);
+
+                         subroutine.setTypeParameters  (tp == null ? new ArrayList<TypeParameter>() : tp);
                          subroutine.parameters = (ps == null ? new ArrayList<Parameter>() : ps);
                          subroutine.returnType = t;
                          getEnvironment().returnType = t;
@@ -352,18 +361,21 @@ subroutine_type_parameters ::= type_parameters_inner:tpi
 type_parameters ::= type_parameters_inner:tpi {: RESULT = tpi; :};
 type_parameters_inner ::=
     IDENTIFIER:id
-     {: RESULT = new ArrayList<>(); RESULT.add(id); /*TODO should be types rather than strings, maybe? */ :}
+     {: RESULT = new ArrayList<>(); RESULT.add(new TypeParameter(id, idleft, idright)); /*TODO should be types rather than strings, maybe? */ :}
      |
     type_parameters_inner:tp COMMA IDENTIFIER:id
-    {: tp.add(id); RESULT = tp; :}
+    {: tp.add(new TypeParameter(id, idleft, idright)); RESULT = tp; :}
     ;
 
 /* -------------------------------------------------
         Declarations
    ------------------------------------------------- */
-global_declarations     	   ::= global_declarations global_declaration | ;
+global_declarations     	  ::=
+               global_declarations:gds global_declaration:gd {: gds.add(gd); RESULT = gds; :}
+               | {: RESULT = new Declarations(); :};
 global_declaration            ::=
-	type_declaration | 
+	type_declaration |
+	DEBUG_SPAWN_STRUCTURE IDENTIFIER:id {: Type theStructure = Type.createDebugStructure(id); getEnvironment().addType(theStructure); RESULT = theStructure; :} SEMICOLON |
 	variable_declaration |
 	error SEMICOLON 
 	{:
@@ -392,15 +404,6 @@ expressions	       ::=
     expression:ex {: RESULT = new Expressions(); RESULT.add(ex); :}
     | expressions:exs COMMA expression:ex {: exs.add(ex); RESULT = exs; :}
     ;
-constant	       ::=
-                    INTEGER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
-                    FLOAT:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
-                    STRING:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
-                    CHARACTER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
-                    new_list;
-new_list	       ::= LBRACKET expressions RBRACKET
-		             | NEW IDENTIFIER LBRACKET INTEGER RBRACKET
-		             ;
 assignment_operator ::=
     UNARYPLUS | UNARYMINUS | UNARYTIMES | UNARYDIVIDE |
     UNARYMODULO | UNARYSHIFTLEFT | UNARYSHIFTRIGHT |
@@ -496,4 +499,16 @@ expr0_simple ::=
     | constant:e  {: RESULT = e; :}
     | NEW IDENTIFIER LPAR RPAR
     | IDENTIFIER:id {: RESULT = new VariableExpression(id, idleft, idright, parser.compilation); :}
+    | NULL
     ;
+
+constant	       ::=
+                    INTEGER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    FLOAT:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    STRING:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    CHARACTER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    BOOLEAN:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    new_list;
+new_list	       ::= LBRACKET expressions RBRACKET
+                     | NEW IDENTIFIER LBRACKET INTEGER RBRACKET
+                     ;

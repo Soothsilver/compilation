@@ -10,6 +10,7 @@ public class SubroutineToken {
     public ArrayList<Type> types; // Type arguments
     public boolean inferred;
     public int badness = 0;
+    public Types formalTypes;
 
     @Override
     public String toString() {

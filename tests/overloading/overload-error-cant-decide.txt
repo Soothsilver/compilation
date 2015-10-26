@@ -1,3 +1,4 @@
+//EXPECT-SEMANTICAL-ERROR: The call is ambiguous between the following subroutines
 procedure a(a : float, b : integer) { }
 procedure a(a : integer, b : float) { }
 

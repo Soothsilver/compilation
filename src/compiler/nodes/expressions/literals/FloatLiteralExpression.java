@@ -5,18 +5,20 @@ import compiler.nodes.declarations.Type;
 
 import java.util.Set;
 
-public class StringLiteralExpression extends LiteralExpression {
-    String data;
+public class FloatLiteralExpression extends LiteralExpression {
+    float data;
 
-    public StringLiteralExpression(String data, int line, int column, Compilation compilation) {
+    public FloatLiteralExpression(float data, int line, int column, Compilation compilation) {
         super(line, column, compilation);
         this.data = data;
-        this.type = Type.stringType;
+        this.type = Type.floatType;
         this.possibleTypes.add(this.type);
     }
 
     @Override
     public String toString() {
-        return "\"" + data + "\"";
+        return Float.toString(data);
     }
+
+
 }

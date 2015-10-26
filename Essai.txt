@@ -1,6 +1,15 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-function hello() : integer { }
-function hello() : integer { }
-procedure main() {
+//EXPECT-SEMANTICAL-ERROR: TO BE DEFINED
 
+
+ debug_spawn_structure s;
+ debug_spawn_structure t;
+
+/*
+ procedure a(a : s, b : s) { }
+ procedure a(a : t, b : t) { }
+*/
+
+procedure main()
+{
+    a(null, null);
 }

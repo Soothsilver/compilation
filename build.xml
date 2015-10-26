@@ -134,8 +134,8 @@
  <!-- =================================
       target: test
       ================================= -->
-    <target name="test" depends="syntax-tests, semantics-tests"
-        description="Runs all tests. So far, it only runs lexical, syntax and semantics tests.">
+    <target name="test" depends="syntax-tests, semantics-tests, overload-tests"
+        description="Runs all tests. So far, it only runs lexical, syntax, semantic and overloading tests.">
         <!-- This target is required by assignment. -->
     </target>
     
@@ -154,7 +154,7 @@
  <!-- =================================
       target: rebuild-all
       ================================= -->
-    <target name="rebuild-all" depends="clean, syntax-tests" 
+    <target name="rebuild-all" depends="clean, test"
         description="Destroys all generated files, then runs syntax tests.">
     </target>
 </project>

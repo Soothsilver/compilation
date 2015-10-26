@@ -13,6 +13,7 @@ public class Subroutine extends Declaration {
     public List<String> typeParameterNames = new ArrayList<>();
     public List<Parameter> parameters = new ArrayList<>();
     public Type returnType;
+    private static Subroutine constructingWhatSubroutine = null;
 
     public static boolean typeParametersEntered = false;
     public static Subroutine create(SubroutineKind kind,
@@ -32,17 +33,20 @@ public class Subroutine extends Declaration {
         s.typeParameterNames = (typeParameters == null ? s.typeParameterNames : typeParameters);
         s.parameters = (parameters == null ? s.parameters : parameters);
         s.returnType = (returnType == null ? Type.voidType : returnType);
-        if (kind == SubroutineKind.PROCEDURE) {
-            compilation.environment.returnType = s.returnType;
-            compilation.environment.addSubroutine(s);
-            compilation.environment.enterProcedure();
-        }
+        constructingWhatSubroutine = s;
+        compilation.environment.enterTypeScope();
         return s;
     }
-    public static void enterTypeParameters(ArrayList<String> typeParameters, Compilation compilation) {
+    public void setTypeParameters(ArrayList<TypeParameter> typeParameters) {
+        this.typeParameterNames = new ArrayList<>();
+        for(TypeParameter parameter : typeParameters) {
+            this.typeParameterNames.add(parameter.name);
+        }
+    }
+    public static void enterTypeParameters(ArrayList<TypeParameter> typeParameters, Compilation compilation) {
         typeParametersEntered = true;
-        for (String typename : typeParameters) {
-            Type subroutineTypeVariable = Type.createSubroutineTypeVariable(typename);
+        for (TypeParameter typename : typeParameters) {
+            Type subroutineTypeVariable = Type.createSubroutineTypeVariable(typename.name, typename.line, typename.column);
             compilation.environment.addType(subroutineTypeVariable);
         }
     }

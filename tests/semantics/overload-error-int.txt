@@ -1,7 +1,0 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-procedure a(a : integer) { }
-
-procedure main()
-{
-    a(2.3);
-}

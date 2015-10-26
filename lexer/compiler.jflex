@@ -114,6 +114,10 @@ float 		= [0-9]*\.[0-9]+(e-?[0-9]+)? | [0-9]+\.[0-9]*(e-?[0-9]+)?
 "while"       { return symbol(CompilerSymbol.WHILE); }
 "repeat"      { return symbol(CompilerSymbol.REPEAT); }
 "new"         { return symbol(CompilerSymbol.NEW); }
+"null"        { return symbol(CompilerSymbol.NULL); }
+"true"        { return symbol(CompilerSymbol.BOOLEAN, true); }
+"false"       { return symbol(CompilerSymbol.BOOLEAN, false); }
+"debug_spawn_structure" { return symbol(CompilerSymbol.DEBUG_SPAWN_STRUCTURE); }
 
 /* -------------------------------------------------
         Identifier (must be after keywords) 
@@ -135,6 +139,7 @@ float 		= [0-9]*\.[0-9]+(e-?[0-9]+)? | [0-9]+\.[0-9]*(e-?[0-9]+)?
    compilation.lexicalError("End of file reached while parsing a multiline comment. You forgot to close it with '*/'.", yyline, yycolumn);
  }
  . { /* do nothing */ }
+ "\n" { /* do nothing */ }
 }
 
 /* -------------------------------------------------

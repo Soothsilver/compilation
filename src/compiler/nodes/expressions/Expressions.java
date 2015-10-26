@@ -13,9 +13,10 @@ public class Expressions extends ArrayList<Expression> {
 
     public ArrayList<Types> getTypeCombinations() {
         ArrayList<Types> combinations = new ArrayList<>();
-        if (this.size() == 0)
+        if (this.size() == 0) {
+            combinations.add(new Types());
             return combinations;
-        else {
+        } else {
             formTypeCombinations(0, new Types(), combinations);
             return combinations;
         }

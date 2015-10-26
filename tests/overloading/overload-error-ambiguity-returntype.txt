@@ -1,12 +1,10 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The call is ambiguous between the following subroutines
 function get() : integer { return 1; }
 function get() : string { return "a"; }
 function get() : float { return 2.0; }
 function get() : boolean { return true; }
-procedure set(f : float) { }
-procedure set(s : string) { }
 
 procedure main()
 {
-   set(get());
+   get();
 }
