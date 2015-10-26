@@ -82,26 +82,24 @@ public class Compilation implements ErrorReporter {
 	}
 
 	public Compilation(File source) {
-		List<String> lines = null;
-		try {
-			lines = java.nio.file.Files.readAllLines(source.toPath());
-		} catch (IOException e) {
-			// Ignore
-		}
-        assert lines != null;
-        for (String line : lines)
-		{
-			if (line.startsWith("//EXPECT-LEXICAL-ERROR:"))
-			{
-				errorsExpected.add(line.substring("//EXPECT-LEXICAL-ERROR:".length()).trim());
+		if (source != null) {
+			List<String> lines = null;
+			try {
+				lines = java.nio.file.Files.readAllLines(source.toPath());
+			} catch (IOException e) {
+				// Ignore
 			}
-			if (line.startsWith("//EXPECT-SYNTAX-ERROR:"))
-			{
-				errorsExpected.add(line.substring("//EXPECT-SYNTAX-ERROR:".length()).trim());
-			}
-			if (line.startsWith("//EXPECT-SEMANTICAL-ERROR:"))
-			{
-				errorsExpected.add(line.substring("//EXPECT-SEMANTICAL-ERROR:".length()).trim());
+			assert lines != null;
+			for (String line : lines) {
+				if (line.startsWith("//EXPECT-LEXICAL-ERROR:")) {
+					errorsExpected.add(line.substring("//EXPECT-LEXICAL-ERROR:".length()).trim());
+				}
+				if (line.startsWith("//EXPECT-SYNTAX-ERROR:")) {
+					errorsExpected.add(line.substring("//EXPECT-SYNTAX-ERROR:".length()).trim());
+				}
+				if (line.startsWith("//EXPECT-SEMANTICAL-ERROR:")) {
+					errorsExpected.add(line.substring("//EXPECT-SEMANTICAL-ERROR:".length()).trim());
+				}
 			}
 		}
 

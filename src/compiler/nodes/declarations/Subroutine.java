@@ -14,6 +14,7 @@ public class Subroutine extends Declaration {
     public List<Parameter> parameters = new ArrayList<>();
     public Type returnType;
 
+    public static boolean typeParametersEntered = false;
     public static Subroutine create(SubroutineKind kind,
                                     String name,
                                     ArrayList<String> typeParameters,
@@ -29,20 +30,24 @@ public class Subroutine extends Declaration {
         s.returnType = (returnType == null ? Type.voidType : returnType);
         compilation.environment.returnType = s.returnType;
         compilation.environment.addSubroutine(s);
-        compilation.environment.enterProcedure(name);
+        if (kind == SubroutineKind.FUNCTION) {
+            compilation.environment.enterFunction();
+        } else {
+            compilation.environment.enterProcedure();
+        }
         return s;
     }
+    public static void enterTypeParameters(ArrayList<String> typeParameters, Compilation compilation) {
+        typeParametersEntered = true;
+        for (String typename : typeParameters) {
+            Type subroutineTypeVariable = Type.createSubroutineTypeVariable(typename);
+            compilation.environment.addType(subroutineTypeVariable);
+        }
+    }
+    public static void leaveTypeParameters(Compilation compilation) {
+        typeParametersEntered = false;
+    }
 
-    /*
-                        // TODO check that the name does not already exist
-                        // TODO add generics
-                        // TODO add parameters
-                        /*
-                        getEnvironment().enterProcedure(name);
-                        Subroutine s = new Subroutine();
-                        s.name = name;
-                        RESULT = s;
-                        */
 
     @Override
     public String getSig() {
@@ -68,19 +73,23 @@ public class Subroutine extends Declaration {
             }
             signature += "]]";
         }
-        signature+= "(";
+        signature+=  callsite ? "[" : "(";
         for (int i = 0; i < parameters.size(); i++) {
             Parameter param = parameters.get(i);
-            if (forSymbolTables) {
+            if (callsite) {
                 signature += param.type;
             } else {
-                signature += param.name + ":" + param.type; // TODO type variables
+                if (forSymbolTables) {
+                    signature += param.type;
+                } else {
+                    signature += param.name + ":" + param.type; // TODO type variables
+                }
             }
             if (i != parameters.size() - 1) {
                 signature += ",";
             }
         }
-        signature += ")";
+        signature += callsite ? "]" : ")";
         if (kind == SubroutineKind.FUNCTION) {
             signature += ":";
             signature += returnType; // TODO type variables

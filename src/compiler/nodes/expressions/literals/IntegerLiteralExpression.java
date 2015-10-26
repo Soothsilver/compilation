@@ -16,5 +16,8 @@ public class IntegerLiteralExpression extends LiteralExpression {
         this.possibleTypes.add(this.type);
     }
 
-
+    @Override
+    public String toString() {
+        return Integer.toString(data);
+    }
 }

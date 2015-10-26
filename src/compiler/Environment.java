@@ -96,7 +96,6 @@ public class Environment {
         }
         
         public ScopeTree<T> add (T decl, ScopeTree<T> tree) {
-			// TODO Petr Hudecek, continue debugging here
 			debug("Adding " + (decl == null ? "null" : decl) + " to " + (tree == null ? "null" : tree.decl) + ", this is " + (decl == null ? "null" : decl));
         	if (tree == null)
         		return new ScopeTree<T>(decl);
@@ -105,7 +104,7 @@ public class Environment {
 				return new ScopeTree<T>(left, right, decl, depth);
 			}
         	else if (decl.getSig().compareTo(this.decl.getSig()) == 0) {
-        		compilation.semanticError(this.decl.getSig() + " is already defined.");
+        		compilation.semanticError("The symbol " + decl.getSig() + " was already defined at line " + this.decl.line + ", column " + this.decl.column + ".", decl.line, decl.column);
         		return tree;
         	}
         	else if (decl.getSig().compareTo(this.decl.getSig()) < 0)
@@ -175,12 +174,12 @@ public class Environment {
     
     
     /* TODO */
-    public void enterFunction(String name) {
+    public void enterFunction() {
     	inFunction = true;
         enterScope();
         // Add parameters here
     }
-    public void enterProcedure(String name) {
+    public void enterProcedure() {
     	inProcedure = true;
         enterScope();
         // Add parameters here

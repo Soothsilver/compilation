@@ -4,6 +4,8 @@ import compiler.nodes.Node;
 
 public abstract class Declaration extends Node {
     public String name = "!UNNAMED";
+
+
     public final String getId() {
         return name;
     }

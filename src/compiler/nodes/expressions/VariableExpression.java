@@ -18,7 +18,6 @@ public class VariableExpression extends Expression {
         this.column = column;
         variable =  compilation.environment.findVariable(identifier);
         if (variable == null) {
-            // TODO elsewhere: if something is already defined, report the line and column of the new definition
             compilation.semanticError("The variable '" + identifier + "' is not defined in this scope.", line, column);
             this.possibleTypes.add(Type.errorType);
             this.type = Type.errorType;

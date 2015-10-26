@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: No subroutine with the name 'hello' accepts arguments of the given types.
+procedure hello(a : integer, b : string) { }
+procedure main()
+{
+    hello(5,4);
+}

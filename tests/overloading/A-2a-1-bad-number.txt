@@ -1,4 +1,4 @@
-//EXPECT-SEMANTIAL-ERROR: No overload of the
+//EXPECT-SEMANTICAL-ERROR: No overload of the
 procedure hello(a : integer) { }
 procedure main()
 {

@@ -96,6 +96,9 @@ non terminal Subroutine procedure_header;
 non terminal Subroutine function_header;
 non terminal ArrayList<Parameter> parameters;
 non terminal Parameter parameter;
+non terminal Subroutine procedure_name;
+non terminal ArrayList<String> optional_subroutine_type_parameters;
+non terminal ArrayList<Parameter> optional_parameters;
 
 non terminal Type type;
 non terminal list_type;
@@ -105,6 +108,8 @@ non terminal type_definition;
 non terminal type_instantiation;
 non terminal ArrayList<Type> type_arguments;
 non terminal ArrayList<String> type_parameters;
+non terminal ArrayList<String> subroutine_type_parameters;
+non terminal ArrayList<String> type_parameters_inner;
 
 non terminal BlockStatement block;
 non terminal Statements statements;
@@ -180,68 +185,44 @@ subroutine      ::= function:f
                     ;
 procedure       ::= procedure_header:p block:b {:
                         getEnvironment().leaveSubroutine();
+                        if (Subroutine.typeParametersEntered) {
+                            Subroutine.leaveTypeParameters(parser.compilation);
+                        }
                         p.block = b;
                         RESULT = p;
                     :};
 function        ::= function_header:h block:b {:
                         getEnvironment().leaveSubroutine();
+                        if (Subroutine.typeParametersEntered) {
+                            Subroutine.leaveTypeParameters(parser.compilation);
+                        }
                         h.block = b;
                         RESULT = h;
                     :};
-procedure_header    ::= PROCEDURE IDENTIFIER:name LPAR parameters:ps RPAR
+
+procedure_header ::= PROCEDURE procedure_name:subroutine optional_subroutine_type_parameters:tp LPAR optional_parameters:ps RPAR
                     {:
-                        RESULT = Subroutine.create(
-                            SubroutineKind.PROCEDURE,
-                            name,
-                            null,
-                            ps,
-                            null,
-                            parser.compilation
-                            );
-                    :} |
-                    PROCEDURE IDENTIFIER:name LPAR RPAR
-                    {:
-                           RESULT = Subroutine.create(
-                                                     SubroutineKind.PROCEDURE,
-                                                     name,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     parser.compilation
-                                                     );
-                    :} |
-                    PROCEDURE IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR parameters:ps RPAR
-                    {:
-                        RESULT = Subroutine.create(
-                                                  SubroutineKind.PROCEDURE,
-                                                  name,
-                                                  tp,
-                                                  ps,
-                                                  null,
-                                                  parser.compilation
-                                                  );
-                    :}
-                    |
-                    PROCEDURE IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR RPAR
-                    {:
-                         RESULT = Subroutine.create(
-                                                   SubroutineKind.PROCEDURE,
-                                                   name,
-                                                   tp,
-                                                   null,
-                                                   null,
-                                                   parser.compilation
-                                                   );
+                        subroutine.typeParameterNames = (tp == null ? new ArrayList<String>() : tp);
+                        subroutine.parameters = (ps == null ? new ArrayList<Parameter>() : ps);
+                        RESULT = subroutine;
                     :}
                     ;
+procedure_name ::= IDENTIFIER : name {: RESULT = Subroutine.create(SubroutineKind.PROCEDURE, name, null, null, null, parser.compilation); :} ;
+optional_subroutine_type_parameters ::=  {: RESULT = new ArrayList<>(); :}
+                    | LEFTTYPEBRACKET subroutine_type_parameters:ps RIGHTTYPEBRACKET {: RESULT = ps; :}
+                    ;
+optional_parameters ::=  {: RESULT = new ArrayList<>(); :}
+                    | parameters:ps {: RESULT = ps; :}
+                    ;
+                    /* TODO MODIFY FUNCTION TO FOLLOW PROCEDURE'S SUIT */
 function_header        ::=
                     FUNCTION IDENTIFIER:name LPAR parameters:ps RPAR COLON type:t
                     {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, ps, t, parser.compilation); :}
 				  | FUNCTION IDENTIFIER:name LPAR RPAR COLON type:t
                     {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, null, t, parser.compilation); :}
-				  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR parameters:ps RPAR COLON type:t
+				  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET subroutine_type_parameters:tp RIGHTTYPEBRACKET LPAR parameters:ps RPAR COLON type:t
                     {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, tp, ps, t, parser.compilation); :}
-                  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET type_parameters:tp RIGHTTYPEBRACKET LPAR RPAR COLON type:t
+                  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET subroutine_type_parameters:tp RIGHTTYPEBRACKET LPAR RPAR COLON type:t
                     {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, tp, null, t, parser.compilation); :}
                   ;
 
@@ -350,12 +331,19 @@ class_type	::= CLASS LBRACE local_declarations subroutines RBRACE
             | CLASS LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations subroutines RBRACE
             ;
 type_instantiation ::= IDENTIFIER LEFTTYPEBRACKET type_arguments RIGHTTYPEBRACKET;
-type_arguments ::= type | type_arguments COMMA type;
-type_parameters ::=
+type_arguments ::=
+    type:tp {: RESULT = new ArrayList<>(); RESULT.add(tp); :}
+    | type_arguments:tas COMMA type:tp {: tas.add(tp); RESULT = tas; :}
+    ;
+subroutine_type_parameters ::= type_parameters_inner:tpi
+    {: Subroutine.enterTypeParameters(tpi, parser.compilation); RESULT = tpi; :}
+    ;
+type_parameters ::= type_parameters_inner:tpi {: RESULT = tpi; :};
+type_parameters_inner ::=
     IDENTIFIER:id
-     {: RESULT = new ArrayList<>(); RESULT.add(id); /*TODO should be types rather than strings, I think */ :}
+     {: RESULT = new ArrayList<>(); RESULT.add(id); /*TODO should be types rather than strings, maybe? */ :}
      |
-    type_parameters:tp COMMA IDENTIFIER:id
+    type_parameters_inner:tp COMMA IDENTIFIER:id
     {: tp.add(id); RESULT = tp; :}
     ;
 

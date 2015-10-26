@@ -6,14 +6,14 @@ import compiler.nodes.declarations.Subroutine;
 import compiler.nodes.declarations.Type;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class CallExpression extends Expression {
     public SubroutineGroup group;
     public Expressions arguments;
-    public ArrayList<InferredSubroutine> inferredSubroutines = new ArrayList<>();
-    public InferredSubroutine callee;
+    public ArrayList<Type> typeArguments = null;
+    public ArrayList<SubroutineToken> subroutineTokens = new ArrayList<>();
+    public SubroutineToken callee;
 
     public static CallExpression create(
             SubroutineGroup subroutineGroup,
@@ -27,6 +27,7 @@ public class CallExpression extends Expression {
         ex.group = subroutineGroup;
         ex.line = line;
         ex.arguments = arguments;
+        ex.typeArguments = typeArguments;
         if (arguments == null) { ex.arguments = new Expressions(); }
         ex.kind = ExpressionKind.Subroutine;
         ex.column = column;
@@ -44,7 +45,9 @@ public class CallExpression extends Expression {
         if (callee == null) {
             return "UNRESOLVED-CALL";
         } else {
-            return callee.subroutine.getSignature(false, true); // TODO plus arguments
+            Subroutine sub = callee.subroutine;
+            String callstring = sub.getSignature(false, true) + "(" + arguments.toWithoutBracketsString() + ")";
+            return callstring;
         }
     }
 }
