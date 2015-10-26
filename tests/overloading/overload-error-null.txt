@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO BE DEFINED
+//EXPECT-SEMANTICAL-ERROR: The call is ambiguous between the following subroutines
 debug_spawn_structure s;
 debug_spawn_structure t;
 procedure a(a : s, b : s) { }

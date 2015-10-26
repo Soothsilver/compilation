@@ -4,10 +4,10 @@
  debug_spawn_structure s;
  debug_spawn_structure t;
 
-/*
+
  procedure a(a : s, b : s) { }
  procedure a(a : t, b : t) { }
-*/
+
 
 procedure main()
 {

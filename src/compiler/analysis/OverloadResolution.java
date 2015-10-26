@@ -127,7 +127,7 @@ public final class OverloadResolution {
                     case Simple:
                         return unifySimpleTypes(formal, actual, badness);
                     case Structured:
-                        return false;
+                        return false; // TODO but null!
                     case Variable:
                         return unifyVariableWithSomething(actual, formal);
                 }
@@ -135,7 +135,7 @@ public final class OverloadResolution {
             case Structured:
                 switch (secondKind) {
                     case Simple:
-                        return false;
+                        return false; // TODO but null!
                     case Structured:
                         return formal.name.equals(actual.name); // TODO and compare daughter types
                     case Variable:
@@ -154,14 +154,16 @@ public final class OverloadResolution {
             badness.value++;
             return true;
         }
+        // 4.2.2.2 Unifying a null with a structured type or a class type succeeds.
+        if (formal.isReferenceType && actual.equals(Type.nullType)) {
+            return true;
+        }
+        //4.2.2.3 Unifying a null with anything except structured type, class type or class variable fails.
         return false;
     }
 
     private static boolean unifyVariableWithSomething(Type variable, Type type) {
-        // These are the cave-ats:
         //4.2.2.1 Unifying a null with a type variable puts the constraint "must be an object" on the variable.
-        //4.2.2.2 Unifying a null with a structured type or a class type succeeds.
-        //4.2.2.3 Unifying a null with anything else fails.
         //4.2.2.4 Unifying an integer with a type variable only puts the constraint "must be an integer or float" on the variable.
         //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is a null, a structured type, a class or another variable that is not under the constraint "must be an integer or float".
         //4.2.2.6 Unifying a variable that is under the constraint "must be an integer or float" can only succeed if the other part is an integer, a float or a type variable not under the constraint "must be an object".
@@ -195,40 +197,6 @@ public final class OverloadResolution {
             }
         }
         return true;
-        /*
-        Type firstFormal = formal.get(0);
-        Type firstActual = actual.get(0);
-        Substitution firstUnification = unify(firstFormal, firstActual);
-        if (firstUnification == null) return null;*/
-
-        /*function unify(E1, E2);
-    begin
-        case
-            both E1 and E2 are constants or the empty list:
-                if E1 = E2 then return {}
-                else return FAIL;
-            E1 is a variable:
-                if E1 occurs in E2 then return FAIL
-                 else return {E2/E1}
-            E2 is a variable
-                if E2 occurs in E1 then FAIL
-                    else return {E1/E2}
-            either E1 or E2 are empty then return FAIL
-            otherwise:
-                begin
-                    HE1 := first element of E1;
-                    HE2 := first element of E2;
-                    SUBS1 := unify(HE1, HE2);
-                    if SUBS1 := FAIL then return FAIL;
-                    TE1 := apply(SUBS1, rest of E1);
-                    TE2 := apply(SUBS1, rest of E2);
-                    SUBS2 := unify(TE1, TE2);
-                    if SUBS2 = FAIL then return FAIL;
-                         else return composition(SUBS1, SUBS2)
-                end
-            end
-        end
-        */
     }
 
     public static void phaseTwo(CallExpression call, Set<Type> returnTypes, Compilation compilation) {

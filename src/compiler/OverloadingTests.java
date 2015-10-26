@@ -11,7 +11,8 @@ import java.nio.file.Paths;
 public class OverloadingTests {
 	public static void main(String[] args) {
 		System.out.println("Running overloading tests:");
-		File dir = new File("overloading-tests");
+		File dir = new File("tests");
+		dir = new File(dir, "overloading");
 		File[] listing = dir.listFiles();
 		int testno = 0;
 		int successfulTests = 0;

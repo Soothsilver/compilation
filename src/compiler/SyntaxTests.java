@@ -10,7 +10,8 @@ import java.io.FileReader;
 public class SyntaxTests {
 	public static void main(String[] args) {
 		System.out.println("Running syntax tests:");
-		File dir = new File("syntax-tests");
+		File dir = new File("tests");
+		dir = new File(dir, "syntax");
 		File[] listing = dir.listFiles();
 		int testno = 0;
         int successfulTests = 0;

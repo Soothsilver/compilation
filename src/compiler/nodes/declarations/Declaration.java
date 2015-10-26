@@ -13,4 +13,8 @@ public abstract class Declaration extends Node {
         // This should be overriden for subroutines.
         return name;
     }
+
+    public String getFullString() {
+        return name;
+    }
 }

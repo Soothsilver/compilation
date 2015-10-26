@@ -27,6 +27,7 @@ public class Expressions extends ArrayList<Expression> {
             combinations.add(leftTypes);
             return;
         }
+        // debug: System.out.println("Expression " + index + ": " + this.get(index));
         for(Type expressionType : this.get(index).possibleTypes) {
             Types types = new Types();
             for (Type type : leftTypes) {

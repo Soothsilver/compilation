@@ -57,6 +57,7 @@ public class Type extends TypeOrTypeTemplate {
      * BASIC TYPES
      */
     public static Type errorType =  Type.createPredefinedType("!error");
+    public static Type nullType =  Type.createPredefinedType("!null");
     public static Type voidType = Type.createPredefinedType("!void");
     public static Type booleanType = Type.createPredefinedType("boolean");
     public static Type integerType = Type.createPredefinedType("integer");
@@ -102,7 +103,10 @@ public class Type extends TypeOrTypeTemplate {
         return t;
     }
 
-
+    @Override
+    public String getFullString() {
+        return "type " + name + " = structure {};";
+    }
 
     public static enum UnificationKind {
         Variable,

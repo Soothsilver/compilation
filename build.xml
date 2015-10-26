@@ -7,9 +7,8 @@
   <property name="bin.dir" location="bin" />
   <property name="parser.dir" location="parser" />
   <property name="lexer.dir" location="lexer" />
-  <property name="tests.syntax.dir" location="tests/syntax" />
-  <property name="tests.semantics.dir" location="tests/semantics" />
-    <property name="tests.overloading.dir" location="tests/overloading" />
+  <property name="tests.dir" location="tests" />
+  <property name="tests.bin.dir" location="${bin.dir}/tests" />
 
     <path id="master-classpath">
         <fileset dir="${lib.dir}">
@@ -31,9 +30,6 @@
        ================================= -->
   <target name="syntax-tests" depends="parser, lexer, compile-all"
       description="Creates the compiler and runs it against all tests in the directory tests/syntax.">
-	  <copy todir="${bin.dir}/syntax-tests">
-	      <fileset dir="${tests.syntax.dir}" />
-	  </copy>
 	  <java 
 	    fork = "true"
 	    dir = "${bin.dir}"
@@ -47,9 +43,6 @@
        ================================= -->
     <target name="semantics-tests" depends="parser, lexer, compile-all"
             description="Creates the compiler and runs it against all tests in the directory tests/syntax.">
-        <copy todir="${bin.dir}/semantics-tests">
-            <fileset dir="${tests.semantics.dir}" />
-        </copy>
         <java
                 fork = "true"
                 dir = "${bin.dir}"
@@ -63,9 +56,6 @@
       ================================= -->
     <target name="overload-tests" depends="parser, lexer, compile-all"
             description="Creates the compiler and runs it against all tests in the directory tests/overloading.">
-        <copy todir="${bin.dir}/overloading-tests">
-            <fileset dir="${tests.overloading.dir}" />
-        </copy>
         <java
             fork = "true"
             dir = "${bin.dir}"
@@ -98,6 +88,9 @@
 	debug="on">
         <classpath refid="master-classpath"/>
     </javac>
+      <copy todir="${tests.bin.dir}">
+          <fileset dir="${tests.dir}" />
+      </copy>
   </target>
   
   <!-- =================================

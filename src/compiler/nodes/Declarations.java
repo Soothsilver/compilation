@@ -11,7 +11,7 @@ public class Declarations extends ArrayList<Declaration> {
     public String toString() {
         String res = "";
         for (Declaration s : this) {
-            res += s.toString() + "\n";
+            res += s.getFullString() + "\n";
         }
         return res;
     }

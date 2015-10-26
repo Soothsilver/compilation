@@ -7,6 +7,7 @@ import compiler.nodes.*;
 import compiler.nodes.statements.*;
 import compiler.nodes.declarations.*;
 import compiler.nodes.expressions.*;
+import compiler.nodes.expressions.literals.*;
 
 /* -------------------------------------------------
         Code
@@ -499,7 +500,6 @@ expr0_simple ::=
     | constant:e  {: RESULT = e; :}
     | NEW IDENTIFIER LPAR RPAR
     | IDENTIFIER:id {: RESULT = new VariableExpression(id, idleft, idright, parser.compilation); :}
-    | NULL
     ;
 
 constant	       ::=
@@ -508,6 +508,7 @@ constant	       ::=
                     STRING:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
                     CHARACTER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
                     BOOLEAN:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
+                    NULL:data {: RESULT = new NullExpression(dataleft, dataright, parser.compilation); :} |
                     new_list;
 new_list	       ::= LBRACKET expressions RBRACKET
                      | NEW IDENTIFIER LBRACKET INTEGER RBRACKET

@@ -8,10 +8,12 @@ import java.io.FileReader;
 import java.nio.file.Paths;
 
 
-public class SemanticTests {
+public class AncientSemanticTests {
 	public static void main(String[] args) {
+
 		System.out.println("Running semantics tests:");
-		File dir = new File("semantics-tests");
+		File dir = new File("tests");
+		dir = new File(dir, "semantics");
 		File[] listing = dir.listFiles();
 		int testno = 0;
 		int successfulTests = 0;
