@@ -1,6 +1,6 @@
-procedure hello(a : integer, b : string) { }
-procedure hello(a : integer, b : integer) { }
-procedure main()
-{
-    hello(5,4);
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+function hello() : integer { }
+function hello() : integer { }
+procedure main() {
+
 }

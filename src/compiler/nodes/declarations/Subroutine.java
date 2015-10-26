@@ -20,19 +20,21 @@ public class Subroutine extends Declaration {
                                     ArrayList<String> typeParameters,
                                     ArrayList<Parameter> parameters,
                                     Type returnType,
-                                    Compilation compilation
+                                    Compilation compilation,
+                                    int line,
+                                    int column
                                     ) {
         Subroutine s = new Subroutine();
         s.kind = kind;
+        s.line = line;
+        s.column = column;
         s.name = name;
         s.typeParameterNames = (typeParameters == null ? s.typeParameterNames : typeParameters);
         s.parameters = (parameters == null ? s.parameters : parameters);
         s.returnType = (returnType == null ? Type.voidType : returnType);
-        compilation.environment.returnType = s.returnType;
-        compilation.environment.addSubroutine(s);
-        if (kind == SubroutineKind.FUNCTION) {
-            compilation.environment.enterFunction();
-        } else {
+        if (kind == SubroutineKind.PROCEDURE) {
+            compilation.environment.returnType = s.returnType;
+            compilation.environment.addSubroutine(s);
             compilation.environment.enterProcedure();
         }
         return s;

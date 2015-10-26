@@ -97,6 +97,7 @@ non terminal Subroutine function_header;
 non terminal ArrayList<Parameter> parameters;
 non terminal Parameter parameter;
 non terminal Subroutine procedure_name;
+non terminal Subroutine function_name;
 non terminal ArrayList<String> optional_subroutine_type_parameters;
 non terminal ArrayList<Parameter> optional_parameters;
 
@@ -118,13 +119,14 @@ non terminal Statement open_statement;
 non terminal Statement closed_statement;
 non terminal IfStatement if_short;
 non terminal IfStatement if_long_closed_open;
-non terminal loop_open;
+non terminal Statement loop_open;
 non terminal Statement simple_statement;
 non terminal IfStatement if_long_closed_closed;
 non terminal Statement loop_closed;
-non terminal foreach_head;
-non terminal while_head;
-non terminal for_head;
+non terminal CycleStatement foreach_head;
+non terminal CycleStatement while_head;
+non terminal CycleStatement for_head;
+non terminal open_scope, close_scope, enter_cycle, leave_cycle;
 
 non terminal Expressions expressions;
 non terminal Expression expression;
@@ -165,7 +167,9 @@ program		    ::= global_declarations subroutines:s
 					:}
 					;
 
-// Subroutines
+/* -------------------------------------------------
+        Subroutines
+   ------------------------------------------------- */
 subroutines     ::= subroutine:s
                     {:
                         Subroutines subroutines = new Subroutines();
@@ -207,24 +211,26 @@ procedure_header ::= PROCEDURE procedure_name:subroutine optional_subroutine_typ
                         RESULT = subroutine;
                     :}
                     ;
-procedure_name ::= IDENTIFIER : name {: RESULT = Subroutine.create(SubroutineKind.PROCEDURE, name, null, null, null, parser.compilation); :} ;
+procedure_name ::= IDENTIFIER : name {: RESULT = Subroutine.create(SubroutineKind.PROCEDURE, name, null, null, null, parser.compilation, nameleft, nameright); :} ;
 optional_subroutine_type_parameters ::=  {: RESULT = new ArrayList<>(); :}
                     | LEFTTYPEBRACKET subroutine_type_parameters:ps RIGHTTYPEBRACKET {: RESULT = ps; :}
                     ;
 optional_parameters ::=  {: RESULT = new ArrayList<>(); :}
                     | parameters:ps {: RESULT = ps; :}
                     ;
-                    /* TODO MODIFY FUNCTION TO FOLLOW PROCEDURE'S SUIT */
-function_header        ::=
-                    FUNCTION IDENTIFIER:name LPAR parameters:ps RPAR COLON type:t
-                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, ps, t, parser.compilation); :}
-				  | FUNCTION IDENTIFIER:name LPAR RPAR COLON type:t
-                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, null, t, parser.compilation); :}
-				  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET subroutine_type_parameters:tp RIGHTTYPEBRACKET LPAR parameters:ps RPAR COLON type:t
-                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, tp, ps, t, parser.compilation); :}
-                  | FUNCTION IDENTIFIER:name LEFTTYPEBRACKET subroutine_type_parameters:tp RIGHTTYPEBRACKET LPAR RPAR COLON type:t
-                    {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, tp, null, t, parser.compilation); :}
-                  ;
+function_header ::= FUNCTION function_name:subroutine optional_subroutine_type_parameters:tp LPAR optional_parameters:ps RPAR COLON type:t
+                    {:
+                         subroutine.typeParameterNames = (tp == null ? new ArrayList<String>() : tp);
+                         subroutine.parameters = (ps == null ? new ArrayList<Parameter>() : ps);
+                         subroutine.returnType = t;
+                         getEnvironment().returnType = t;
+                         getEnvironment().addSubroutine(subroutine);
+                         getEnvironment().enterFunction();
+                         RESULT = subroutine;
+                    :}
+                    ;
+function_name ::= IDENTIFIER:name {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, null, null, parser.compilation, nameleft, nameright); :} ;
+
 
 parameters 	::= parameter:p
                 {: RESULT = new ArrayList<>(); RESULT.add(p); :}
@@ -240,10 +246,14 @@ parameter  	::= IDENTIFIER:id COLON type:t
                  :}
                  ;
 
-// Statements
-block	        	::= LBRACE local_declarations statements:s RBRACE
+/* -------------------------------------------------
+        Statements
+   ------------------------------------------------- */
+open_scope  ::= {: getEnvironment().enterScope(); :};
+close_scope ::= {: getEnvironment().leaveScope(); :};
+block	        	::= LBRACE open_scope local_declarations statements:s close_scope RBRACE
                         {:
-                            // TODO make scoping work correctly
+                            // TODO document that it is correct that local declarations are not part of the abstract syntax tree
                             RESULT = new BlockStatement();
                             RESULT.statements = s;
                         :}
@@ -257,13 +267,10 @@ statements	   		::= statement:s statements:ss
                             RESULT = new Statements();
                         :}
                         ;
-statement	        ::= open_statement
-                        | closed_statement:s
-                        {:
-                            RESULT = s;
-                        :}
+statement	        ::= open_statement:s {: RESULT = s ; :}
+                        | closed_statement:s {: RESULT = s; :}
                         ;
-open_statement	    ::= if_short | if_long_closed_open | loop_open;
+open_statement	    ::= if_short:s {: RESULT = s; :} | if_long_closed_open:s {: RESULT = s; :} | loop_open:s {: RESULT = s; :} ;
 if_short	        ::= IF LPAR expression:ex RPAR statement:st
                         {:
                             RESULT = new IfStatement(ex, st, null, parser.compilation);
@@ -272,17 +279,10 @@ if_long_closed_open ::= IF LPAR expression:ex RPAR closed_statement:st ELSE open
                         {:
                             RESULT = new IfStatement(ex, st, st2, parser.compilation);
                         :};
-loop_open	        ::=   foreach_head open_statement
-		                | while_head open_statement
-		                | for_head open_statement;
 closed_statement       ::= simple_statement:s SEMICOLON
-                         {:
-                            RESULT = s;
-                         :}
-		                 | REPEAT statement:st WHILE LPAR expression:ex RPAR SEMICOLON
-		                 {:
-		                    RESULT = new RepeatStatement(ex, st);
-		                 :}
+                         {: RESULT = s; :}
+		                 | REPEAT enter_cycle statement:st leave_cycle WHILE LPAR expression:ex RPAR SEMICOLON
+		                 {: RESULT = new RepeatStatement(ex, st, parser.compilation); :}
 		                 | block:b
 		                 {: RESULT = b; :}
 		                 | if_long_closed_closed:s
@@ -290,47 +290,58 @@ closed_statement       ::= simple_statement:s SEMICOLON
 		                 | loop_closed:s
 		                 {: RESULT = s; :}
 		                 | error SEMICOLON
-		                 {: 
-		                 	parser.compilation.addSuffix(" Analysis continues at next semicolon.");
-		                 :}
+		                 {: parser.compilation.addSuffix(" Analysis continues at next semicolon."); :}
 		                 ;
 simple_statement       ::=  expression:ex
                          {:
                             RESULT = new ExpressionStatement(ex, parser.compilation);
                          :}
-						 | RETURN expression
+						 | RETURN:r expression:ex
+						 {:
+						    RESULT = new ReturnStatement(rleft, rright, ex, parser.compilation);
+						 :}
  						 | STOP:s
  						 {:
- 						    RESULT = new StopStatement(sleft, sright);
+ 						    RESULT = new StopStatement(sleft, sright, parser.compilation);
  						 :}
- 						 | BREAK;
+ 						 | BREAK:s
+ 						 {:
+ 						    RESULT = new BreakStatement(sleft, sright, parser.compilation);
+ 						 :}
+ 						 ;
 if_long_closed_closed  ::= IF LPAR expression:ex RPAR closed_statement:st ELSE closed_statement:stelse
                         {:
                             RESULT = new IfStatement(ex, st, stelse, parser.compilation);
                         :};
-loop_closed	       ::= foreach_head closed_statement
-		    		   | while_head closed_statement
-		    		   | for_head closed_statement;
+loop_closed	       ::= foreach_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+		    		   | while_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+		    		   | for_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+		    		   ;
+enter_cycle ::= {: getEnvironment().enterCycle(); :};
+leave_cycle ::= {: getEnvironment().leaveCycle(); :};
+
+loop_open	        ::=   foreach_head:c enter_cycle open_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+		                | while_head:c enter_cycle open_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+		                | for_head:c enter_cycle open_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+		                ;
 		       
-foreach_head	       ::= FOREACH LPAR IDENTIFIER IN expression RPAR;
-while_head	       ::= WHILE LPAR expression RPAR;
-for_head	       ::= FOR LPAR IDENTIFIER EQUAL expression SEMICOLON expression SEMICOLON expression RPAR;
+foreach_head	       ::= FOREACH LPAR IDENTIFIER:id IN expression:ex RPAR {: RESULT = new CycleStatement(); :};
+while_head	       ::= WHILE LPAR expression:ex RPAR {: RESULT = new WhileStatement(ex, null, parser.compilation); :};
+for_head	       ::= FOR LPAR expression:one SEMICOLON expression:two SEMICOLON expression:three RPAR {: RESULT = new CycleStatement(); :};
 
 
-// Types
-type_definition ::= structure_type | class_type;
-type		::=
-                IDENTIFIER:id {: RESULT = Type.findType(id, idleft, idright, parser.compilation); :}
+/* -------------------------------------------------
+        Types
+   ------------------------------------------------- */
+
+type		::=    IDENTIFIER:id {: RESULT = Type.findType(id, idleft, idright, parser.compilation); :}
                  | list_type
                  | type_instantiation;
+
 list_type	::= LIST OF type;
-structure_type	::= STRUCTURE LBRACE local_declarations RBRACE
-            | STRUCTURE LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations RBRACE
-            ;
-class_type	::= CLASS LBRACE local_declarations subroutines RBRACE
-            | CLASS LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations subroutines RBRACE
-            ;
 type_instantiation ::= IDENTIFIER LEFTTYPEBRACKET type_arguments RIGHTTYPEBRACKET;
+
+
 type_arguments ::=
     type:tp {: RESULT = new ArrayList<>(); RESULT.add(tp); :}
     | type_arguments:tas COMMA type:tp {: tas.add(tp); RESULT = tas; :}
@@ -347,7 +358,9 @@ type_parameters_inner ::=
     {: tp.add(id); RESULT = tp; :}
     ;
 
-// Declarations
+/* -------------------------------------------------
+        Declarations
+   ------------------------------------------------- */
 global_declarations     	   ::= global_declarations global_declaration | ;
 global_declaration            ::=
 	type_declaration | 
@@ -361,11 +374,18 @@ local_declarations ::= local_declarations local_declaration | ;
 local_declaration  ::= variable_declaration;
 
 type_declaration		::= TYPE IDENTIFIER EQUAL type_definition SEMICOLON;
+type_definition ::= structure_type | class_type;
+structure_type	::= STRUCTURE LBRACE local_declarations RBRACE
+            | STRUCTURE LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations RBRACE
+            ;
+class_type	::= CLASS LBRACE local_declarations subroutines RBRACE
+            | CLASS LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations subroutines RBRACE
+            ;
 variable_declaration	::= IDENTIFIER COLON type SEMICOLON;
 
 
 /* -------------------------------------------------
-        Expression Productions
+        Expressions
    ------------------------------------------------- */
 // Expressions
 expressions	       ::=

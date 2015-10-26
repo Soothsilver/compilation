@@ -104,7 +104,7 @@ public class Environment {
 				return new ScopeTree<T>(left, right, decl, depth);
 			}
         	else if (decl.getSig().compareTo(this.decl.getSig()) == 0) {
-        		compilation.semanticError("The symbol " + decl.getSig() + " was already defined at line " + this.decl.line + ", column " + this.decl.column + ".", decl.line, decl.column);
+        		compilation.semanticError("The symbol '" + decl.getSig() + "' was already defined at line " + (1+this.decl.line) + ", column " + (1+this.decl.column) + ".", decl.line, decl.column);
         		return tree;
         	}
         	else if (decl.getSig().compareTo(this.decl.getSig()) < 0)
@@ -189,6 +189,16 @@ public class Environment {
     	returnType = null;
         leaveScope();
     }
+	public int cycleDepth = 0;
+	public void enterCycle() {
+		cycleDepth++;
+	}
+	public void leaveCycle() {
+		cycleDepth++;
+	}
+	public boolean inCycle() {
+		return cycleDepth > 0;
+	}
     /* TODO */
 
 
@@ -200,6 +210,7 @@ public class Environment {
         variableStack.addFirst(variableTable);
         typeStack.addFirst(typeTable);
         depth++;
+        debug("Enter scope.");
     }
     
     public void leaveScope() {
@@ -207,6 +218,7 @@ public class Environment {
     	subroutineTable = subroutineStack.removeFirst();
     	variableTable = variableStack.removeFirst();
     	typeTable = typeStack.removeFirst();
+        debug("Leave scope.");
     }
 
 	public void addPredefinedTypesConstantsAndFunctions() {
@@ -217,6 +229,6 @@ public class Environment {
 		addType(Type.stringType);
 	}
 	private void debug(String line) {
-		// System.out.println(line);
+		System.out.println(line);
 	}
 }

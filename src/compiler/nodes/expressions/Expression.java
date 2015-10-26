@@ -4,8 +4,7 @@ import compiler.Compilation;
 import compiler.ErrorReporter;
 import compiler.nodes.Node;
 import compiler.nodes.declarations.Type;
-import compiler.nodes.expressions.literals.IntegerLiteralExpression;
-import compiler.nodes.expressions.literals.LiteralExpression;
+import compiler.nodes.expressions.literals.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,7 +40,7 @@ public abstract class Expression extends Node {
         return null;
     }
     public static Expression createFromConstant(String data, int line, int column, Compilation compilation) {
-        return null;
+        return new StringLiteralExpression(data, line, column, compilation);
     }
 
     public abstract void propagateTypes(Set<Type> types, Compilation compilation);

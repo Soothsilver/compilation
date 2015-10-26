@@ -7,10 +7,10 @@ import compiler.nodes.expressions.Expression;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class RepeatStatement extends CycleStatement {
+public class WhileStatement extends CycleStatement {
     public Expression booleanTest;
 
-    public RepeatStatement(Expression booleanTest, Statement body, Compilation compilation) {
+    public WhileStatement(Expression booleanTest, Statement body, Compilation compilation) {
         this.body = body;
         this.booleanTest = booleanTest;
         this.booleanTest.propagateTypes(new HashSet<Type>(Arrays.asList(Type.booleanType)), compilation);
@@ -19,6 +19,6 @@ public class RepeatStatement extends CycleStatement {
 
     @Override
     public String toString() {
-        return "repeat " + body + " while (" + this.booleanTest + ");";
+        return "while (" + this.booleanTest + ") " + body;
     }
 }

@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: No enclosing loop out of which to break.
 procedure main()
 {
     break; // break outside a cycle (nothing to break from)

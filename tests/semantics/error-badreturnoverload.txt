@@ -1,6 +1,6 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-function hello() : integer;
-function hello() : integer;
+//EXPECT-SEMANTICAL-ERROR: The symbol 'function hello():integer' was already defined
+function hello() : integer { }
+function hello() : integer { }
 procedure main() {
 
 }

@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: A string cannot be converted to any of the following types: [integer]
 function s():integer {
     return "NOT INTEGER";
 }

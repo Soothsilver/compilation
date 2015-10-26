@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The return statement can be used only inside a function.
 procedure main()
 {
     return "2"; // return from procedure
