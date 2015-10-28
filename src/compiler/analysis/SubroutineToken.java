@@ -31,14 +31,14 @@ public class SubroutineToken {
 
     public Types createFormalTypes() {
         for (int i = 0; i < subroutine.typeParameterNames.size(); i++) {
-            types.add(Type.createNewTypeVariable());
+            types.add(Type.createNewTypeVariable(subroutine.typeParameterNames.get(i)));
         }
         Types formalTypes = new Types();
         // TODO improve this
         for (int i = 0; i < subroutine.parameters.size(); i++) {
-            formalTypes.add(subroutine.parameters.get(i).type); // TODO COPY here?
+            formalTypes.add(subroutine.parameters.get(i).type.copy(types)); // TODO COPY here?
         }
-        formalTypes.add(subroutine.returnType); // TODO copy here?
+        formalTypes.add(subroutine.returnType.copy(types)); // TODO copy here?
 
         return formalTypes;
     }

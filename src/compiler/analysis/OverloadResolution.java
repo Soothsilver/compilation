@@ -63,9 +63,10 @@ public final class OverloadResolution {
                 SubroutineToken subroutineBeingInferred = subroutine.copy();
 //4.2.1 We will try to unify the subroutine signature, including its return type,  with the function signature where all parameters were replaced by types from the combination. Type variables of the signature are renamed so they don't conflict with the free types of arguments.
                 Types formalTypes = subroutineBeingInferred.createFormalTypes();
-                Type returnType = Type.createNewTypeVariable();
+                Type returnType = Type.createNewTypeVariable("!RETURN_TYPE_VARIABLE");
                 actualTypes.add(returnType);
                 subroutineBeingInferred.formalTypes = formalTypes;
+                debug ("Formal types are: " + formalTypes);
 //4.2.2 Perform the unification algorithm with some cave-ats. If the unification algorithm fails, then don't consider this combination.
 
                 IntegerHolder badness = new IntegerHolder();
@@ -89,6 +90,8 @@ public final class OverloadResolution {
                     returnType = returnType.boundToSpecificType;
                 }
                 debug("Unification successful, adding return type " + returnType + ".");
+                debug ("Formal types are: " + formalTypes);
+                debug("TST:" + formalTypes.get(0).boundToSpecificType);
                 call.subroutineTokens.add(subroutineBeingInferred);
 //4.2.6. Add this inferred's subroutine return type to the set of return types.
                 call.possibleTypes.add(returnType);
@@ -121,6 +124,7 @@ public final class OverloadResolution {
         // Case tree
         Type.UnificationKind firstKind = formal.getUnificationKind();
         Type.UnificationKind secondKind = actual.getUnificationKind();
+        debug("Unifying " + formal + " with " + actual + " (" + firstKind + "," + secondKind + ")");
         switch (firstKind) {
             case Simple:
                 switch (secondKind) {
@@ -178,6 +182,7 @@ public final class OverloadResolution {
                 // 4.2.2.1 Unifying a null with a type variable puts the constraint "must be an object" on the variable.
                 if (type.equals(Type.nullType)) {
                     variable.boundToReferenceType = true;
+                    return true;
                 }
                 variable.boundToSpecificType = type;
                 return true;
@@ -234,8 +239,26 @@ public final class OverloadResolution {
               call.setErrorType();
               return;
           }
+            // 2a.  Objectify all variables in formal types
+            for (SubroutineToken token : legalSubroutines) {
+                token.formalTypes.objectify();
+                for (int i = 0; i < token.types.size(); i++) {
+                    token.types.set(i, token.types.get(i).objectify());
+                }
+                debug("Formal types are: " + token.formalTypes);
+            }
 //        3. Remove from consideration all inferred subroutines that still have a free variable left.
-              // TODO
+          legalSubroutines.removeIf(sbrt -> {
+             for (Type formalType : sbrt.formalTypes) {
+                 if (formalType.isIncomplete()) return true;
+             }
+              return false;
+          });
+        if (legalSubroutines.size() == 0) {
+            compilation.semanticError("Type inference failed for " + call.group.name + " because some type varaibles remain free. You may need to specify type arguments directly.");
+            call.setErrorType();
+            return;
+        }
 //        4. If there is no subroutine left, signal an error.
 //        5. If there is exactly one subroutine left, launch this phase for all of its arguments with the unification made, and sending only a single possible return type.
         if (legalSubroutines.size() == 1) {

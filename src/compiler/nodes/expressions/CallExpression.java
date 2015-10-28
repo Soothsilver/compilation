@@ -46,7 +46,7 @@ public class CallExpression extends Expression {
             return "UNRESOLVED-CALL";
         } else {
             Subroutine sub = callee.subroutine;
-            String callstring = sub.getSignature(false, true) + "(" + arguments.toWithoutBracketsString() + ")";
+            String callstring = sub.getSignature(false, true, callee.types) + "(" + arguments.toWithoutBracketsString() + ")";
             return callstring;
         }
     }

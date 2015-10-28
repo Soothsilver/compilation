@@ -19,6 +19,9 @@ public class NullExpression extends LiteralExpression {
                 // TODO unification
                 return;
             }
+            if (setType.kind == Type.TypeKind.TypeVariable) {
+                return; // TODO checks?
+            }
         }
         // TODO T t = null;
         compilation.semanticError("None of the following types is nullable: " + types, line, column);
