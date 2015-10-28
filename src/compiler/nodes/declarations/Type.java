@@ -108,6 +108,10 @@ public class Type extends TypeOrTypeTemplate {
         return "type " + name + " = structure {};";
     }
 
+    public boolean isNull() {
+        return this.equals(Type.nullType);
+    }
+
     public static enum UnificationKind {
         Variable,
         Simple,

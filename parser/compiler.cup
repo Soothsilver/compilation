@@ -498,7 +498,7 @@ expr1_subroutinegroup ::=
 expr0_simple ::=
     LPAR expression:e RPAR {: RESULT = e; :}
     | constant:e  {: RESULT = e; :}
-    | NEW IDENTIFIER LPAR RPAR
+    | NEW IDENTIFIER:id LPAR RPAR {: RESULT = new ConstructorExpression(id, idleft, idright, parser.compilation); :} /* TODO generics */
     | IDENTIFIER:id {: RESULT = new VariableExpression(id, idleft, idright, parser.compilation); :}
     ;
 
@@ -509,7 +509,8 @@ constant	       ::=
                     CHARACTER:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
                     BOOLEAN:data {: RESULT = Expression.createFromConstant(data, dataleft, dataright, parser.compilation); :} |
                     NULL:data {: RESULT = new NullExpression(dataleft, dataright, parser.compilation); :} |
-                    new_list;
+                    new_list
+                    ;
 new_list	       ::= LBRACKET expressions RBRACKET
                      | NEW IDENTIFIER LBRACKET INTEGER RBRACKET
                      ;

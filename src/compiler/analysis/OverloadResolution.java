@@ -163,17 +163,22 @@ public final class OverloadResolution {
     }
 
     private static boolean unifyVariableWithSomething(Type variable, Type type) {
-        //4.2.2.1 Unifying a null with a type variable puts the constraint "must be an object" on the variable.
         //4.2.2.4 Unifying an integer with a type variable only puts the constraint "must be an integer or float" on the variable.
-        //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is a null, a structured type, a class or another variable that is not under the constraint "must be an integer or float".
+        //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is a null, a structured type, a class or another variable that is not under the constraint "must be an integer or float". TODO
         //4.2.2.6 Unifying a variable that is under the constraint "must be an integer or float" can only succeed if the other part is an integer, a float or a type variable not under the constraint "must be an object".
         //4.2.2.7 It is possible to unify a "float" in the signature with an "int" in the type, but doing so puts a "+1 badness" to the resultant inferred subroutine.
         switch (type.getUnificationKind()) {
             case Variable:
+                //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is ... another variable that is not under the constraint "must be an integer or float".
+                if (type.isNull() && variable.boundToNumeric) return false;
                 variable.boundToSpecificType = type;
                 return true;
             case Simple:
                 // TODO advanced stuff
+                // 4.2.2.1 Unifying a null with a type variable puts the constraint "must be an object" on the variable.
+                if (type.equals(Type.nullType)) {
+                    variable.boundToReferenceType = true;
+                }
                 variable.boundToSpecificType = type;
                 return true;
             case Structured:
@@ -277,6 +282,6 @@ public final class OverloadResolution {
     }
 
     private static void debug(String line) {
-        //System.out.println("- " + line);
+        System.out.println("- " + line);
     }
 }

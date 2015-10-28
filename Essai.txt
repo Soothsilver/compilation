@@ -1,15 +1,8 @@
-//EXPECT-SEMANTICAL-ERROR: TO BE DEFINED
-
-
- debug_spawn_structure s;
- debug_spawn_structure t;
-
-
- procedure a(a : s, b : s) { }
- procedure a(a : t, b : t) { }
-
+//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+debug_spawn_structure s;
+procedure a [[ T ]] ( t : T, t2 : T ) { }
 
 procedure main()
 {
-    a(null, null);
+    a ( null, null );
 }
