@@ -1,7 +1,6 @@
 package compiler.nodes.statements;
 
 import compiler.Compilation;
-import compiler.ErrorReporter;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 

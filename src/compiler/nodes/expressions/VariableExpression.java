@@ -1,11 +1,9 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
-import compiler.ErrorReporter;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.declarations.Variable;
 
-import java.util.List;
 import java.util.Set;
 
 public class VariableExpression extends Expression {

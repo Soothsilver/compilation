@@ -1,10 +1,8 @@
 package compiler.nodes.expressions.literals;
 
 import compiler.Compilation;
-import compiler.ErrorReporter;
 import compiler.nodes.declarations.Type;
 
-import java.util.List;
 import java.util.Set;
 
 public class IntegerLiteralExpression extends LiteralExpression {

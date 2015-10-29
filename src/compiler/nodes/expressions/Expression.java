@@ -1,14 +1,11 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
-import compiler.ErrorReporter;
 import compiler.nodes.Node;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.literals.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public abstract class Expression extends Node {

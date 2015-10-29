@@ -3,6 +3,7 @@ package compiler;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.*;
 
 import compiler.generated.CompilerParser;
@@ -13,7 +14,7 @@ import compiler.nodes.declarations.SubroutineKind;
 import compiler.nodes.declarations.Type;
 import java_cup.runtime.*;
 
-public class Compilation implements ErrorReporter {
+public class Compilation {
 	public boolean errorTriggered = false;
     public boolean syntaxErrorTriggered = false;
     public boolean ignoreSemanticErrors = false;
@@ -36,17 +37,17 @@ public class Compilation implements ErrorReporter {
         // Final checks:
         // Is there a main procedure?
 		int mainMethodsFound = 0;
-		for (Subroutine s : root.Subroutines) {
-			if (!s.name.equals("main")) continue;
-			if (s.kind == SubroutineKind.FUNCTION) continue;
-			if (s.typeParameterNames.size() != 0) continue;
-			switch (s.parameters.size())
+		for (Subroutine subroutine : root.Subroutines) {
+			if (!subroutine.name.equals("main")) continue;
+			if (subroutine.kind == SubroutineKind.FUNCTION) continue;
+			if (!subroutine.typeParameterNames.isEmpty()) continue;
+			switch (subroutine.parameters.size())
 			{
 				case 0:
 					mainMethodsFound++;
 					break;
 				case 2:
-					if (s.parameters.get(0).type.equals(Type.integerType))
+					if (subroutine.parameters.get(0).type.equals(Type.integerType))
 						mainMethodsFound++; // TODO and the second type is "list of string"
 					break;
 			}
@@ -59,7 +60,7 @@ public class Compilation implements ErrorReporter {
     }
 	
 	public boolean hasTestRunOkay() {
-		if (errorsExpected.size() > 0) {
+		if (!errorsExpected.isEmpty()) {
 			ArrayList<String> copy = new ArrayList<>();
 			for (String error : errorsExpected)
 			{
@@ -74,10 +75,10 @@ public class Compilation implements ErrorReporter {
 					}
 				}
  			}
-			return copy.size() == 0;
+			return copy.isEmpty();
 		}
 		else {
-			return errorMessages.size() == 0;
+			return errorMessages.isEmpty();
 		}
 	}
 
@@ -85,7 +86,7 @@ public class Compilation implements ErrorReporter {
 		if (source != null) {
 			List<String> lines = null;
 			try {
-				lines = java.nio.file.Files.readAllLines(source.toPath());
+				lines = Files.readAllLines(source.toPath());
 			} catch (IOException e) {
 				// Ignore
 			}

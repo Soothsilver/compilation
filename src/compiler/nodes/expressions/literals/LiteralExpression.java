@@ -1,11 +1,9 @@
 package compiler.nodes.expressions.literals;
 
 import compiler.Compilation;
-import compiler.ErrorReporter;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 
-import java.util.List;
 import java.util.Set;
 
 public abstract class LiteralExpression extends Expression {

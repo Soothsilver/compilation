@@ -6,17 +6,24 @@ import compiler.generated.CompilerParser;
 import java.io.File;
 import java.io.FileReader;
 
-
+/**
+ * This is a class you can use to run tests in the "syntax" folder
+ * if you cannot run JUnit.
+ */
 public class SyntaxTests {
+	/**
+	 * Runs the tests, skipping the checks for semantics.
+	 * @param args Unused.
+	 */
 	public static void main(String[] args) {
 		System.out.println("Running syntax tests:");
 		File dir = new File("tests");
 		dir = new File(dir, "syntax");
 		File[] listing = dir.listFiles();
+		assert listing != null;
 		int testno = 0;
-        int successfulTests = 0;
-        assert listing != null;
-        for (File child : listing) {
+		int successfulTests = 0;
+		for (File child : listing) {
             testno++;
 			System.out.print("Syntax test " + testno + " (" + child.getName() + "): ");
 			 try {
@@ -44,12 +51,12 @@ public class SyntaxTests {
 	                catch (Exception e) {
                         System.out.println(" parse exception (" + e.toString() + ")!");
                         System.out.println(e.toString());
-                        for (StackTraceElement n : e.getStackTrace())
+                        for (StackTraceElement stackTraceElement : e.getStackTrace())
                         {
-                            System.out.println(n.getFileName() + ":" + n.getLineNumber() + " in " + n.getClassName()+"::"+n.getMethodName());
+                            System.out.println(stackTraceElement.getFileName() + ":" + stackTraceElement.getLineNumber() + " in " + stackTraceElement.getClassName() + "::" + stackTraceElement.getMethodName());
                         }
 	                }
-	                catch (java.lang.Error e)
+	                catch (Error e)
 	                {
 	                	System.out.println(" parse error (" + e.toString() + ")!");
 	                }
