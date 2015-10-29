@@ -8,17 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OperatorFunction extends Subroutine {
+    protected OperatorFunction(String name, int line, int column) {
+        super(name, line, column);
+    }
+
     public static OperatorFunction create(
                                     String name,
                                     Type left,
                                     Type right,
                                     Type functionReturnType
                                     ) {
-        OperatorFunction s = new OperatorFunction();
+        OperatorFunction s = new OperatorFunction(name, 0, 0);
         s.kind = SubroutineKind.FUNCTION;
-        s.line = 0;
-        s.column = 0;
-        s.name = name;
         s.typeParameterNames = new ArrayList<>();
         s.parameters = new ArrayList<>();
         s.parameters.add(new Parameter("firstOperand", left));
@@ -29,11 +30,8 @@ public class OperatorFunction extends Subroutine {
 
 
     public static OperatorFunction createGeneralAssignment() {
-        OperatorFunction s = new OperatorFunction();
+        OperatorFunction s = new OperatorFunction("=", 0,0);
         s.kind = SubroutineKind.FUNCTION;
-        s.line = 0;
-        s.column = 0;
-        s.name = "=";
         s.typeParameterNames = new ArrayList<>();
         String assignmentType = "!T";
         s.typeParameterNames.add(assignmentType);

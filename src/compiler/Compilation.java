@@ -14,8 +14,19 @@ import compiler.nodes.declarations.SubroutineKind;
 import compiler.nodes.declarations.Type;
 import java_cup.runtime.*;
 
+/**
+ * This class maintains all data about the compilation of a single file.
+ * It contains the abstract syntax tree, information on any triggered errors and provide access to the current environment.
+ * It is also used to report errors.
+ */
 public class Compilation {
+    /**
+     * Indicates whether any error triggered during compilation. If yes, we will not proceed to code generation.
+     */
 	public boolean errorTriggered = false;
+    /**
+     * Indicates whether any syntax error triggered. This information is perhaps not useful.
+     */
     public boolean syntaxErrorTriggered = false;
     public boolean ignoreSemanticErrors = false;
     public boolean syntaxAnalysisFatalFailure = false;
@@ -24,7 +35,10 @@ public class Compilation {
 	public Environment environment = new Environment(this);
     public ProgramNode abstractSyntaxTree = null;
 
-    public void completeAnalysis(CompilerParser parser) {
+    /**
+     * Performs final checks at the end of syntax and semantic analysis.
+     */
+    public void completeAnalysis() {
         if (abstractSyntaxTree == null) {
             semanticError("Abstract syntax tree was not generated.");
             return;

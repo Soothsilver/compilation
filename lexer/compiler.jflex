@@ -117,7 +117,7 @@ float 		= [0-9]*\.[0-9]+(e-?[0-9]+)? | [0-9]+\.[0-9]*(e-?[0-9]+)?
 "null"        { return symbol(CompilerSymbol.NULL); }
 "true"        { return symbol(CompilerSymbol.BOOLEAN, true); }
 "false"       { return symbol(CompilerSymbol.BOOLEAN, false); }
-"debug_spawn_structure" { return symbol(CompilerSymbol.DEBUG_SPAWN_STRUCTURE); }
+"debug_spawn_structure" { return symbol(CompilerSymbol.DEBUG_SPAWN_STRUCTURE); } /* This is a provisional testing keyword until we can get types working. */
 
 /* -------------------------------------------------
         Identifier (must be after keywords) 
@@ -169,7 +169,7 @@ float 		= [0-9]*\.[0-9]+(e-?[0-9]+)? | [0-9]+\.[0-9]*(e-?[0-9]+)?
 }
 
 /* -------------------------------------------------
-        Constants
+        Numeric constants
    ------------------------------------------------- */
 
 {int}    {

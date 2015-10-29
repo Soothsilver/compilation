@@ -11,6 +11,11 @@ public class Type extends TypeOrTypeTemplate {
     public boolean boundToReferenceType;
     public Type boundToSpecificType;
     public boolean isReferenceType;
+
+    protected Type(String name, int line, int column) {
+        super(name, line, column);
+    }
+
     // public String name; <-- inherited
     public Type copy(ArrayList<Type> typeParameters) {
         if (typeParameters != null) {
@@ -20,8 +25,7 @@ public class Type extends TypeOrTypeTemplate {
                 }
             }
         }
-        Type clone = new Type();
-        clone.name = this.name;
+        Type clone = new Type(this.name, this.line, this.column);
         clone.isReferenceType = this.isReferenceType;
         clone.boundToNumeric = this.boundToNumeric;
         clone.boundToReferenceType = this.boundToReferenceType;
@@ -35,9 +39,11 @@ public class Type extends TypeOrTypeTemplate {
         }
         return clone;
     }
+
     public Type copy() {
         return copy(null);
     }
+
     public UnificationKind getUnificationKind() {
         switch (kind) {
             case ArrayType:
@@ -64,15 +70,15 @@ public class Type extends TypeOrTypeTemplate {
             compilation.semanticError("The type '" + identifier + "' is generic and requires type arguments.", line, column);
             return Type.errorType;
         }
-        return (Type)type;
+        return (Type) type;
     }
 
 
     /**
      * BASIC TYPES
      */
-    public static Type errorType =  Type.createPredefinedType("!error");
-    public static Type nullType =  Type.createPredefinedType("!null");
+    public static Type errorType = Type.createPredefinedType("!error");
+    public static Type nullType = Type.createPredefinedType("!null");
     public static Type voidType = Type.createPredefinedType("!void");
     public static Type booleanType = Type.createPredefinedType("boolean");
     public static Type integerType = Type.createPredefinedType("integer");
@@ -97,7 +103,7 @@ public class Type extends TypeOrTypeTemplate {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Type &&
-                name.equals(((Type)obj).name);
+                name.equals(((Type) obj).name);
     }
 
     @Override
@@ -106,33 +112,30 @@ public class Type extends TypeOrTypeTemplate {
     }
 
     public static Type getBooleanType() {
-        return booleanType;
+        return Type.booleanType;
     }
+
     public static Type createPredefinedType(String name) {
-        Type t = new Type();
-        t.name = name;
+        Type t = new Type(name, -1, -1);
         t.kind = TypeKind.SimpleType;
         return t;
     }
+
     public static Type createNewTypeVariable(String name) {
-        Type t = new Type();
-        t.name = name;
+        Type t = new Type(name, -1, -1);
         t.kind = TypeKind.TypeVariable;
         return t;
     }
+
     public static Type createDebugStructure(String name) {
-        Type t = new Type();
-        t.name = name;
+        Type t = new Type(name, -1, -1);
         t.kind = TypeKind.SimpleType;
         t.isReferenceType = true;
         return t;
     }
 
     public static Type createSubroutineTypeVariable(String typename, int line, int column) {
-        Type t = new Type();
-        t.name = typename;
-        t.line = line;
-        t.column = column;
+        Type t = new Type(typename, line, column);
         t.kind = TypeKind.SubroutineTypeParameter;
         return t;
     }
@@ -161,19 +164,20 @@ public class Type extends TypeOrTypeTemplate {
             }
         }
         if (typeArguments != null) {
-            for (int i = 0 ; i < typeArguments.size(); i++) {
+            for (int i = 0; i < typeArguments.size(); i++) {
                 typeArguments.set(i, typeArguments.get(i).objectify());
             }
         }
         return this;
     }
 
-    public static enum UnificationKind {
+    public enum UnificationKind {
         Variable,
         Simple,
         Structured
     }
-    public static enum TypeKind {
+
+    public enum TypeKind {
         ClassTypeParameter,
         SubroutineTypeParameter,
         ArrayType,

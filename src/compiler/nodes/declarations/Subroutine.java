@@ -16,6 +16,11 @@ public class Subroutine extends Declaration {
     private static Subroutine constructingWhatSubroutine = null;
 
     public static boolean typeParametersEntered = false;
+
+    protected Subroutine(String name, int line, int column) {
+        super(name, line, column);
+    }
+
     public static Subroutine create(SubroutineKind kind,
                                     String name,
                                     ArrayList<String> typeParameters,
@@ -25,15 +30,12 @@ public class Subroutine extends Declaration {
                                     int line,
                                     int column
                                     ) {
-        Subroutine s = new Subroutine();
+        Subroutine s = new Subroutine(name, line, column);
         s.kind = kind;
-        s.line = line;
-        s.column = column;
-        s.name = name;
-        s.typeParameterNames = (typeParameters == null ? s.typeParameterNames : typeParameters);
-        s.parameters = (parameters == null ? s.parameters : parameters);
-        s.returnType = (returnType == null ? Type.voidType : returnType);
-        constructingWhatSubroutine = s;
+        s.typeParameterNames = typeParameters == null ? s.typeParameterNames : typeParameters;
+        s.parameters = parameters == null ? s.parameters : parameters;
+        s.returnType = returnType == null ? Type.voidType : returnType;
+        Subroutine.constructingWhatSubroutine = s;
         compilation.environment.enterTypeScope();
         return s;
     }
@@ -44,14 +46,14 @@ public class Subroutine extends Declaration {
         }
     }
     public static void enterTypeParameters(ArrayList<TypeParameter> typeParameters, Compilation compilation) {
-        typeParametersEntered = true;
+        Subroutine.typeParametersEntered = true;
         for (TypeParameter typename : typeParameters) {
             Type subroutineTypeVariable = Type.createSubroutineTypeVariable(typename.name, typename.line, typename.column);
             compilation.environment.addType(subroutineTypeVariable);
         }
     }
     public static void leaveTypeParameters(Compilation compilation) {
-        typeParametersEntered = false;
+        Subroutine.typeParametersEntered = false;
     }
 
 

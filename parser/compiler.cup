@@ -10,7 +10,7 @@ import compiler.nodes.expressions.*;
 import compiler.nodes.expressions.literals.*;
 
 /* -------------------------------------------------
-        Code
+        Code (overriding CUP's parser's methods)
    ------------------------------------------------- */
 parser code {:
   public Compilation compilation;
@@ -81,14 +81,13 @@ terminal Character CHARACTER;
 terminal String STRING;
 terminal Boolean BOOLEAN;
 
-
 /* -------------------------------------------------
         Non terminals 
    ------------------------------------------------- */
 non terminal program;
 non terminal Declarations global_declarations;
 non terminal Declaration global_declaration;
-non terminal type_declaration;
+non terminal Type type_declaration;
 non terminal Variable variable_declaration;
 
 non terminal Subroutines subroutines;
@@ -146,7 +145,7 @@ non terminal String assignment_operator, relational_operator;
 
 
 /* -------------------------------------------------
-        Productions 
+        Productions
    ------------------------------------------------- */
    
 start with program;
@@ -159,7 +158,7 @@ program		    ::= global_declarations:d subroutines:s
 					    program.Declarations = d;
 					    program.Subroutines = s;
 					    parser.compilation.abstractSyntaxTree = program;
-					    parser.compilation.completeAnalysis(this.parser);
+					    parser.compilation.completeAnalysis();
 					:}
 					|
 					global_declarations:d
@@ -168,7 +167,7 @@ program		    ::= global_declarations:d subroutines:s
 					    // due to not having a "main" procedure. But for syntax tests, it is useful.
 					    parser.compilation.abstractSyntaxTree = new ProgramNode();
 					    parser.compilation.abstractSyntaxTree.Declarations = d;
-					    parser.compilation.completeAnalysis(this.parser);
+					    parser.compilation.completeAnalysis();
 					:}
 					;
 
@@ -178,7 +177,7 @@ program		    ::= global_declarations:d subroutines:s
 subroutines     ::= subroutine:s
                     {:
                         Subroutines subroutines = new Subroutines();
-                        subroutines.addSubroutine(s); // TODO check for uniqueness
+                        subroutines.addSubroutine(s);
                         RESULT = subroutines;
                     :}
                     | subroutines:ss subroutine:s
@@ -208,7 +207,6 @@ function        ::= function_header:h block:b {:
                         h.block = b;
                         RESULT = h;
                     :};
-
 procedure_header ::= PROCEDURE procedure_name:subroutine optional_subroutine_type_parameters:tp LPAR optional_parameters:ps RPAR
                     {:
                         subroutine.setTypeParameters  (tp == null ? new ArrayList<TypeParameter>() : tp);
@@ -229,7 +227,6 @@ optional_parameters ::=  {: RESULT = new ArrayList<>(); :}
                     ;
 function_header ::= FUNCTION function_name:subroutine optional_subroutine_type_parameters:tp LPAR optional_parameters:ps RPAR COLON type:t
                     {:
-
                          subroutine.setTypeParameters  (tp == null ? new ArrayList<TypeParameter>() : tp);
                          subroutine.parameters = (ps == null ? new ArrayList<Parameter>() : ps);
                          subroutine.returnType = t;
@@ -240,8 +237,6 @@ function_header ::= FUNCTION function_name:subroutine optional_subroutine_type_p
                     :}
                     ;
 function_name ::= IDENTIFIER:name {: RESULT = Subroutine.create(SubroutineKind.FUNCTION, name, null, null, null, parser.compilation, nameleft, nameright); :} ;
-
-
 parameters 	::= parameter:p
                 {: RESULT = new ArrayList<>(); RESULT.add(p); :}
                 |
@@ -251,8 +246,7 @@ parameters 	::= parameter:p
 
 parameter  	::= IDENTIFIER:id COLON type:t
                 {:
-                    RESULT = new Parameter(id, t);
-                    // TODO add parameter as variable to environment (perhaps do this inside parameter constructor)
+                    RESULT = new Parameter(id, t, idleft, idright, parser.compilation);
                  :}
                  ;
 
@@ -395,7 +389,7 @@ class_type	::= CLASS LBRACE local_declarations subroutines RBRACE
             | CLASS LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations subroutines RBRACE
             ;
 variable_declaration	::= IDENTIFIER:id COLON type:tp SEMICOLON
-    {: Variable v = new Variable(id, tp, idleft, idright, parser.compilation); RESULT = v; :}
+    {: Variable v = Variable.createAndAddToEnvironment(id, tp, idleft, idright, parser.compilation); RESULT = v; :}
     ;
 
 

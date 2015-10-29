@@ -62,7 +62,8 @@ public class SyntaxTests {
 	                }
 	        }
 	        catch (Exception e){
-	                System.out.println("file could not be opened!");
+	                System.out.println("file could not be opened!: " +e);
+                e.printStackTrace();
 	        }
 		}
 		System.out.println(successfulTests + "/" + listing.length + " tests passed.");
