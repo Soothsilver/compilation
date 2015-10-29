@@ -1,7 +1,4 @@
-
-procedure main()
-{
-    i : float;
-
-    i = 2 + 3.0;
-}
+PROGRAM[
+i : float;
+procedure main() { i=!float(2)+3.0; }
+]

@@ -1,3 +1,10 @@
+
+    i : integer;
+    s : string;
+    b : boolean;
+
+
+
 function get() : integer { return 1; }
 function get() : string { return "a"; }
 function get() : float { return 2.0; }
@@ -5,10 +12,7 @@ function get() : boolean { return true; }
 
 procedure main()
 {
-    i : integer;
-    s : string;
-    b : boolean;
-    a = get();
+    i = get();
     s = get();
     b = get();
 }

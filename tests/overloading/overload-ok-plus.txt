@@ -1,7 +1,8 @@
 
+i : float;
+
 procedure main()
 {
-    i : float;
 
     i = 2 + 3.0;
 }

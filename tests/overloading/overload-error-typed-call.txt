@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: No subroutine with the name 'a' accepts arguments of the given types.
+//EXPECT-SEMANTICAL-ERROR: No considered subroutine with the name 'a' accepts arguments of the given types.
 procedure a [[ T ]] ( t : T ) { }
 
 procedure main()

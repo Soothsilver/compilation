@@ -1,14 +1,10 @@
-function get() : integer { return 1; }
-function get() : string { return "a"; }
-function get() : float { return 2.0; }
-function get() : boolean { return true; }
-
-procedure main()
-{
-    i : integer;
-    s : string;
-    b : boolean;
-    a = get();
-    s = get();
-    b = get();
-}
+PROGRAM[
+i : integer;
+s : string;
+b : boolean;
+function get():integer { return 1; }
+function get():string { return "a"; }
+function get():float { return 2.0; }
+function get():boolean { return true; }
+procedure main() { i=get[]:integer(); s=get[]:string(); b=get[]:boolean(); }
+]

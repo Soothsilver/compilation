@@ -35,7 +35,7 @@ public class OverloadTest extends TestCase {
     }
 
     @Test
-    public void testSemantic() {
+    public void testOverload() {
         TestUtilities.runTest(file, false, this);
     }
 

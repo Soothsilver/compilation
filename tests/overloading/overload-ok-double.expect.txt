@@ -1,9 +1,6 @@
-function itoi (i:integer) : integer { return i; }
-function itoi (f:float) : integer { return 2; }
-
-procedure main()
-{
-    i : integer;
-    i = itoi(itoi(itoi(3)));
-    i = itoi(itoi(itoi(3.0)));
-}
+PROGRAM[
+i : integer;
+function itoi(i:integer):integer { return i; }
+function itoi(f:float):integer { return 2; }
+procedure main() { i=itoi[integer]:integer(itoi[integer]:integer(itoi[integer]:integer(3))); i=itoi[integer]:integer(itoi[integer]:integer(itoi[float]:integer(3.0))); }
+]

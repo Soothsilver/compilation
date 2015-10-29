@@ -35,7 +35,7 @@ public class OperatorFunction extends Subroutine {
         s.column = 0;
         s.name = "=";
         s.typeParameterNames = new ArrayList<>();
-        String assignmentType = "!ASSIGNMENT_TYPE_VARIABLE";
+        String assignmentType = "!T";
         s.typeParameterNames.add(assignmentType);
         Type standInType = Type.createSubroutineTypeVariable(assignmentType, 0,0);
         s.parameters = new ArrayList<>();

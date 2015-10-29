@@ -1,7 +1,12 @@
-v : float;
-function copy [[T]] (input : T) : T {  }
-function copy ( input : integer ) : float { }
+
+    i : integer;
+
+
+
+function get() : integer { return 1; }
+function get() : boolean { return true; }
+
 procedure main()
 {
-   v = copy(copy(copy(5)));
+    i = get();
 }

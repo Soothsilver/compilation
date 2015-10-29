@@ -141,7 +141,21 @@ public final class OverloadResolution {
                     case Structured:
                         return false; // TODO but null!
                     case Variable:
-                        return unifyVariableWithSomething(actual, formal);
+                        if (actual.boundToSpecificType != null) {
+                            if (!actual.objectify().equals(formal)) {
+                                return false;
+                            }
+                        }
+                        if (actual.boundToReferenceType && !formal.isReferenceType) {
+                            return false;
+                        }
+                        if (actual.boundToNumeric && !formal.equals(Type.integerType) && !formal.equals(Type.floatType)) {
+                            return false;
+                        }
+                        actual.boundToSpecificType = formal;
+                        return true;
+                        // TODO check this is correct
+                        // return unifyVariableWithSomething(actual, formal);
                 }
                 break;
             case Structured:
@@ -186,7 +200,7 @@ public final class OverloadResolution {
                 return true;
             case Simple:
                 //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is ... another variable that is not under the constraint "must be an integer or float".
-                if (type.isNull() && variable.boundToNumeric) return false;
+                if (!type.equals(Type.integerType) && !type.equals(Type.floatType) && variable.boundToNumeric) return false;
                 //4.2.2.4 Unifying an integer with a type variable only puts the constraint "must be an integer or float" on the variable.
                 if (type.equals(Type.integerType)) {
                     if (variable.boundToReferenceType) return false;
@@ -199,6 +213,7 @@ public final class OverloadResolution {
                     variable.boundToReferenceType = true;
                     return true;
                 }
+
                 variable.boundToSpecificType = type;
                 return true;
             case Structured:
