@@ -1,4 +1,4 @@
-type s = structure { };
+debug_spawn_structure s;
 procedure a [[ T ]] ( t : T, t2 : T ) { }
 
 procedure main()

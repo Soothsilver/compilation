@@ -1,0 +1,13 @@
+type A = structure { };
+type B = structure { };
+type C = structure [[T]] { };
+
+function getList [[T]] () : C[[T]] { return null; }
+
+procedure main()
+{
+   a : A;
+   b : B;
+   a = getList();
+   b = getList();
+}

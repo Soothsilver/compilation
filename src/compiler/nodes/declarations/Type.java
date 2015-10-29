@@ -83,7 +83,14 @@ public class Type extends TypeOrTypeTemplate {
     @Override
     public String toString() {
         if (kind == TypeKind.TypeVariable) {
-            return "VAR:" + name;
+            if (boundToSpecificType != null)
+                return "VAR:" + name + "(BOUND)";
+            else if (boundToNumeric)
+                return "VAR:" + name + "(INT)";
+            else if (boundToReferenceType)
+                return "VAR:" + name + "(REF)";
+            else
+                return "VAR:" + name;
         } else return name;
     }
 
@@ -91,6 +98,11 @@ public class Type extends TypeOrTypeTemplate {
     public boolean equals(Object obj) {
         return obj instanceof Type &&
                 name.equals(((Type)obj).name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 
     public static Type getBooleanType() {

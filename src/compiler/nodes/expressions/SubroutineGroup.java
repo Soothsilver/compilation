@@ -13,7 +13,7 @@ public class SubroutineGroup extends Node {
     public ArrayList<Subroutine> subroutines;
     public String name;
 
-    public SubroutineGroup(LinkedList<Subroutine> linkedList) {
+    private SubroutineGroup(LinkedList<Subroutine> linkedList) {
         subroutines = new ArrayList<>(linkedList);
     }
 

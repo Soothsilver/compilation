@@ -22,4 +22,9 @@ public class ConstructorExpression extends Expression {
             compilation.semanticError("An object of type " + this.type.name + " cannot be converted to any of the following types: " + types, line, column);
         }
     }
+
+    @Override
+    public String toString() {
+        return "new " + typeName + "()";
+    }
 }

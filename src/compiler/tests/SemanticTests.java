@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 @RunWith(Parameterized.class)
-public class NTests extends TestCase {
+public class SemanticTests extends TestCase {
 
 
 
@@ -29,7 +29,7 @@ public class NTests extends TestCase {
     private String name;
     private File file;
 
-    public NTests(final String name, final File file) {
+    public SemanticTests(final String name, final File file) {
         this.name = name;
         this.file = file;
     }

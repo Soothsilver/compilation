@@ -81,23 +81,23 @@ public class TestUtilities {
                 }
             }
             catch (Exception e) {
-                testCase.fail("parse exception");
                 System.out.println(" parse exception (" + e.getMessage() + ")!");
                 System.out.println(e.toString());
                 for (StackTraceElement n : e.getStackTrace())
                 {
                     System.out.println(n.getFileName() + ":" + n.getLineNumber() + " in " + n.getClassName()+"::"+n.getMethodName());
                 }
+                testCase.fail("parse exception");
             }
             catch (Error e)
             {
                 System.out.println(" parse error (" + e.toString() + ")!");
-                testCase.fail("parse errors");
+                testCase.fail("parse error");
             }
         }
         catch (Exception e){
-            testCase.fail("file error");
             System.out.println("file could not be opened!");
+            testCase.fail("file error");
         }
     }
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Statements extends ArrayList<Statement> {
     public void addStatement(Statement statement) {
-        this.add(statement);
+        this.add(0, statement);
     }
 
     @Override

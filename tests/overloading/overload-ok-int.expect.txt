@@ -1,0 +1,5 @@
+PROGRAM[
+procedure a(a:float) {  }
+procedure a(a:integer) {  }
+procedure main() { a[integer](2); }
+]

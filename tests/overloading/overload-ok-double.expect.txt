@@ -1,0 +1,9 @@
+function itoi (i:integer) : integer { return i; }
+function itoi (f:float) : integer { return 2; }
+
+procedure main()
+{
+    i : integer;
+    i = itoi(itoi(itoi(3)));
+    i = itoi(itoi(itoi(3.0)));
+}

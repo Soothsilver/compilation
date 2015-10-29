@@ -53,4 +53,8 @@ public abstract class Expression extends Node {
         this.possibleTypes.clear();
         this.possibleTypes.add(this.type);
     }
+
+    public boolean isAssignable() {
+        return false; // Override this in variable expression.
+    }
 }

@@ -1,4 +1,4 @@
-type s = structure {};
+debug_spawn_structure s;
 procedure a(a : s, b : s) { }
 procedure a(a : integer, b : integer) { }
 

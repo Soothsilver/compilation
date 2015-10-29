@@ -247,6 +247,11 @@ public class Environment {
 		addType(Type.characterType);
 		addType(Type.floatType);
 		addType(Type.stringType);
+
+		// Add operators
+		addSubroutine(OperatorFunction.create("+", Type.integerType, Type.integerType, Type.integerType));
+		addSubroutine(OperatorFunction.create("+", Type.floatType, Type.floatType, Type.floatType));
+		addSubroutine(OperatorFunction.createGeneralAssignment());
 	}
 	private void debug(String line) {
         //System.out.println(line);

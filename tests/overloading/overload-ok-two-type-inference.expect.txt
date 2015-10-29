@@ -1,0 +1,4 @@
+PROGRAM[
+procedure a[[T,T1]](t:T,t2:T1,t3:T1,t4:T) {  }
+procedure main() { a[[T=float,T1=string]][T,T1,T1,T](!float(5),"a","b",6.2); }
+]

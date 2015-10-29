@@ -36,5 +36,11 @@ public class VariableExpression extends Expression {
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
         // Invulnerable to type propagation. Variables have a type strictly defined.
+        // TODO but we must do as if in literals
+    }
+
+    @Override
+    public boolean isAssignable() {
+        return true;
     }
 }

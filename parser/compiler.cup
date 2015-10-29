@@ -89,7 +89,7 @@ non terminal program;
 non terminal Declarations global_declarations;
 non terminal Declaration global_declaration;
 non terminal type_declaration;
-non terminal variable_declaration;
+non terminal Variable variable_declaration;
 
 non terminal Subroutines subroutines;
 non terminal Subroutine subroutine;
@@ -141,7 +141,7 @@ non terminal local_declaration;
 
 non terminal Expression expr13_assignment, expr12_or, expr11_and, expr10_bitwise_or, expr9_xor, expr8_bitwise_and, expr7_equality, expr6_comparison, expr5_shift, expr4_addition, expr3_multiplication, expr2_prefix, expr1_postfix, expr0_simple;
 non terminal SubroutineGroup expr1_subroutinegroup;
-non terminal assignment_operator, relational_operator;
+non terminal String assignment_operator, relational_operator;
 
 
 
@@ -377,7 +377,7 @@ global_declarations     	  ::=
 global_declaration            ::=
 	type_declaration |
 	DEBUG_SPAWN_STRUCTURE IDENTIFIER:id {: Type theStructure = Type.createDebugStructure(id); getEnvironment().addType(theStructure); RESULT = theStructure; :} SEMICOLON |
-	variable_declaration |
+	variable_declaration:v {: RESULT = v; :} |
 	error SEMICOLON 
 	{:
 		parser.compilation.addSuffix(" Malformed declaration. Analysis continues at next semicolon.");
@@ -394,7 +394,9 @@ structure_type	::= STRUCTURE LBRACE local_declarations RBRACE
 class_type	::= CLASS LBRACE local_declarations subroutines RBRACE
             | CLASS LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations subroutines RBRACE
             ;
-variable_declaration	::= IDENTIFIER COLON type SEMICOLON;
+variable_declaration	::= IDENTIFIER:id COLON type:tp SEMICOLON
+    {: Variable v = new Variable(id, tp, idleft, idright, parser.compilation); RESULT = v; :}
+    ;
 
 
 /* -------------------------------------------------
@@ -409,7 +411,7 @@ assignment_operator ::=
     UNARYPLUS | UNARYMINUS | UNARYTIMES | UNARYDIVIDE |
     UNARYMODULO | UNARYSHIFTLEFT | UNARYSHIFTRIGHT |
     UNARYBITWISEAND | UNARYXOR | UNARYBITWISEOR |
-    EQUAL
+    EQUAL {: RESULT = "="; :}
     ;
 relational_operator ::=
     LESSTHAN | GREATERTHAN | LESSOREQUAL | GREATEROREQUAL
@@ -418,7 +420,8 @@ relational_operator ::=
     /* TODO all the operators :), but that can wait */
 expression ::= expr13_assignment:e {: RESULT = e; :};
 expr13_assignment ::=
-    expr12_or assignment_operator expr13_assignment |
+    expr12_or:left assignment_operator:op expr13_assignment:right {: RESULT = BinaryExpression.create(left, op, right, opleft, opright, parser.compilation); :}
+     |
     expr12_or:e {: RESULT = e; :}
     ;
 expr12_or ::=
@@ -458,7 +461,7 @@ expr5_shift ::=
     ;
 expr4_addition ::=
     expr4_addition MINUS expr3_multiplication |
-    expr4_addition:e1 PLUS:op expr3_multiplication:e2 {: RESULT = ArithmeticExpression.create(/*TODO*/e1, e2, opleft, opright); :} |
+    expr4_addition:e1 PLUS:op expr3_multiplication:e2 {: RESULT = BinaryExpression.create(e1, "+", e2, opleft, opright, parser.compilation); :} |
     expr4_addition CONCATENATE expr3_multiplication |
     expr3_multiplication:e  {: RESULT = e; :}
     ;
@@ -469,7 +472,7 @@ expr3_multiplication ::=
     expr2_prefix:e  {: RESULT = e; :}
     ;
 expr2_prefix ::=
-    INCREMENT expr2_prefix |
+    INCREMENT:op expr2_prefix:right {: RESULT = UnaryExpression.create("PRE++", right, opleft, opright, parser.compilation); :} |
     DECREMENT expr2_prefix |
     LOGICALNEGATION expr2_prefix |
     BITWISENEGATION expr2_prefix |

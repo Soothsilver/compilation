@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: Type inference failed for 'a' because some type variables remain free. You may need to specify type arguments directly.
 debug_spawn_structure s;
 procedure a [[ T ]] ( t : T, t2 : T ) { }
 

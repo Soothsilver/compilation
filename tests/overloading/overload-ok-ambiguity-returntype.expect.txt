@@ -1,0 +1,7 @@
+PROGRAM[
+function get():integer { return 1; }
+function get():string { return "a"; }
+function get():boolean { return true; }
+procedure set(f:float) {  }
+procedure main() { set[float](!float(get[]:integer())); }
+]

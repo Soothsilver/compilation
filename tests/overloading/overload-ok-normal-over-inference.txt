@@ -1,6 +1,6 @@
-type A = structure { };
-type B = structure { };
-type C = structure { };
+debug_spawn_structure A;
+debug_spawn_structure B;
+debug_spawn_structure C;
 
 procedure set[[T]] ( a : T ) { }
 procedure set(a : A) { }

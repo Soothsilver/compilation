@@ -1,13 +1,43 @@
 package compiler.tests;
 
 import compiler.Compilation;
-import compiler.analysis.OverloadResolution;
+import compiler.generated.CompilerLexer;
+import compiler.generated.CompilerParser;
+import junit.framework.TestCase;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-public class OverloadTest {
-    @Test
-    public void testSimple() {
-        Compilation compilation = new Compilation(null);
-        //   OverloadResolution.phaseOne();
+import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+
+@RunWith(Parameterized.class)
+public class OverloadTest extends TestCase {
+
+
+
+    @Parameterized.Parameters(name = "{index}: {0}")
+    public static Collection<Object[]> data() {
+        return TestUtilities.getFiles("overloading");
     }
+
+    private String name;
+    private File file;
+
+    public OverloadTest(final String name, final File file) {
+        this.name = name;
+        this.file = file;
+    }
+
+    @Test
+    public void testSemantic() {
+        TestUtilities.runTest(file, false, this);
+    }
+
+
 }

@@ -25,7 +25,7 @@ public class IntegerLiteralExpression extends LiteralExpression {
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
         if (!types.contains(Type.integerType) && !types.contains(Type.floatType)) {
-            compilation.semanticError("A " + this.type.name + " cannot be converted to any of the following types: " + types, line, column);
+            compilation.semanticError("An integer cannot be converted to any of the following types: " + types, line, column);
         }
     }
 }

@@ -1,0 +1,4 @@
+PROGRAM[
+procedure a[[T]](t:T) {  }
+procedure main() { a[[T=integer]][T](5); }
+]

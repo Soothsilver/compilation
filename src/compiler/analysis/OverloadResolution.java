@@ -3,10 +3,7 @@ package compiler.analysis;
 import compiler.Compilation;
 import compiler.nodes.declarations.Subroutine;
 import compiler.nodes.declarations.Type;
-import compiler.nodes.expressions.CallExpression;
-import compiler.nodes.expressions.Expression;
-import compiler.nodes.expressions.IntegerToFloatExpression;
-import compiler.nodes.expressions.SubroutineGroup;
+import compiler.nodes.expressions.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +14,7 @@ public final class OverloadResolution {
 //(If at any point you signal an error, set the type of the expression to the special Type.getErrorType() and stop evaluating the first phase.)
 //1. Retrieve all subroutines with the callsite name. This subroutines become the "considered subroutines".
         SubroutineGroup group = call.group;
+        debug("Overload resolution begins for " + call + ", subroutine group has " + group.subroutines.size() + " candidates.");
 //1.1 If none exist, signal an error.
         if (group.subroutines.size() == 0) {
             compilation.semanticError("There is no subroutine with the name '" + group.name + "' at this point.", group.line, group.column);
@@ -42,29 +40,38 @@ public final class OverloadResolution {
             return;
         }
 
-//3. If type arguments were specified, transform all considered subroutines into inferred subroutines. Only those will now be considered.
         ArrayList<SubroutineToken> consideredSubroutines = new ArrayList<>();
         for (Subroutine sub : group.subroutines) {
             SubroutineToken stoken = new SubroutineToken(sub, call.typeArguments != null);
             consideredSubroutines.add(stoken);
+            //3. If type arguments were specified, transform all considered subroutines into inferred subroutines. Only those will now be considered.
+            /* TODO clean this up
             if (call.typeArguments != null) {
+                stoken.types = new ArrayList<>();
                 stoken.types.addAll(call.typeArguments);
             }
-
+            */
         }
+        debug ("Core of phase one begins for " + call + " with " + consideredSubroutines.size() + " considered subroutines.");
 //4. Do the following procedure for all considered subroutines:
         for (SubroutineToken subroutine : consideredSubroutines) {
-            debug("Considering " + subroutine);
+            debug("Considering " + subroutine + "...");
 //4.1.If it is a generic subroutine and type arguments were not specified, it's called an "incomplete subroutine."
 //4.2 For each combination of types of its parameters, perform unification in this way:
             ArrayList<Types> typeCombinations = call.arguments.getTypeCombinations();
             for (Types actualTypes : typeCombinations) {
+                Type returnType = Type.createNewTypeVariable("!RET" + Uniqueness.getUniqueId());
+                actualTypes.add(returnType);
                 debug("Matching against " + actualTypes);
                 SubroutineToken subroutineBeingInferred = subroutine.copy();
 //4.2.1 We will try to unify the subroutine signature, including its return type,  with the function signature where all parameters were replaced by types from the combination. Type variables of the signature are renamed so they don't conflict with the free types of arguments.
                 Types formalTypes = subroutineBeingInferred.createFormalTypes();
-                Type returnType = Type.createNewTypeVariable("!RETURN_TYPE_VARIABLE");
-                actualTypes.add(returnType);
+                if (call.typeArguments != null) {
+                    for(int i =0; i < subroutineBeingInferred.types.size(); i++) {
+                       subroutineBeingInferred.types.get(i).boundToSpecificType = call.typeArguments.get(i);
+                        debug("Type parameter " + i + " (" + subroutineBeingInferred.types.get(i) + ") is " + call.typeArguments.get(i));
+                    }
+                }
                 subroutineBeingInferred.formalTypes = formalTypes;
                 debug ("Formal types are: " + formalTypes);
 //4.2.2 Perform the unification algorithm with some cave-ats. If the unification algorithm fails, then don't consider this combination.
@@ -75,39 +82,40 @@ public final class OverloadResolution {
                     continue;
                     // This type combination failed.
                 }
+                badness.value *= 2;
+                if (subroutineBeingInferred.types != null && subroutineBeingInferred.types.size() > 0) {
+                    badness.value += 1;
+                    // A generic subroutine is worse than a non-generic subroutine.
+                    // But fewer conversions still take precedence over this.
+                }
                 subroutineBeingInferred.badness = badness.value;
 
 
 //4.2.3 For each type parameter, if it remains free, but it has the constraint "must be an integer or float", it becomes an integer. (This will cause some unexpected behavior sometimes. TODO add a test for it)
                 for (Type t : subroutineBeingInferred.types) {
-                    if (t.boundToSpecificType == null && t.boundToNumeric) {
-                        t.boundToSpecificType = Type.integerType;
+                    if (t.objectify().boundToSpecificType == null && t.objectify().boundToNumeric) {
+                        t.objectify().boundToSpecificType = Type.integerType;
                     }
                 }
 //4.2.4 The unified subroutine/type combination may still contain a free type variable. That does not remove it from consideration.
 //4.2.5. Create an inferred subroutine from this subroutine and this combination of types. It may still be incomplete.
-                while (returnType.boundToSpecificType != null) {
-                    returnType = returnType.boundToSpecificType;
-                }
-                debug("Unification successful, adding return type " + returnType + ".");
-                debug ("Formal types are: " + formalTypes);
-                debug("TST:" + formalTypes.get(0).boundToSpecificType);
+                returnType = returnType.objectify();
+                debug("Unification successful, adding return type " + returnType + ", subroutine has types " + formalTypes + ".");
                 call.subroutineTokens.add(subroutineBeingInferred);
 //4.2.6. Add this inferred's subroutine return type to the set of return types.
                 call.possibleTypes.add(returnType);
             }
         }
+        call.removeRedundantSubroutineTokens();
 //5. If the list of inferred subroutines is empty, signal an error.
         if (call.subroutineTokens.isEmpty()) {
-            compilation.semanticError("No subroutine with the name '" + group.name + "' accepts arguments of the given types.", group.line, group.column);
+            compilation.semanticError("No considered subroutine with the name '" + group.name + "' accepts arguments of the given types.", group.line, group.column);
             call.setErrorType();
             return;
         }
 //6. The first phase is now complete.
     }
-    private static class IntegerHolder {
-        public int value;
-    }
+
     public static boolean unify(Type formal, Type actual, IntegerHolder badness) {
         // Technical.
         if (formal.kind == Type.TypeKind.TypeVariable) {
@@ -117,7 +125,7 @@ public final class OverloadResolution {
         }
         if (actual.kind == Type.TypeKind.TypeVariable) {
             if (actual.boundToSpecificType != null) {
-                return unify(actual.boundToSpecificType, actual, badness);
+                return unify(formal, actual.boundToSpecificType, badness);
             }
         }
 
@@ -151,8 +159,7 @@ public final class OverloadResolution {
         }
         throw new RuntimeException("Unification of this kind of type parameter is not supported.");
     }
-
-    private static boolean unifySimpleTypes(Type formal, Type actual, IntegerHolder badness) {
+    public static boolean unifySimpleTypes(Type formal, Type actual, IntegerHolder badness) {
         if (formal.name.equals(actual.name)) return true;
         if (formal.name.equals(Type.floatType.name) && actual.name.equals(Type.integerType.name)) {
             badness.value++;
@@ -165,22 +172,30 @@ public final class OverloadResolution {
         //4.2.2.3 Unifying a null with anything except structured type, class type or class variable fails.
         return false;
     }
-
-    private static boolean unifyVariableWithSomething(Type variable, Type type) {
-        //4.2.2.4 Unifying an integer with a type variable only puts the constraint "must be an integer or float" on the variable.
+    public static boolean unifyVariableWithSomething(Type variable, Type type) {
         //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is a null, a structured type, a class or another variable that is not under the constraint "must be an integer or float". TODO
         //4.2.2.6 Unifying a variable that is under the constraint "must be an integer or float" can only succeed if the other part is an integer, a float or a type variable not under the constraint "must be an object".
         //4.2.2.7 It is possible to unify a "float" in the signature with an "int" in the type, but doing so puts a "+1 badness" to the resultant inferred subroutine.
         switch (type.getUnificationKind()) {
             case Variable:
-                //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is ... another variable that is not under the constraint "must be an integer or float".
-                if (type.isNull() && variable.boundToNumeric) return false;
+                if (variable.boundToNumeric && type.boundToReferenceType) return false;
+                if (variable.boundToReferenceType && type.boundToNumeric) return false;
+                if (variable.boundToNumeric) type.boundToNumeric = true;
+                if (variable.boundToReferenceType) type.boundToReferenceType = true;
                 variable.boundToSpecificType = type;
                 return true;
             case Simple:
+                //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is ... another variable that is not under the constraint "must be an integer or float".
+                if (type.isNull() && variable.boundToNumeric) return false;
+                //4.2.2.4 Unifying an integer with a type variable only puts the constraint "must be an integer or float" on the variable.
+                if (type.equals(Type.integerType)) {
+                    if (variable.boundToReferenceType) return false;
+                    variable.boundToNumeric = true;
+                    return true;
+                }
                 // TODO advanced stuff
                 // 4.2.2.1 Unifying a null with a type variable puts the constraint "must be an object" on the variable.
-                if (type.equals(Type.nullType)) {
+                if (type.isNull()) {
                     variable.boundToReferenceType = true;
                     return true;
                 }
@@ -194,9 +209,7 @@ public final class OverloadResolution {
         }
         throw new RuntimeException("This unification type is impossible.");
     }
-
-    public static boolean unify(Types formal, Types actual, IntegerHolder badness)
-    {
+    public static boolean unify(Types formal, Types actual, IntegerHolder badness) {
         for (int i = 0; i < formal.size(); i++) {
             Type formalType = formal.get(i);
             Type actualType = actual.get(i);
@@ -217,6 +230,8 @@ public final class OverloadResolution {
         if (call.type == Type.errorType) {
             return;
         }
+        debug ("Phase 2 for " + call.group.name);
+        debug ("Token count: " + call.subroutineTokens.size());
 //        1. We receive a set of possible types.
           ArrayList<SubroutineToken> legalSubroutines = call.subroutineTokens;
 //        2. Remove from consideration all inferred subroutines whose return type cannot be unified with any type given in the set of possible types. A "float" possible type is unifiable with a subroutine return type of "int" but adds +1 badness.
@@ -226,7 +241,10 @@ public final class OverloadResolution {
                   SubroutineToken st = legalSubroutines.get(sti);
                   for (Type rType : returnTypes) {
                       // Test unification
-                      unifiable = true;
+                      // TODO For now, let's suppose only a single return type.
+                      IntegerHolder isbad = new IntegerHolder();
+                      unifiable = unify(rType, st.formalTypes.get(st.formalTypes.size() -1 ), isbad);
+                      st.badness += isbad.value  * 2;
                       break;
                   }
                   if (!unifiable) {
@@ -239,14 +257,26 @@ public final class OverloadResolution {
               call.setErrorType();
               return;
           }
-            // 2a.  Objectify all variables in formal types
+
+            // 2a.  Objectify all variables in formal types.
             for (SubroutineToken token : legalSubroutines) {
                 token.formalTypes.objectify();
                 for (int i = 0; i < token.types.size(); i++) {
                     token.types.set(i, token.types.get(i).objectify());
                 }
-                debug("Formal types are: " + token.formalTypes);
             }
+        // 2aa. Numerically-bound type variables become integers.
+        for (SubroutineToken token : legalSubroutines) {
+
+            for (Type t : token.formalTypes) {
+                Type tFinalBind = t.objectify();
+                if (tFinalBind == null && tFinalBind.boundToNumeric) {
+                    debug("Binding " + tFinalBind + " to integer.");
+                    tFinalBind.boundToSpecificType = Type.integerType;
+                }
+            }
+        }
+
 //        3. Remove from consideration all inferred subroutines that still have a free variable left.
           legalSubroutines.removeIf(sbrt -> {
              for (Type formalType : sbrt.formalTypes) {
@@ -255,7 +285,7 @@ public final class OverloadResolution {
               return false;
           });
         if (legalSubroutines.size() == 0) {
-            compilation.semanticError("Type inference failed for " + call.group.name + " because some type varaibles remain free. You may need to specify type arguments directly.");
+            compilation.semanticError("Type inference failed for '" + call.group.name + "' because some type variables remain free. You may need to specify type arguments directly.");
             call.setErrorType();
             return;
         }
@@ -268,10 +298,13 @@ public final class OverloadResolution {
 
             // TODO
         }
+        debug ("Phase 2: We are choosing among " + legalSubroutines.size() + " subroutines.");
+
 //        6. If there are still at least two inferred subroutines considered, then discover if one is better than all others. A subroutine is better than another subroutine if it has less badness. If there is one best subroutine, consider it best. If not, signal an error (TODO this can be made better perhaps).
         int bestBadness = Integer.MAX_VALUE;
         SubroutineToken bestSubroutine = null;
         for (SubroutineToken consideredSubroutine : legalSubroutines) {
+            debug (consideredSubroutine + ": badness " + consideredSubroutine.badness);
             if (consideredSubroutine.badness < bestBadness) {
                 bestBadness = consideredSubroutine.badness;
                 bestSubroutine = consideredSubroutine;
@@ -283,12 +316,14 @@ public final class OverloadResolution {
             bestSubroutineSelected(bestSubroutine, call, compilation);
         } else {
             compilation.semanticError("The call is ambiguous between the following subroutines: " + legalSubroutines.stream().map(sbtk -> "'" + sbtk.subroutine.getSignature(false, false) + "'").collect(Collectors.joining(",")) + ".", call.line, call.column);
+            call.setErrorType();
+            debug("Well,drat.");
         }
     }
-
     private static void bestSubroutineSelected(SubroutineToken bestSubroutine, CallExpression call, Compilation compilation) {
         call.callee = bestSubroutine;
         call.type = bestSubroutine.formalTypes.get(bestSubroutine.formalTypes.size() - 1); // TODO iterate through to get the last final in type unification procedure
+        debug("Best subroutine: " + call);
         for (int i = 0; i < call.arguments.size(); i++) {
             Expression argument = call.arguments.get(i);
             Type formalType = bestSubroutine.formalTypes.get(i);
@@ -298,13 +333,24 @@ public final class OverloadResolution {
             Type actualType = argument.type; // TODO while cycle to secure real type?
 
             if (Objects.equals(actualType.name, Type.integerType.name) && Objects.equals(formalType.name, Type.floatType.name)) {
+
+
                 call.arguments.set(i, new IntegerToFloatExpression(argument));
+                if (i == 0 && call.kind == ExpressionKind.Assignment) {
+                    compilation.semanticError("Cannot implicitly convert from integer to float.", call.line, call.column);
+                    call.setErrorType();
+                    return;
+                }
             }
         }
         // TODO Propagate
     }
 
+    // Utilities
     private static void debug(String line) {
         System.out.println("- " + line);
+    }
+    private static class IntegerHolder {
+        public int value;
     }
 }
