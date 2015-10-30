@@ -1,7 +1,6 @@
 package compiler;
 
-import compiler.generated.CompilerLexer;
-import compiler.generated.CompilerParser;
+import compiler.generated.*;
 
 import java.io.File;
 import java.io.FileReader;

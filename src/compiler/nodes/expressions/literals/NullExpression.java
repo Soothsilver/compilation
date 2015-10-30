@@ -14,6 +14,7 @@ public class NullExpression extends LiteralExpression {
 
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
+        if (types == null) return;
         for (Type setType : types) {
             if (setType.isReferenceType) {
                 // TODO unification

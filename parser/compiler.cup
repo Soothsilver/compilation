@@ -85,9 +85,11 @@ terminal Boolean BOOLEAN;
         Non terminals 
    ------------------------------------------------- */
 non terminal program;
+
 non terminal Declarations global_declarations;
 non terminal Declaration global_declaration;
-non terminal Type type_declaration;
+non terminal Declarations local_declarations;
+non terminal Variable local_declaration;
 non terminal Variable variable_declaration;
 
 non terminal Subroutines subroutines;
@@ -96,29 +98,36 @@ non terminal Subroutine function;
 non terminal Subroutine procedure;
 non terminal Subroutine procedure_header;
 non terminal Subroutine function_header;
-non terminal ArrayList<Parameter> parameters;
-non terminal Parameter parameter;
 non terminal Subroutine procedure_name;
 non terminal Subroutine function_name;
 non terminal ArrayList<TypeParameter> optional_subroutine_type_parameters;
 non terminal ArrayList<Parameter> optional_parameters;
+non terminal ArrayList<Parameter> parameters;
+non terminal Parameter parameter;
 
-non terminal Type type;
-non terminal list_type;
-non terminal structure_type;
-non terminal class_type;
-non terminal type_definition;
-non terminal type_instantiation;
-non terminal ArrayList<Type> type_arguments;
+non terminal TypeOrTypeTemplate type_declaration;
+non terminal class_header;
+non terminal structure_header;
+non terminal store_statically_type_name;
+non terminal ArrayList<TypeParameter> class_type_parameters;
+non terminal class_type_contents;
+non terminal structure_type_contents;
+
 non terminal ArrayList<TypeParameter> type_parameters;
 non terminal ArrayList<TypeParameter> subroutine_type_parameters;
 non terminal ArrayList<TypeParameter> type_parameters_inner;
+non terminal ArrayList<Type> type_arguments;
 
-non terminal BlockStatement block;
+non terminal Type type;
+non terminal list_type;
+non terminal type_instantiation;
+
 non terminal Statements statements;
 non terminal Statement statement;
 non terminal Statement open_statement;
 non terminal Statement closed_statement;
+non terminal BlockStatement block;
+non terminal open_scope, close_scope, enter_cycle, leave_cycle;
 non terminal IfStatement if_short;
 non terminal IfStatement if_long_closed_open;
 non terminal Statement loop_open;
@@ -128,16 +137,11 @@ non terminal Statement loop_closed;
 non terminal CycleStatement foreach_head;
 non terminal CycleStatement while_head;
 non terminal CycleStatement for_head;
-non terminal open_scope, close_scope, enter_cycle, leave_cycle;
 
 non terminal Expressions expressions;
 non terminal Expression expression;
 non terminal Expression constant;
 non terminal new_list;
-
-non terminal local_declarations;
-non terminal local_declaration;
-
 non terminal Expression expr13_assignment, expr12_or, expr11_and, expr10_bitwise_or, expr9_xor, expr8_bitwise_and, expr7_equality, expr6_comparison, expr5_shift, expr4_addition, expr3_multiplication, expr2_prefix, expr1_postfix, expr0_simple;
 non terminal SubroutineGroup expr1_subroutinegroup;
 non terminal String assignment_operator, relational_operator;
@@ -255,10 +259,10 @@ parameter  	::= IDENTIFIER:id COLON type:t
    ------------------------------------------------- */
 open_scope  ::= {: getEnvironment().enterScope(); :};
 close_scope ::= {: getEnvironment().leaveScope(); :};
-block	        	::= LBRACE open_scope local_declarations statements:s close_scope RBRACE
+block	        	::= LBRACE open_scope local_declarations:d statements:s close_scope RBRACE
                         {:
-                            // TODO document that it is correct that local declarations are not part of the abstract syntax tree
                             RESULT = new BlockStatement();
+                            RESULT.declarations = d;
                             RESULT.statements = s;
                         :}
                         ;
@@ -369,7 +373,7 @@ global_declarations     	  ::=
                global_declarations:gds global_declaration:gd {: gds.add(gd); RESULT = gds; :}
                | {: RESULT = new Declarations(); :};
 global_declaration            ::=
-	type_declaration |
+	type_declaration:t {: RESULT = t; :} |
 	DEBUG_SPAWN_STRUCTURE IDENTIFIER:id {: Type theStructure = Type.createDebugStructure(id); getEnvironment().addType(theStructure); RESULT = theStructure; :} SEMICOLON |
 	variable_declaration:v {: RESULT = v; :} |
 	error SEMICOLON 
@@ -377,17 +381,34 @@ global_declaration            ::=
 		parser.compilation.addSuffix(" Malformed declaration. Analysis continues at next semicolon.");
 	:}
 	;
-local_declarations ::= local_declarations local_declaration | ;
-local_declaration  ::= variable_declaration;
+local_declarations ::= local_declarations:decs local_declaration:l {: decs.add(l); RESULT = decs; :}
+                        | {: RESULT = new Declarations(); :} ;
+local_declaration  ::= variable_declaration:v {: RESULT = v; :};
+type_declaration ::= TYPE store_statically_type_name EQUAL CLASS class_header LBRACE class_type_contents RBRACE SEMICOLON
+                     {: RESULT = TypeDefinitionProcess.endTypeDefinition(parser.compilation); :}
+                     | TYPE store_statically_type_name EQUAL STRUCTURE structure_header LBRACE structure_type_contents RBRACE SEMICOLON
+                     {: RESULT = TypeDefinitionProcess.endTypeDefinition(parser.compilation); :}
+                     ;
+class_header ::= LEFTTYPEBRACKET class_type_parameters:tp RIGHTTYPEBRACKET {: TypeDefinitionProcess.setTypeParameters(tp); TypeDefinitionProcess.createClass(parser.compilation); :}
+                    | {: TypeDefinitionProcess.setTypeParameters(null); TypeDefinitionProcess.createClass(parser.compilation); :} ;
+structure_header ::= LEFTTYPEBRACKET class_type_parameters:tp RIGHTTYPEBRACKET {: TypeDefinitionProcess.setTypeParameters(tp); TypeDefinitionProcess.createClass(parser.compilation); :}
+                    | {: TypeDefinitionProcess.setTypeParameters(null); TypeDefinitionProcess.createClass(parser.compilation); :} ;
+store_statically_type_name ::= IDENTIFIER:id {: TypeDefinitionProcess.beginTypeDefinition(id, idleft, idright, parser.compilation); :};
+class_type_parameters ::= type_parameters:tp {: RESULT = tp; :};
 
-type_declaration		::= TYPE IDENTIFIER EQUAL type_definition SEMICOLON;
-type_definition ::= structure_type | class_type;
-structure_type	::= STRUCTURE LBRACE local_declarations RBRACE
-            | STRUCTURE LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations RBRACE
-            ;
-class_type	::= CLASS LBRACE local_declarations subroutines RBRACE
-            | CLASS LEFTTYPEBRACKET type_parameters RIGHTTYPEBRACKET LBRACE local_declarations subroutines RBRACE
-            ;
+class_type_contents ::= local_declarations:ld subroutines:sbrt
+                        {:
+                            TypeDefinitionProcess.currentType.setDeclarations ( ld );
+                            TypeDefinitionProcess.currentType.setSubroutines ( sbrt );
+                        :}
+                        ;
+structure_type_contents ::= local_declarations:ld
+                        {:
+                            TypeDefinitionProcess.currentType.setDeclarations ( ld );
+                        :}
+                        ;
+
+
 variable_declaration	::= IDENTIFIER:id COLON type:tp SEMICOLON
     {: Variable v = Variable.createAndAddToEnvironment(id, tp, idleft, idright, parser.compilation); RESULT = v; :}
     ;

@@ -186,7 +186,9 @@ public class Environment {
         inFunction = inProcedure = false;
         returnType = null;
         leaveScope();
+        leaveVariableScope();
         leaveTypeScope();
+
     }
 
 
@@ -226,20 +228,28 @@ public class Environment {
     }
 
     public void enterTypeScope() {
-
         ScopeTree<TypeOrTypeTemplate> typeTemp = typeTable;
         typeStack.addFirst(typeTable);
         depth++;
         debug("Enter type scope.");
-
     }
 
-    private void leaveTypeScope() {
-
+    public void leaveTypeScope() {
         depth--;
         typeTable = typeStack.removeFirst();
         debug("Leave type scope.");
+    }
+    public void enterVariableScope() {
+        ScopeTree<Variable> typeTemp = variableTable;
+        variableStack.addFirst(variableTable);
+        depth++;
+        debug("Enter variable scope.");
+    }
 
+    private void leaveVariableScope() {
+        depth--;
+        variableTable = variableStack.removeFirst();
+        debug("Leave variable scope.");
     }
 
     public void addPredefinedTypesConstantsAndFunctions() {

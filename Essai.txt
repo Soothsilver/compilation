@@ -1,12 +1,15 @@
+type A = structure { };
+type B = structure { };
+type C = structure [[T]] { };
 
-    i : integer;
-
-
-
-function get() : integer { return 1; }
-function get() : boolean { return true; }
+function getList [[T]] ()
+    : T
+    { return null; }
 
 procedure main()
 {
-    i = get();
+   a : A;
+   b : B;
+   a = getList();
+   b = getList();
 }

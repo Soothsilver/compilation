@@ -3,6 +3,7 @@ package compiler.nodes.declarations;
 import compiler.Compilation;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Type extends TypeOrTypeTemplate {
     public TypeKind kind;
@@ -120,6 +121,12 @@ public class Type extends TypeOrTypeTemplate {
         t.kind = TypeKind.SimpleType;
         return t;
     }
+    public static Type createClass(String name, int line, int column) {
+        Type t = new Type(name, line, column);
+        t.kind = TypeKind.SimpleType;
+        // TODO (elsewhere) make a note in the rapport that we are using named types only
+        return t;
+    }
 
     public static Type createNewTypeVariable(String name) {
         Type t = new Type(name, -1, -1);
@@ -139,10 +146,18 @@ public class Type extends TypeOrTypeTemplate {
         t.kind = TypeKind.SubroutineTypeParameter;
         return t;
     }
+    public static Type createClassTypeVariable(String typename, int line, int column) {
+        Type t = new Type(typename, line, column);
+        t.kind = TypeKind.ClassTypeParameter;
+        return t;
+    }
 
     @Override
     public String getFullString() {
-        return "type " + name + " = structure {};";
+        return "type " + name + " = class {\n"
+                + declarations.stream().map(decl->decl.getFullString()).collect(Collectors.joining(","))
+                + subroutines
+                + "};";
     }
 
     public boolean isNull() {

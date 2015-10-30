@@ -39,6 +39,7 @@ public class TestUtilities {
     public static void runTest(File file, boolean syntaxOnly, TestCase testCase) {
         try {
             Compilation compilation = new Compilation(file);
+            if (syntaxOnly) compilation.ignoreSemanticErrors = true;
             CompilerLexer myLex = new CompilerLexer(new FileReader(file));
             myLex.compilation = compilation;
             CompilerParser myParser = new CompilerParser(myLex);

@@ -37,6 +37,7 @@ public class Subroutine extends Declaration {
         s.returnType = returnType == null ? Type.voidType : returnType;
         Subroutine.constructingWhatSubroutine = s;
         compilation.environment.enterTypeScope();
+        compilation.environment.enterVariableScope();
         return s;
     }
     public void setTypeParameters(ArrayList<TypeParameter> typeParameters) {
