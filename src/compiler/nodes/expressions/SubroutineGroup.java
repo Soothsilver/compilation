@@ -17,6 +17,14 @@ public class SubroutineGroup extends Node {
         subroutines = new ArrayList<>(linkedList);
     }
 
+    /**
+     * Searches the table of symbols for all subroutines with the specified name and returns them as a group.
+     * @param identifier Only subroutines with this name will be returned.
+     * @param line Line in source code of this expression.
+     * @param column Column in source code of this expression.
+     * @param compilation The compilation data (needed for Environment access).
+     * @return
+     */
     public static SubroutineGroup create(String identifier, int line, int column, Compilation compilation) {
          SubroutineGroup g = new SubroutineGroup(compilation.environment.findSubroutines(identifier));
          g.name = identifier;
@@ -24,6 +32,17 @@ public class SubroutineGroup extends Node {
          g.column = column;
          return g;
     }
+
+    /**
+     * Searches the type for all subroutines with the specified name and returns them as a group. The type is determined from the parent expression.
+     *
+     * @param parent This expression's type will be evaluated and then used to determine where to look for subroutines.
+     * @param memberSubroutine Only subroutines with this name will be returned.
+     * @param line Line in source code of this expression.
+     * @param column Column in source code of this expression.
+     * @param compilation The compilation data (needed for Environment access).
+     * @return
+     */
     public static SubroutineGroup create(Expression parent, String memberSubroutine, int line, int column, Compilation compilation) {
         SubroutineGroup g = new SubroutineGroup(new LinkedList<>()); // TODO to be implemented
         g.name = memberSubroutine; // TO BE bettered

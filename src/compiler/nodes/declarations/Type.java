@@ -186,6 +186,14 @@ public class Type extends TypeOrTypeTemplate {
         t.typeArguments = typeArguments;
         return t;
     }
+    public static Type createArray(Type inner, int line, int column) {
+        Type tArray = new Type("!array", line, column);
+        tArray.kind = TypeKind.ArrayType;
+        tArray.typeArguments = new ArrayList<>();
+        tArray.typeArguments.add(inner);
+        return tArray;
+        // TODO (elsewhere) unifying should work differently for method calls (int-to-float) and types (exactitude)
+    }
 
     @Override
     public String getFullString() {

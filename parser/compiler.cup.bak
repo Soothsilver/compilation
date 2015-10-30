@@ -319,8 +319,7 @@ if_long_closed_closed  ::= IF LPAR expression:ex RPAR closed_statement:st ELSE c
                         {:
                             RESULT = new IfStatement(ex, st, stelse, parser.compilation);
                         :};
-loop_closed	       ::=
-                         foreach_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+loop_closed	       ::= foreach_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
 		    		   | while_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
 		    		   | for_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
 		    		   ;
@@ -444,64 +443,65 @@ relational_operator ::=
     | GREATEROREQUAL {: RESULT = ">="; :}
     ;
 
+    /* TODO all the operators :), but that can wait */
 expression ::= expr13_assignment:e {: RESULT = e; :};
 expr13_assignment ::=
     expr12_or:left assignment_operator:op expr13_assignment:right {: RESULT = BinaryExpression.create(left, op, right, opleft, opright, parser.compilation); :}
   | expr12_or:e {: RESULT = e; :}
     ;
 expr12_or ::=
-    expr12_or:e1 LOGICALOR:op expr11_and:e2 {: RESULT = BinaryExpression.create(e1, "||", e2, opleft, opright, parser.compilation); :}
+    expr12_or LOGICALOR expr11_and
   | expr11_and:e  {: RESULT = e; :}
     ;
 expr11_and ::=
-    expr11_and:e1 LOGICALAND:op expr10_bitwise_or:e2 {: RESULT = BinaryExpression.create(e1, "&&", e2, opleft, opright, parser.compilation); :}
+    expr11_and LOGICALAND expr10_bitwise_or
   | expr10_bitwise_or:e  {: RESULT = e; :}
     ;
 expr10_bitwise_or ::=
-    expr10_bitwise_or:e1 BITWISEOR:op expr9_xor:e2 {: RESULT = BinaryExpression.create(e1, "|", e2, opleft, opright, parser.compilation); :}
+    expr10_bitwise_or BITWISEOR expr9_xor
   | expr9_xor:e  {: RESULT = e; :}
     ;
 expr9_xor ::=
-    expr9_xor:e1 XOR:op expr8_bitwise_and:e2 {: RESULT = BinaryExpression.create(e1, "^", e2, opleft, opright, parser.compilation); :}
+    expr9_xor XOR expr8_bitwise_and
   | expr8_bitwise_and:e  {: RESULT = e; :}
     ;
 expr8_bitwise_and ::=
-    expr8_bitwise_and:e1 BITWISEAND:op expr7_equality:e2 {: RESULT = BinaryExpression.create(e1, "&", e2, opleft, opright, parser.compilation); :}
+    expr8_bitwise_and BITWISEAND expr7_equality
   | expr7_equality:e  {: RESULT = e; :}
     ;
 expr7_equality ::=
-    expr7_equality:e1 EQUALEQUAL:op expr6_comparison:e2 {: RESULT = BinaryExpression.create(e1, "==", e2, opleft, opright, parser.compilation); :}
-  | expr7_equality:e1 UNEQUAL:op expr6_comparison:e2 {: RESULT = BinaryExpression.create(e1, "!=", e2, opleft, opright, parser.compilation); :}
+    expr7_equality:e1 EQUALEQUAL:op expr6_comparison:e2
+  | expr7_equality UNEQUAL expr6_comparison
   | expr6_comparison:e  {: RESULT = e; :}
     ;
 expr6_comparison ::=
-    expr6_comparison:e1 relational_operator:op expr5_shift:e2 {: RESULT = BinaryExpression.create(e1, op, e2, opleft, opright, parser.compilation); :}
+    expr6_comparison relational_operator expr5_shift
   | expr5_shift:e  {: RESULT = e; :}
     ;
 expr5_shift ::=
-    expr5_shift:e1 SHIFTLEFT:op expr4_addition:e2 {: RESULT = BinaryExpression.create(e1, "<<", e2, opleft, opright, parser.compilation); :}
-  | expr5_shift:e1 SHIFTRIGHT:op expr4_addition:e2 {: RESULT = BinaryExpression.create(e1, ">>", e2, opleft, opright, parser.compilation); :}
+    expr5_shift SHIFTLEFT expr4_addition
+  | expr5_shift SHIFTRIGHT expr4_addition
   | expr4_addition:e  {: RESULT = e; :}
     ;
 expr4_addition ::=
-    expr4_addition:e1 MINUS:op expr3_multiplication:e2 {: RESULT = BinaryExpression.create(e1, "-", e2, opleft, opright, parser.compilation); :}
+    expr4_addition MINUS expr3_multiplication
   | expr4_addition:e1 PLUS:op expr3_multiplication:e2 {: RESULT = BinaryExpression.create(e1, "+", e2, opleft, opright, parser.compilation); :}
-  | expr4_addition:e1 CONCATENATE:op expr3_multiplication:e2 {: RESULT = BinaryExpression.create(e1, "@", e2, opleft, opright, parser.compilation); :}
+  | expr4_addition CONCATENATE expr3_multiplication
   | expr3_multiplication:e  {: RESULT = e; :}
     ;
 expr3_multiplication ::=
-    expr3_multiplication:e1 TIMES:op expr2_prefix:e2 {: RESULT = BinaryExpression.create(e1, "*", e2, opleft, opright, parser.compilation); :}
-  | expr3_multiplication:e1 DIVIDE:op expr2_prefix:e2 {: RESULT = BinaryExpression.create(e1, "/", e2, opleft, opright, parser.compilation); :}
-  | expr3_multiplication:e1 MODULO:op expr2_prefix:e2 {: RESULT = BinaryExpression.create(e1, "%", e2, opleft, opright, parser.compilation); :}
+    expr3_multiplication TIMES expr2_prefix
+  | expr3_multiplication DIVIDE expr2_prefix
+  | expr3_multiplication MODULO expr2_prefix
   | expr2_prefix:e  {: RESULT = e; :}
     ;
 expr2_prefix ::=
-    INCREMENT:op expr2_prefix:right {: RESULT = UnaryExpression.create("++", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
-  | DECREMENT:op expr2_prefix:right {: RESULT = UnaryExpression.create("--", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
-  | LOGICALNEGATION:op expr2_prefix:right {: RESULT = UnaryExpression.create("!", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
-  | BITWISENEGATION:op expr2_prefix:right {: RESULT = UnaryExpression.create("~", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
-  | PLUS:op expr2_prefix:right {: RESULT = UnaryExpression.create("+", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
-  | MINUS:op expr2_prefix:right {: RESULT = UnaryExpression.create("-", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
+    INCREMENT:op expr2_prefix:right {: RESULT = UnaryExpression.create("PRE++", right, opleft, opright, parser.compilation); :}
+  | DECREMENT expr2_prefix
+  | LOGICALNEGATION expr2_prefix
+  | BITWISENEGATION expr2_prefix
+  | PLUS expr2_prefix
+  | MINUS expr2_prefix
   | expr1_postfix:e  {: RESULT = e; :}
     ;
 expr1_postfix ::=
@@ -509,12 +509,13 @@ expr1_postfix ::=
   | expr1_subroutinegroup:id LPAR expressions:args RPAR{: RESULT = CallExpression.create(id, null, args, idleft, idright, parser.compilation); :}
   | expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR expressions:args RPAR {: RESULT = CallExpression.create(id, targs, args, idleft, idright, parser.compilation); :}
   | expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR RPAR {: RESULT = CallExpression.create(id, targs, null, idleft, idright, parser.compilation); :}
-  | expr1_postfix PERIOD IDENTIFIER /* Variable expression */
+  | expr1_postfix PERIOD IDENTIFIER  /* Variable expression */
   | expr1_postfix LBRACKET expression RBRACKET /* Variable expression */
-  | expr1_postfix:left INCREMENT:op {: RESULT = UnaryExpression.create("++", UnaryExpressionSide.Postfix, left, opleft, opright, parser.compilation); :}
-  | expr1_postfix:left DECREMENT:op {: RESULT = UnaryExpression.create("--", UnaryExpressionSide.Postfix, left, opleft, opright, parser.compilation); :}
-  | expr0_simple:e  {: RESULT = e; :}
+  | expr1_postfix INCREMENT
+  | expr1_postfix DECREMENT
+    expr0_simple:e  {: RESULT = e; :}
     ;
+
 expr1_subroutinegroup ::=
     IDENTIFIER:id {: RESULT = SubroutineGroup.create(id, idleft, idright, parser.compilation); :} |
     expr1_postfix:var PERIOD IDENTIFIER:id {: RESULT = SubroutineGroup.create(var, id, varleft, varright, parser.compilation); :}

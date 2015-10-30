@@ -1,7 +1,7 @@
 package compiler.nodes.declarations;
 
 import compiler.Compilation;
-import compiler.Parameter;
+import compiler.nodes.Parameter;
 import compiler.nodes.statements.Statement;
 
 import java.util.ArrayList;

@@ -4,9 +4,7 @@ import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
 
 public class BinaryExpression extends CallExpression {
-  public String operator;
-
-
+    public String operator;
 
     public static BinaryExpression create(Expression left, String operator, Expression right, int line, int column, Compilation compilation) {
         BinaryExpression ex = new BinaryExpression();
@@ -26,7 +24,10 @@ public class BinaryExpression extends CallExpression {
             case "*=":
             case "%=":
             case "<<=":
-                // TODO more operators
+            case ">>=":
+            case "&=":
+            case "|=":
+            case "^=":
                 ex.kind = ExpressionKind.Assignment;
                 if (!left.isAssignable()) {
                     compilation.semanticError("The left-hand side of an assignment must be a variable, array member or a class member.", line, column);
@@ -40,11 +41,9 @@ public class BinaryExpression extends CallExpression {
     }
 
 
-
-
     @Override
     public String toString() {
-        return  arguments.get(0)  + operator + arguments.get(1);
+        return arguments.get(0) + operator + arguments.get(1);
     }
 
 }

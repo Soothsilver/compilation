@@ -1,11 +1,8 @@
 package compiler.nodes.declarations;
 
-import compiler.Compilation;
-import compiler.Parameter;
-import compiler.nodes.statements.Statement;
+import compiler.nodes.Parameter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class OperatorFunction extends Subroutine {
     protected OperatorFunction(String name, int line, int column) {
