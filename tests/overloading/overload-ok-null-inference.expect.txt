@@ -1,5 +1,6 @@
 PROGRAM[
-type s = structure {};
+type s = class {
+};
 procedure a[[T]](t:T,t2:T) {  }
 procedure main() { a[[T=s]][T,T](null,new s()); }
 ]

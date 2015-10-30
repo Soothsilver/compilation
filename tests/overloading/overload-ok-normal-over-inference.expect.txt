@@ -1,7 +1,10 @@
 PROGRAM[
-type A = structure {};
-type B = structure {};
-type C = structure {};
+type A = class {
+};
+type B = class {
+};
+type C = class {
+};
 procedure set[[T]](a:T) {  }
 procedure set(a:A) {  }
 procedure main() { set[A](new A()); set[[T=B]][T](new B()); }

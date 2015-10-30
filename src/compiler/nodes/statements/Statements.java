@@ -17,4 +17,13 @@ public class Statements extends ArrayList<Statement> {
         }
         return ss.substring(0, ss.length() - 1);
     }
+    public String toLongString() {
+        if (this.size() == 0) return "";
+        String ss = "";
+        for (Statement s : this) {
+            ss += s;
+            ss += "\n";
+        }
+        return ss.substring(0, ss.length() - 1);
+    }
 }

@@ -13,6 +13,10 @@ public class Type extends TypeOrTypeTemplate {
     public Type boundToSpecificType;
     public boolean isReferenceType;
 
+    public boolean canBeNulled() {
+        return isReferenceType || kind == TypeKind.ClassTypeParameter || kind == TypeKind.SubroutineTypeParameter;
+    }
+
     protected Type(String name, int line, int column) {
         super(name, line, column);
     }
@@ -98,13 +102,23 @@ public class Type extends TypeOrTypeTemplate {
                 return "VAR:" + name + "(REF)";
             else
                 return "VAR:" + name;
+        } else if (typeArguments != null) {
+            return name + "[[" + typeArguments.stream().map(t -> t.toString()).collect(Collectors.joining(",")) + "]]";
         } else return name;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Type &&
-                name.equals(((Type) obj).name);
+        if (!( obj instanceof Type )) return false;
+        Type other = (Type)obj;
+        if (!name.equals(other.name)) return false;
+        if (typeArguments == null && other.typeArguments != null) return false;
+        if (typeArguments != null) {
+            for(int i = 0; i < typeArguments.size(); i++) {
+                if (!typeArguments.get(i).equals(other.typeArguments.get(i))) return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -149,6 +163,27 @@ public class Type extends TypeOrTypeTemplate {
     public static Type createClassTypeVariable(String typename, int line, int column) {
         Type t = new Type(typename, line, column);
         t.kind = TypeKind.ClassTypeParameter;
+        return t;
+    }
+    public static Type instantiateTemplate(String name, ArrayList<Type> typeArguments, int line, int column, Compilation compilation) {
+        TypeOrTypeTemplate templateMaybe = compilation.environment.findType(name);
+        if (templateMaybe == null) {
+            compilation.semanticError("The type template '" + name + "' could not be found.", line, column);
+            return Type.errorType;
+        }
+        if (!(templateMaybe instanceof TypeTemplate)) {
+            compilation.semanticError("The non-generic type '" + name + "' cannot be used with type arguments.", line, column);
+            return Type.errorType;
+        }
+        TypeTemplate template = (TypeTemplate)templateMaybe;
+        if (template.typeParameters.size() != typeArguments.size()) {
+            compilation.semanticError("The generic type '" + template.name + "' requires " + template.typeParameters.size() + " type arguments.", line, column);
+            return Type.errorType;
+        }
+        Type t = new Type(name, line, column);
+        t.isReferenceType = true;
+        t.kind = TypeKind.GenericTypeInstance;
+        t.typeArguments = typeArguments;
         return t;
     }
 

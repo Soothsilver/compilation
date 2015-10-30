@@ -8,7 +8,15 @@ import compiler.nodes.expressions.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This class groups together the algorithms used during type inference and overload resolution.
+ */
 public final class OverloadResolution {
+    /**
+     * Performs phase one of the Overload Resolution Process (see the txt file in this folder).
+     * @param call The call expression to disambugate.
+     * @param compilation The compilation process class.
+     */
     public static void phaseOne(CallExpression call, Compilation compilation) {
 //In the first phase, evaluate call expressions like this:
 //(If at any point you signal an error, set the type of the expression to the special Type.getErrorType() and stop evaluating the first phase.)
@@ -16,7 +24,7 @@ public final class OverloadResolution {
         SubroutineGroup group = call.group;
         debug("Overload resolution begins for " + call + ", subroutine group has " + group.subroutines.size() + " candidates.");
 //1.1 If none exist, signal an error.
-        if (group.subroutines.size() == 0) {
+        if (group.subroutines.isEmpty()) {
             compilation.semanticError("There is no subroutine with the name '" + group.name + "' at this point.", group.line, group.column);
             call.setErrorType();
             return;
@@ -25,7 +33,7 @@ public final class OverloadResolution {
 //2.1. If none remain, signal an error.
         if (call.typeArguments != null) {
             group.subroutines.removeIf(sbrt -> sbrt.typeParameterNames.size() != call.typeArguments.size());
-            if (group.subroutines.size() == 0) {
+            if (group.subroutines.isEmpty()) {
                 compilation.semanticError("No subroutine with the name '" + group.name + "' has " + call.typeArguments.size() + " type parameters.", group.line, group.column);
                 call.setErrorType();
                 return;
@@ -139,7 +147,8 @@ public final class OverloadResolution {
                     case Simple:
                         return unifySimpleTypes(formal, actual, badness);
                     case Structured:
-                        return false; // TODO but null!
+                        if (formal.isNull()) return true;
+                        return false;
                     case Variable:
                         if (actual.boundToSpecificType != null) {
                             if (!actual.objectify().equals(formal)) {
@@ -161,9 +170,16 @@ public final class OverloadResolution {
             case Structured:
                 switch (secondKind) {
                     case Simple:
-                        return false; // TODO but null!
+                        if (actual.isNull()) return true;
+                        return false;
                     case Structured:
-                        return formal.name.equals(actual.name); // TODO and compare daughter types
+                        if (!formal.name.equals(actual.name)) return false;
+                        if (formal.typeArguments.size() != actual.typeArguments.size()) return false;
+                        for (int i =0 ; i < formal.typeArguments.size(); i++) {
+                            boolean unifyDaughters = unify(formal.typeArguments.get(i), actual.typeArguments.get(i), badness);
+                            if (!unifyDaughters) return false;
+                        }
+                        return true;
                     case Variable:
                         return unifyVariableWithSomething(actual, formal);
                 }

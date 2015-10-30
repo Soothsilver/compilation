@@ -16,13 +16,7 @@ public class NullExpression extends LiteralExpression {
     public void propagateTypes(Set<Type> types, Compilation compilation) {
         if (types == null) return;
         for (Type setType : types) {
-            if (setType.isReferenceType) {
-                // TODO unification
-                return;
-            }
-            if (setType.kind == Type.TypeKind.TypeVariable) {
-                return; // TODO checks?
-            }
+            if (setType.canBeNulled()) return;
         }
         // TODO T t = null;
         compilation.semanticError("None of the following types is nullable: " + types, line, column);

@@ -1,15 +1,15 @@
 type A = structure { };
 type B = structure { };
-type C = structure [[T]] { };
+type C = structure [[W]] { };
 
-function getList [[T]] ()
-    : T
+function getList [[U]] ()
+    : C[[U]]
     { return null; }
 
 procedure main()
 {
-   a : A;
-   b : B;
+   a : C[[A]];
+   b : C[[B]];
    a = getList();
    b = getList();
 }

@@ -59,14 +59,17 @@ public class TestUtilities {
                             } catch (Exception fileEx) {
                                 testCase.fail("Expect file not found.");
                             }
-                            if (actual.trim().replace("\r", "").equals(expect.trim().replace("\r", ""))) {
-
+                            if (actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "").equals(
+                                expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", ""))) {
                             } else {
                                 System.out.println("OUTPUT MISMATCH!");
                                 System.out.println("ACTUAL:");
                                 System.out.println(actual);
                                 System.out.println("EXPECTED:");
                                 System.out.println(expect);
+                                System.out.println("SHORT FORM ACTUAL::" + actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
+                                System.out.println("SHORT FORM FORMAL::" + expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
+                                System.out.println("END.");
                                 testCase.fail("Output mismatch!");
                             }
                         } else {

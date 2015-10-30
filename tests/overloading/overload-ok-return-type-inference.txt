@@ -6,8 +6,8 @@ function getList [[T]] () : C[[T]] { return null; }
 
 procedure main()
 {
-   a : A;
-   b : B;
+   a : C[[A]];
+   b : C[[B]];
    a = getList();
    b = getList();
 }

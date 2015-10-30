@@ -1,6 +1,8 @@
 PROGRAM[
-type s = structure {};
-type t = structure {};
+type s = class {
+};
+type t = class {
+};
 procedure a(a:s,b:s) {  }
 procedure a(a:t,b:s) {  }
 procedure main() { a[t,s](new t(),null); }

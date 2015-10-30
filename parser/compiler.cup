@@ -119,8 +119,8 @@ non terminal ArrayList<TypeParameter> type_parameters_inner;
 non terminal ArrayList<Type> type_arguments;
 
 non terminal Type type;
-non terminal list_type;
-non terminal type_instantiation;
+non terminal Type list_type;
+non terminal Type type_instantiation;
 
 non terminal Statements statements;
 non terminal Statement statement;
@@ -343,12 +343,13 @@ for_head	       ::= FOR LPAR expression:one SEMICOLON expression:two SEMICOLON e
    ------------------------------------------------- */
 
 type		::=    IDENTIFIER:id {: RESULT = Type.findType(id, idleft, idright, parser.compilation); :}
-                 | list_type
-                 | type_instantiation;
-
+                 | list_type:t {: RESULT = t; :}
+                 | type_instantiation:t {: RESULT = t; :}
+                 ;
 list_type	::= LIST OF type;
-type_instantiation ::= IDENTIFIER LEFTTYPEBRACKET type_arguments RIGHTTYPEBRACKET;
-
+type_instantiation ::= IDENTIFIER:id LEFTTYPEBRACKET type_arguments:targ RIGHTTYPEBRACKET
+                {: Type t = Type.instantiateTemplate(id, targ, idleft, idright, parser.compilation); RESULT = t; :}
+                ;
 
 type_arguments ::=
     type:tp {: RESULT = new ArrayList<>(); RESULT.add(tp); :}
