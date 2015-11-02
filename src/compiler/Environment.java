@@ -26,6 +26,7 @@ public class Environment {
     }
 
 
+
     // All "find" methods return null if they cannot find the thing specified.
     // All "add" methods report an error if an attempt is made to add a thing that already exists (and in case of subroutines, is absolutely identical).
     //  To report this error, use the Compilation class.
@@ -149,7 +150,7 @@ public class Environment {
             subroutineTable = new ScopeTree<Subroutine>(subroutine);
         } else
             subroutineTable = subroutineTable.add(subroutine, subroutineTable);
-
+        debug("Added subroutine " + subroutine);
     }
 
     public void addType(TypeOrTypeTemplate type) {
@@ -344,6 +345,19 @@ public class Environment {
 
     private void debug(String line) {
         line = "ENV: " + line;
-        //System.out.println(line);
+        System.out.println(line);
     }
+    public <T extends Declaration> void debugPrint (ScopeTree<T> tree, String sign, int level) {
+        if (tree == null) return;
+        for (int i =0; i < level; i++)
+            System.out.print(" ");
+        System.out.print(sign);
+        System.out.println(tree.decl.getSig());
+        debugPrint(tree.left, "L", level+1);
+        debugPrint(tree.right, "R", level+1);
+    }
+    public void debugPrintSubroutines() {
+        debugPrint(subroutineTable, "ROOT", 0);
+    }
+
 }

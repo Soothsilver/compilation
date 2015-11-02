@@ -36,6 +36,7 @@ public class SubroutineGroup extends Node {
      * @return A created subroutine group.
      */
     public static SubroutineGroup create(String identifier, int line, int column, Compilation compilation) {
+         compilation.environment.debugPrintSubroutines();
          SubroutineGroup g = new SubroutineGroup(compilation.environment.findSubroutines(identifier));
          g.name = identifier;
          g.line = line;
@@ -54,7 +55,7 @@ public class SubroutineGroup extends Node {
      * @return A created subroutine group.
      */
     public static SubroutineGroup create(Expression parent, String memberSubroutine, int line, int column, Compilation compilation) {
-        SubroutineGroup g = new SubroutineGroup(new LinkedList<>()); // TODO to be implemented
+        SubroutineGroup g = new SubroutineGroup(new LinkedList<>());
         g.owner = parent;
         g.owner.propagateTypes(null, compilation);
         if (!g.owner.type.isReferenceType) {

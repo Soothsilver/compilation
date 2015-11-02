@@ -1,7 +1,6 @@
-type S = structure{};
+//EXPECT-SEMANTICAL-ERROR: Semantic error at line 5, column 5: No subroutine with the name 'hello' has 1 type parameters.
+procedure hello(a : integer, b : integer) { }
 procedure main()
 {
- b:integer;
- b=02;
- b= 2+(3.+4);
+    hello[[integer]](5,"S");
 }
