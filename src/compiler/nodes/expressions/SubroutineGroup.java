@@ -10,8 +10,18 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class SubroutineGroup extends Node {
+    /**
+     * List of all subroutines with the given name (and object)  that are visible at the point this group appear in the source code.
+     */
     public ArrayList<Subroutine> subroutines;
+    /**
+     * Identifier of the subroutine.
+     */
     public String name;
+    /**
+     * Th object that should be the only one that is searched for subroutines.
+     */
+    public Expression owner;
 
     private SubroutineGroup(LinkedList<Subroutine> linkedList) {
         subroutines = new ArrayList<>(linkedList);
@@ -23,7 +33,7 @@ public class SubroutineGroup extends Node {
      * @param line Line in source code of this expression.
      * @param column Column in source code of this expression.
      * @param compilation The compilation data (needed for Environment access).
-     * @return
+     * @return A created subroutine group.
      */
     public static SubroutineGroup create(String identifier, int line, int column, Compilation compilation) {
          SubroutineGroup g = new SubroutineGroup(compilation.environment.findSubroutines(identifier));
@@ -41,11 +51,25 @@ public class SubroutineGroup extends Node {
      * @param line Line in source code of this expression.
      * @param column Column in source code of this expression.
      * @param compilation The compilation data (needed for Environment access).
-     * @return
+     * @return A created subroutine group.
      */
     public static SubroutineGroup create(Expression parent, String memberSubroutine, int line, int column, Compilation compilation) {
         SubroutineGroup g = new SubroutineGroup(new LinkedList<>()); // TODO to be implemented
-        g.name = memberSubroutine; // TO BE bettered
+        g.owner = parent;
+        g.owner.propagateTypes(null, compilation);
+        if (!g.owner.type.isReferenceType) {
+            compilation.semanticError("The parent expression's type (" + parent.type + ") is not a reference type and cannot contain subroutines.", line, column);
+        }
+        else if (g.owner.type.subroutines == null) {
+            compilation.semanticError("The parent expression's type (" + parent.type + ") is not a class and cannot contain subroutines.", line, column);
+        }
+        else {
+            for(Subroutine member : g.owner.type.subroutines) {
+                if (member.name.equals(memberSubroutine))
+                    g.subroutines.add(member);
+            }
+        }
+        g.name = memberSubroutine;
         g.line = line;
         g.column = column;
         return g;
@@ -53,7 +77,6 @@ public class SubroutineGroup extends Node {
 
     @Override
     public String toString() {
-        // return Integer.toString(subroutines.size());
-        return subroutines.stream().map(sr -> sr.getSig()).collect(Collectors.joining());
+        return "[" + subroutines.stream().map(sr -> sr.getSig()).collect(Collectors.joining(" AND ")) + "]";
     }
 }

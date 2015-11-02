@@ -2,6 +2,7 @@ package compiler.nodes.declarations;
 
 import compiler.Compilation;
 import compiler.nodes.Parameter;
+import compiler.nodes.statements.BlockStatement;
 import compiler.nodes.statements.Statement;
 
 import java.util.ArrayList;
@@ -122,4 +123,12 @@ public class Subroutine extends Declaration {
         return getSignature(false, false) + " " +  block;
     }
 
+    public static Subroutine createPredefined(SubroutineKind kind, String name, Type returnType) {
+        Subroutine subroutine = new Subroutine(name, -1,-1);
+        subroutine.parameters = new ArrayList<>();
+        subroutine.typeParameterNames = new ArrayList<>();
+        subroutine.returnType = returnType;
+        subroutine.kind = kind;
+        return subroutine;
+    }
 }

@@ -215,6 +215,10 @@ public class Type extends TypeOrTypeTemplate {
         return this.kind == TypeKind.TypeVariable && this.boundToSpecificType == null;
     }
 
+    /**
+     * Returns the true type this represents.
+     * @return If this type is a bound type variable, descends the bounds and returns the last type. If that type is has type arguments, those arguments are replaced by their true forms (recursively).
+     */
     public Type objectify() {
         if (kind == TypeKind.TypeVariable) {
             if (this.boundToSpecificType != null) {

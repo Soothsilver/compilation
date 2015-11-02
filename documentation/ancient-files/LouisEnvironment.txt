@@ -113,7 +113,6 @@ public class Environment {
     		return variableTable.find(identifier);
     }
 
-    /* TODO : make this return a SubroutineGroup */
     public LinkedList<Subroutine> findSubroutines(String identifier) {
     	if (subroutineTable == null)
     		return null;
@@ -146,22 +145,15 @@ public class Environment {
     }
 
 
-    /* TODO */
     public void enterFunction(String name) {
         enterScope();
-        // Add parameters here
     }
     public void enterProcedure(String name) {
         enterScope();
-        // Add parameters here
     }
     public void leaveSubroutine() {
         leaveScope();
     }
-    public void setSubroutineStatement(Statement statement) {
-
-    }
-    /* TODO */
 
 
     public void enterScope() {

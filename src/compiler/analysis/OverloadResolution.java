@@ -43,7 +43,7 @@ public final class OverloadResolution {
 //2a.1. If none remain, signal an error.
         group.subroutines.removeIf(sbrt -> sbrt.parameters.size() != call.arguments.size());
         if (group.subroutines.size() == 0) {
-            compilation.semanticError("No overload of the subroutine '" + group.name + "' takes " + call.arguments.size() + " arguments.");
+            compilation.semanticError("No overload of the subroutine '" + group.name + "' takes " + call.arguments.size() + " arguments.", call.line, call.column);
             call.setErrorType();
             return;
         }
@@ -284,7 +284,7 @@ public final class OverloadResolution {
               }
           }
           if (legalSubroutines.size() == 0) {
-              compilation.semanticError("No function with the name '" + call.group.name + "' has a return type unifiable with one of the possible return types: " + returnTypes);
+              compilation.semanticError("No function with the name '" + call.group.name + "' has a return type unifiable with one of the possible return types: " + returnTypes, call.line, call.column);
               call.setErrorType();
               return;
           }
@@ -316,7 +316,7 @@ public final class OverloadResolution {
               return false;
           });
         if (legalSubroutines.size() == 0) {
-            compilation.semanticError("Type inference failed for '" + call.group.name + "' because some type variables remain free. You may need to specify type arguments directly.");
+            compilation.semanticError("Type inference failed for '" + call.group.name + "' because some type variables remain free. You may need to specify type arguments directly.", call.line, call.column);
             call.setErrorType();
             return;
         }
@@ -361,7 +361,7 @@ public final class OverloadResolution {
             // TODO if still contains a free variable, throw error? or is that already guaranteed?
             debug("Propagating at index " + i + " to " + argument);
             argument.propagateTypes(new HashSet<>(Arrays.asList(formalType)), compilation);
-            Type actualType = argument.type; // TODO while cycle to secure real type?
+            Type actualType = argument.type.objectify();
 
             if (Objects.equals(actualType.name, Type.integerType.name) && Objects.equals(formalType.name, Type.floatType.name)) {
 

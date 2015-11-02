@@ -1,10 +1,9 @@
 package compiler;
 
-import java.util.*;
-
-import compiler.nodes.*;
+import compiler.nodes.Parameter;
 import compiler.nodes.declarations.*;
-import compiler.nodes.statements.Statement;
+
+import java.util.LinkedList;
 
 public class Environment {
     public boolean inProcedure = false;
@@ -169,17 +168,14 @@ public class Environment {
     }
 
 
-    /* TODO */
     public void enterFunction() {
         inFunction = true;
         enterScope();
-        // Add parameters here
     }
 
     public void enterProcedure() {
         inProcedure = true;
         enterScope();
-        // Add parameters here
     }
 
     public void leaveSubroutine() {
@@ -205,13 +201,9 @@ public class Environment {
     public boolean inCycle() {
         return cycleDepth > 0;
     }
-    /* TODO */
 
 
     public void enterScope() {
-        ScopeTree<Subroutine> subroutineTemp = subroutineTable;
-        ScopeTree<Variable> variableTemp = variableTable;
-        ScopeTree<TypeOrTypeTemplate> typeTemp = typeTable;
         subroutineStack.addFirst(subroutineTable);
         variableStack.addFirst(variableTable);
         typeStack.addFirst(typeTable);
@@ -228,7 +220,6 @@ public class Environment {
     }
 
     public void enterTypeScope() {
-        ScopeTree<TypeOrTypeTemplate> typeTemp = typeTable;
         typeStack.addFirst(typeTable);
         depth++;
         debug("Enter type scope.");
@@ -240,7 +231,6 @@ public class Environment {
         debug("Leave type scope.");
     }
     public void enterVariableScope() {
-        ScopeTree<Variable> typeTemp = variableTable;
         variableStack.addFirst(variableTable);
         depth++;
         debug("Enter variable scope.");
@@ -262,10 +252,17 @@ public class Environment {
         // Add operators
         addSubroutine(OperatorFunction.create("+", Type.integerType, Type.integerType, Type.integerType));
         addSubroutine(OperatorFunction.create("+", Type.floatType, Type.floatType, Type.floatType));
+        addSubroutine(OperatorFunction.create("<<", Type.integerType, Type.integerType, Type.integerType));
+
         addSubroutine(OperatorFunction.createGeneralAssignment());
+        // Add predefined subroutines
+        Subroutine writeLine = Subroutine.createPredefined(SubroutineKind.PROCEDURE, "writeln", Type.nullType);
+        writeLine.parameters.add(new Parameter("text", Type.stringType));
+        addSubroutine(writeLine);
     }
 
     private void debug(String line) {
+        line = "ENV: " + line;
         //System.out.println(line);
     }
 }

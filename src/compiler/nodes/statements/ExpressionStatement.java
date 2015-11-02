@@ -21,7 +21,7 @@ public class ExpressionStatement extends Statement {
     public ExpressionStatement(Expression expression, Compilation compilation) {
         this.expression = expression;
         if (expression == null) {
-            compilation.semanticError("COMPILER INTERNAL ERROR. An expression was NULL.");
+            compilation.semanticError("COMPILER INTERNAL ERROR. An expression was NULL.", -1,-1);
             return;
         }
         if (!permittedKinds.contains(expression.kind)) {

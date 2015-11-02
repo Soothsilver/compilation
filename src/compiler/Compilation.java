@@ -52,6 +52,8 @@ public class Compilation {
         // Is there a main procedure?
 		int mainMethodsFound = 0;
 		for (Subroutine subroutine : root.Subroutines) {
+            // A main procedure is a procedure, named main, has no type parameters and has either no parameters or parameters "integer" and "list of string".
+            // The parameter names do not matter.
 			if (!subroutine.name.equals("main")) continue;
 			if (subroutine.kind == SubroutineKind.FUNCTION) continue;
 			if (!subroutine.typeParameterNames.isEmpty()) continue;
@@ -61,8 +63,11 @@ public class Compilation {
 					mainMethodsFound++;
 					break;
 				case 2:
-					if (subroutine.parameters.get(0).type.equals(Type.integerType))
-						mainMethodsFound++; // TODO and the second type is "list of string"
+					if (subroutine.parameters.get(0).type.equals(Type.integerType) &&
+						subroutine.parameters.get(1).type.equals(Type.createArray(Type.stringType, -1, -1))) {
+                        mainMethodsFound++;
+                        // The line and column arguments to the createArray function don't matter here.
+                    }
 					break;
 			}
 		}
@@ -127,7 +132,7 @@ public class Compilation {
         errorTriggered = true;
         errorMessages.add("Semantic error at line " + (line+1) + ", column " + (column+1) + ": " + message);
     }
-    public void semanticError(String message) {
+    private void semanticError(String message) {
         if (ignoreSemanticErrors) return;
         errorTriggered = true;
         errorMessages.add("Semantic error: " + message);

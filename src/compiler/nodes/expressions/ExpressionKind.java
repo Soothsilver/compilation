@@ -6,7 +6,7 @@ public enum ExpressionKind {
      */
     Variable,
     /**
-     * A literal integer, boolean, float, string or character.
+     * A literal integer, boolean, float, string or character, or the null value.
      */
     Literal,
     /**
@@ -45,5 +45,4 @@ public enum ExpressionKind {
      * Expression of the form ARRAY-EXPRESSION[INTEGER].
      */
     ArrayMember
-    // TODO what about null?
 }

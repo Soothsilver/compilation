@@ -361,7 +361,7 @@ subroutine_type_parameters ::= type_parameters_inner:tpi
 type_parameters ::= type_parameters_inner:tpi {: RESULT = tpi; :};
 type_parameters_inner ::=
     IDENTIFIER:id
-     {: RESULT = new ArrayList<>(); RESULT.add(new TypeParameter(id, idleft, idright)); /*TODO should be types rather than strings, maybe? */ :}
+     {: RESULT = new ArrayList<>(); RESULT.add(new TypeParameter(id, idleft, idright));
      |
     type_parameters_inner:tp COMMA IDENTIFIER:id
     {: tp.add(new TypeParameter(id, idleft, idright)); RESULT = tp; :}
@@ -443,7 +443,6 @@ relational_operator ::=
     | GREATEROREQUAL {: RESULT = ">="; :}
     ;
 
-    /* TODO all the operators :), but that can wait */
 expression ::= expr13_assignment:e {: RESULT = e; :};
 expr13_assignment ::=
     expr12_or:left assignment_operator:op expr13_assignment:right {: RESULT = BinaryExpression.create(left, op, right, opleft, opright, parser.compilation); :}
