@@ -42,6 +42,7 @@ action code {:
 /* -------------------------------------------------
         Terminals without values
    ------------------------------------------------- */
+
 terminal TIMES, DIVIDE, MODULO;
 terminal LESSTHAN, LESSOREQUAL, GREATERTHAN, GREATEROREQUAL;
 terminal EQUALEQUAL, UNEQUAL;

@@ -46,4 +46,13 @@ public class BinaryExpression extends CallExpression {
         return arguments.get(0) + operator + arguments.get(1);
     }
 
+    @Override
+    public String getErrorMessageTypeMismatch() {
+        if (this.kind == ExpressionKind.Assignment) {
+            return "The expression '" + arguments.get(1) + "' is not convertible to type '" + arguments.get(0).type + "'.";
+        }
+        else {
+            return "The operator '" + group.name + "' does not accept operands of type '" + arguments.get(0).type + "' and '" + arguments.get(1).type + "'.";
+        }
+    }
 }

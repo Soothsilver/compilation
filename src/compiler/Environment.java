@@ -250,15 +250,96 @@ public class Environment {
         addType(Type.stringType);
 
         // Add operators
-        addSubroutine(OperatorFunction.create("+", Type.integerType, Type.integerType, Type.integerType));
-        addSubroutine(OperatorFunction.create("+", Type.floatType, Type.floatType, Type.floatType));
-        addSubroutine(OperatorFunction.create("<<", Type.integerType, Type.integerType, Type.integerType));
 
+//terminal TIMES, DIVIDE, MODULO;
+        addBinaryOperator("*", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator("*", Type.floatType, Type.floatType, Type.floatType);
+        addBinaryOperator("/", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator("/", Type.floatType, Type.floatType, Type.floatType);
+        addBinaryOperator("%", Type.integerType, Type.integerType, Type.integerType);
+//terminal LESSTHAN, LESSOREQUAL, GREATERTHAN, GREATEROREQUAL;
+        addBinaryOperator("<", Type.integerType, Type.integerType, Type.booleanType);
+        addBinaryOperator("<", Type.floatType, Type.floatType, Type.booleanType);
+        addBinaryOperator(">", Type.integerType, Type.integerType, Type.booleanType);
+        addBinaryOperator(">", Type.floatType, Type.floatType, Type.booleanType);
+        addBinaryOperator("<=", Type.integerType, Type.integerType, Type.booleanType);
+        addBinaryOperator("<=", Type.floatType, Type.floatType, Type.booleanType);
+        addBinaryOperator(">=", Type.integerType, Type.integerType, Type.booleanType);
+        addBinaryOperator(">=", Type.floatType, Type.floatType, Type.booleanType);
+//terminal LOGICALAND, LOGICALOR;
+        addBinaryOperator("&&", Type.booleanType, Type.booleanType, Type.booleanType);
+        addBinaryOperator("||", Type.booleanType, Type.booleanType, Type.booleanType);
+//terminal BITWISEAND, BITWISEOR, XOR, SHIFTLEFT, SHIFTRIGHT;
+        addBinaryOperator("&", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator("|", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator("^", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator("<<", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator(">>", Type.integerType, Type.integerType, Type.integerType);
+//terminal INCREMENT, DECREMENT;
+        addUnaryOperator("PRE++", Type.integerType, Type.integerType);
+        addUnaryOperator("POST++", Type.integerType, Type.integerType);
+        addUnaryOperator("PRE--", Type.integerType, Type.integerType);
+        addUnaryOperator("POST--", Type.integerType, Type.integerType);
+//terminal LOGICALNEGATION, BITWISENEGATION;
+        addUnaryOperator("!", Type.booleanType, Type.booleanType);
+        addUnaryOperator("~", Type.integerType, Type.integerType);
+//terminal MINUS, PLUS;
+        addBinaryOperator("+", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator("+", Type.floatType, Type.floatType, Type.floatType);
+        addBinaryOperator("+", Type.stringType, Type.characterType, Type.stringType);
+        addBinaryOperator("+", Type.characterType, Type.stringType, Type.stringType);
+        addBinaryOperator("+", Type.stringType, Type.stringType, Type.stringType);
+        addBinaryOperator("+", Type.stringType, Type.integerType, Type.stringType);
+        addBinaryOperator("+", Type.integerType, Type.stringType, Type.stringType);
+        addBinaryOperator("+", Type.stringType, Type.floatType, Type.stringType);
+        addBinaryOperator("+", Type.floatType, Type.stringType, Type.stringType);
+        addBinaryOperator("+", Type.stringType, Type.booleanType, Type.stringType);
+        addBinaryOperator("+", Type.booleanType, Type.stringType, Type.stringType);
+        addBinaryOperator("-", Type.integerType, Type.integerType, Type.integerType);
+        addBinaryOperator("-", Type.floatType, Type.floatType, Type.floatType);
+//terminal CONCATENATE;
+        addSubroutine(OperatorFunction.createConcatenate());
+//terminal EQUAL;
         addSubroutine(OperatorFunction.createGeneralAssignment());
+//terminal EQUALEQUAL, UNEQUAL;
+        addSubroutine(OperatorFunction.createEquality());
+        addSubroutine(OperatorFunction.createInequality());
+//terminal UNARYPLUS, UNARYMINUS, UNARYTIMES, UNARYDIVIDE, UNARYMODULO
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.floatType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.stringType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.stringType, Type.floatType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.stringType, Type.characterType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.stringType, Type.stringType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.stringType, Type.booleanType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.floatType, Type.floatType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("-=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("-=", Type.floatType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("-=", Type.floatType, Type.floatType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("*=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("*=", Type.floatType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("*=", Type.floatType, Type.floatType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("/=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("/=", Type.floatType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("/=", Type.floatType, Type.floatType));
+//terminal UNARYSHIFTLEFT, UNARYSHIFTRIGHT, UNARYBITWISEAND, UNARYXOR, UNARYBITWISEOR;
+        addSubroutine(OperatorFunction.createSpecialAssignment("%=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("<<=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment(">>=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("^=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("|=", Type.integerType, Type.integerType));
+        addSubroutine(OperatorFunction.createSpecialAssignment("&=", Type.integerType, Type.integerType));
         // Add predefined subroutines
         Subroutine writeLine = Subroutine.createPredefined(SubroutineKind.PROCEDURE, "writeln", Type.nullType);
         writeLine.parameters.add(new Parameter("text", Type.stringType));
         addSubroutine(writeLine);
+    }
+
+    private void addBinaryOperator(String symbol, Type firstOperand, Type secondOperand, Type returnType) {
+        addSubroutine(OperatorFunction.create(symbol, firstOperand, secondOperand, returnType));
+    }
+    private void addUnaryOperator(String symbol, Type operand,  Type returnType) {
+        addSubroutine(OperatorFunction.create(symbol, operand, returnType));
     }
 
     private void debug(String line) {

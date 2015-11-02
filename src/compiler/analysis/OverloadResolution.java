@@ -117,7 +117,7 @@ public final class OverloadResolution {
         call.removeRedundantSubroutineTokens();
 //5. If the list of inferred subroutines is empty, signal an error.
         if (call.subroutineTokens.isEmpty()) {
-            compilation.semanticError("No considered subroutine with the name '" + group.name + "' accepts arguments of the given types.", group.line, group.column);
+            compilation.semanticError(call.getErrorMessageTypeMismatch(), group.line, group.column);
             call.setErrorType();
             return;
         }
@@ -348,7 +348,6 @@ public final class OverloadResolution {
         } else {
             compilation.semanticError("The call is ambiguous between the following subroutines: " + legalSubroutines.stream().map(sbtk -> "'" + sbtk.subroutine.getSignature(false, false) + "'").collect(Collectors.joining(",")) + ".", call.line, call.column);
             call.setErrorType();
-            debug("Well,drat.");
         }
     }
     private static void bestSubroutineSelected(SubroutineToken bestSubroutine, CallExpression call, Compilation compilation) {

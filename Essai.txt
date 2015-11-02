@@ -1,10 +1,7 @@
+type S = structure{};
 procedure main()
 {
- //b = 02;
- b = "hello";
- b = 'c';
- b = true;
- b = false;
- b = null;
- b = -8;
+ b:integer;
+ b=02;
+ b= 2+(3.+4);
 }

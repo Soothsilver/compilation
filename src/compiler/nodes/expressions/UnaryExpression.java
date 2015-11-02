@@ -31,5 +31,10 @@ public class UnaryExpression extends CallExpression {
         OverloadResolution.phaseOne(ex, compilation);
         return ex;
     }
+
+    @Override
+    public String getErrorMessageTypeMismatch() {
+        return "The unary operator '" + group.name + "' does not accept an operand of the type '" + arguments.get(0).type + "'.";
+    }
 }
 

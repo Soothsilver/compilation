@@ -92,4 +92,8 @@ public class CallExpression extends Expression {
             }
         }
     }
+
+    public String getErrorMessageTypeMismatch() {
+        return "No considered subroutine with the name '" + group.name + "' accepts arguments of the given types.";
+    }
 }
