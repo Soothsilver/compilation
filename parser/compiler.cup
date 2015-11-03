@@ -267,7 +267,8 @@ block	        	::= LBRACE open_scope local_declarations:d statements:s close_sco
                         ;
 statements	   		::= statement:s statements:ss
                         {:
-                            ss.addStatement(s);
+                            if (s != null)
+                                ss.addStatement(s);
                             RESULT = ss;
                         :} |
                         {:
@@ -374,7 +375,7 @@ type_parameters_inner ::=
         Declarations
    ------------------------------------------------- */
 global_declarations     	  ::=
-               global_declarations:gds global_declaration:gd {: gds.add(gd); RESULT = gds; :}
+               global_declarations:gds global_declaration:gd {: if (gd != null) { gds.add(gd); } RESULT = gds; :}
                | {: RESULT = new Declarations(); :};
 global_declaration            ::=
 	type_declaration:t {: RESULT = t; :} |
@@ -512,7 +513,7 @@ expr1_postfix ::=
   | expr1_subroutinegroup:id LPAR expressions:args RPAR{: RESULT = CallExpression.create(id, null, args, idleft, idright, parser.compilation); :}
   | expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR expressions:args RPAR {: RESULT = CallExpression.create(id, targs, args, idleft, idright, parser.compilation); :}
   | expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR RPAR {: RESULT = CallExpression.create(id, targs, null, idleft, idright, parser.compilation); :}
-  | expr1_postfix PERIOD IDENTIFIER /* Variable expression */
+  | expr1_postfix:parent PERIOD:op IDENTIFIER:name {: RESULT = MemberVariableExpression.create(parent, name, opleft, opright, parser.compilation); :}
   | expr1_postfix:array LBRACKET expression:index RBRACKET {: RESULT = ArrayAccessExpression.create(array, index, parser.compilation); :}
   | expr1_postfix:left INCREMENT:op {: RESULT = UnaryExpression.create("++", UnaryExpressionSide.Postfix, left, opleft, opright, parser.compilation); :}
   | expr1_postfix:left DECREMENT:op {: RESULT = UnaryExpression.create("--", UnaryExpressionSide.Postfix, left, opleft, opright, parser.compilation); :}

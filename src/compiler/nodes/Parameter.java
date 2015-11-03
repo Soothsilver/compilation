@@ -11,7 +11,7 @@ import compiler.nodes.declarations.Variable;
 public class Parameter extends Node {
     public String name;
     public Type type;
-    private Variable variable;
+    private Variable variable; // If the variable's type is generic in a specific way, it stays that way... it's complicated.
 
     /**
      * Creates a parameter and adds it to the current environment.
@@ -31,5 +31,13 @@ public class Parameter extends Node {
     public Parameter(String name, Type type) {
         this.name = name;
         this.type = type;
+    }
+
+    public Parameter copy() {
+        Parameter pnew = new Parameter(name, type);
+        pnew.line = line;
+        pnew.column =column;
+        pnew.variable = variable;
+        return pnew;
     }
 }

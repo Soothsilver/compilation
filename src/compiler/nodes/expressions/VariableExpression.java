@@ -13,6 +13,9 @@ public class VariableExpression extends Expression {
 
 
 
+    protected VariableExpression(int line, int column) {
+        super(line, column);
+    }
     public VariableExpression (String identifier, int line, int column, Compilation compilation) {
         name = identifier;
         this.line = line;
@@ -37,7 +40,13 @@ public class VariableExpression extends Expression {
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
         // Invulnerable to type propagation. Variables have a type strictly defined.
-        // TODO but we must do as if in literals
+        if (types == null) return;
+        for(Type t : types) {
+            if (this.type.convertibleTo(t)) {
+                return;
+            }
+        }
+        compilation.semanticError("The variable '" + this + "' cannot be converted to any of the types: " + types + ".", line, column);
     }
 
     @Override

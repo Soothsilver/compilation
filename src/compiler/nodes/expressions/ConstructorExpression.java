@@ -12,6 +12,7 @@ public class ConstructorExpression extends Expression {
     public ConstructorExpression(String typeName, int line, int column, Compilation compilation) {
         this.typeName = typeName;
         this.line = line;
+        this.kind = ExpressionKind.ClassConstructor;
         this.column = column;
         this.type = (Type)compilation.environment.findType(typeName);
         this.possibleTypes.add(this.type);
@@ -20,6 +21,7 @@ public class ConstructorExpression extends Expression {
         this.typeName = typeName;
         this.line = line;
         this.column = column;
+        this.kind = ExpressionKind.ClassConstructor;
         this.type = Type.instantiateTemplate (typeName, typeArguments, line, column, compilation);
         this.possibleTypes.add(this.type);
     }

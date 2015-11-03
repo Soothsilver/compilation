@@ -1,10 +1,7 @@
-//EXPECT-SEMANTICAL-ERROR: The expression 'copy?(copy?(copy?(copy?("NOT INTEGER"))))' is not convertible to type 'integer'.
-function copy[[T]] ( t : T ) : T { return null; }
-
-
+v : float;
+function copy [[T]] (input : T) : T {  }
+function copy ( input : integer ) : float { }
 procedure main()
 {
-    i : integer;
-       i = copy(copy(copy(copy(5))));
-       i = copy(copy(copy(copy("NOT INTEGER"))));
+   v = copy(copy(copy(5)));
 }

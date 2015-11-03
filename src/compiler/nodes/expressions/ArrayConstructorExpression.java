@@ -19,6 +19,7 @@ public class ArrayConstructorExpression extends Expression {
         this.type = Type.createArray(innerType, line, column);
         this.size.propagateTypes(new HashSet<>(Arrays.asList(Type.integerType)), compilation);
         this.possibleTypes.add(this.type);
+        this.kind = ExpressionKind.ArrayConstructor;
     }
     public static ArrayConstructorExpression infer(Expressions expressions, int line, int column, Compilation compilation) {
         // TODO make this actually work

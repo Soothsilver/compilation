@@ -8,12 +8,15 @@ import compiler.nodes.expressions.literals.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents an expression in the abstract syntax tree.
+ */
 public abstract class Expression extends Node {
     /**
      * This list is only used prior to the call of propagateTypes.
      * After that, it is no longer useful.
      */
-    public Set<Type> possibleTypes = new HashSet<Type>();
+    public Set<Type> possibleTypes = new HashSet<>();
     /**
      * Some expressions are only valid in certain context. For example,
      * an expression of the kind 'arithmetic expression' cannot be used as a statement.
@@ -27,6 +30,17 @@ public abstract class Expression extends Node {
 
 
 
+    protected Expression() {
+
+    }
+    protected Expression(int line, int column) {
+        super(line, column);
+    }
+
+
+
+
+    // These five functions create new literal expression nodes. They are used only from the production "constant" in the CUP file.
     public static Expression createFromConstant(Integer data, int line, int column, Compilation compilation) {
         return new IntegerLiteralExpression(data, line, column, compilation);
     }
@@ -50,13 +64,21 @@ public abstract class Expression extends Node {
      */
     public abstract void propagateTypes(Set<Type> types, Compilation compilation);
 
+    /**
+     * Sets the real type and the only possible type in possibleTypes of this expression to "!error". Use this method when an attempt
+     * to evalute the type of this expression fails (report a semantic error yourself).
+     */
     public void setErrorType() {
         this.type = Type.errorType;
         this.possibleTypes.clear();
         this.possibleTypes.add(this.type);
     }
 
+    /**
+     * Indicates whether this expression is an l-value.
+     * @return Is this expression an l-value>
+     */
     public boolean isAssignable() {
-        return false; // Override this in variable expression.
+        return false; // Override this in subclasses.
     }
 }

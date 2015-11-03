@@ -16,12 +16,19 @@ public class Subroutine extends Declaration {
     public Type returnType;
     private static Subroutine constructingWhatSubroutine = null;
 
+    private Subroutine copy() {
+        Subroutine subroutine = new Subroutine(name, line, column);
+        subroutine.block = block;
+        subroutine.kind = kind;
+        subroutine.typeParameterNames = typeParameterNames;
+        subroutine.parameters = parameters;
+        subroutine.returnType = returnType;
+        return subroutine;
+    }
     public static boolean typeParametersEntered = false;
-
     protected Subroutine(String name, int line, int column) {
         super(name, line, column);
     }
-
     public static Subroutine create(SubroutineKind kind,
                                     String name,
                                     ArrayList<String> typeParameters,
@@ -129,6 +136,18 @@ public class Subroutine extends Declaration {
         subroutine.typeParameterNames = new ArrayList<>();
         subroutine.returnType = returnType;
         subroutine.kind = kind;
+        return subroutine;
+    }
+
+    public Subroutine instantiate(ArrayList<Type> typeParameters, ArrayList<Type> typeArguments) {
+        Subroutine subroutine = copy();
+        subroutine.returnType = subroutine.returnType.replaceTypes(typeParameters, typeArguments);
+        subroutine.parameters = new ArrayList<>();
+        for(Parameter p : parameters) {
+            Parameter pnew = p.copy();
+            pnew.type = p.type.replaceTypes(typeParameters, typeArguments);
+            subroutine.parameters.add(pnew);
+        }
         return subroutine;
     }
 }

@@ -44,5 +44,5 @@ public enum ExpressionKind {
     /**
      * Expression of the form ARRAY-EXPRESSION[INTEGER].
      */
-    ArrayMember
+    ArrayAccess
 }

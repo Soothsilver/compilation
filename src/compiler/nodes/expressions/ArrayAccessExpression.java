@@ -16,6 +16,7 @@ public class ArrayAccessExpression extends Expression {
         expression.column = array.column;
         expression.array = array;
         expression.index = index;
+        expression.kind = ExpressionKind.ArrayAccess;
         // We would prefer to get only arrays here, but the Overload Resolution Process does not permit it. So we have to accept everything.
         expression.array.propagateTypes(null, compilation);
         if (expression.array.type.kind == Type.TypeKind.ArrayType) {

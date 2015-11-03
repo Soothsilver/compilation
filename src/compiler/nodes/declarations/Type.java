@@ -28,6 +28,7 @@ public class Type extends TypeOrTypeTemplate {
             for (int i = 0; i < typeParameters.size(); i++) {
                 if (typeParameters.get(i).name.equals(this.name)) {
                     return typeParameters.get(i); // TODO copy here? probably not
+                    // TODO this is strange?
                 }
             }
         }
@@ -80,9 +81,7 @@ public class Type extends TypeOrTypeTemplate {
     }
 
 
-    /**
-     * BASIC TYPES
-     */
+    // Predefined Types:
     public static Type errorType = Type.createPredefinedType("!error");
     public static Type nullType = Type.createPredefinedType("!null");
     public static Type voidType = Type.createPredefinedType("!void");
@@ -121,15 +120,12 @@ public class Type extends TypeOrTypeTemplate {
         }
         return true;
     }
-
     @Override
     public int hashCode() {
         return name.hashCode();
     }
 
-    public static Type getBooleanType() {
-        return Type.booleanType;
-    }
+
 
     public static Type createPredefinedType(String name) {
         Type t = new Type(name, -1, -1);
@@ -140,23 +136,19 @@ public class Type extends TypeOrTypeTemplate {
         Type t = new Type(name, line, column);
         t.kind = TypeKind.SimpleType;
         t.isReferenceType = true;
-        // TODO (elsewhere) make a note in the rapport that we are using named types only
         return t;
     }
-
     public static Type createNewTypeVariable(String name) {
         Type t = new Type(name, -1, -1);
         t.kind = TypeKind.TypeVariable;
         return t;
     }
-
     public static Type createDebugStructure(String name) {
         Type t = new Type(name, -1, -1);
         t.kind = TypeKind.SimpleType;
         t.isReferenceType = true;
         return t;
     }
-
     public static Type createSubroutineTypeVariable(String typename, int line, int column) {
         Type t = new Type(typename, line, column);
         t.kind = TypeKind.SubroutineTypeParameter;
@@ -186,8 +178,8 @@ public class Type extends TypeOrTypeTemplate {
         t.isReferenceType = true;
         t.kind = TypeKind.GenericTypeInstance;
         t.typeArguments = typeArguments;
-        t.subroutines = template.subroutines;
-        t.declarations = template.declarations;
+        t.subroutines = template.subroutines.instantiate(template.typeParameters, typeArguments);
+        t.declarations = template.declarations.instantiate(template.typeParameters, typeArguments);
         return t;
     }
     public static Type createArray(Type inner, int line, int column) {
@@ -198,6 +190,7 @@ public class Type extends TypeOrTypeTemplate {
         return tArray;
         // TODO (elsewhere) unifying should work differently for method calls (int-to-float) and types (exactitude)
     }
+
 
     @Override
     public String getFullString() {
@@ -238,6 +231,12 @@ public class Type extends TypeOrTypeTemplate {
         return this;
     }
 
+    /**
+     * Returns the name of this type, or a special zero-indexed type name for subroutine type variables. This is useful in determining the signatures of subroutines
+     * in symbol tables where the parameter names don't matter, but their order does.
+     * @param typeParameterNames Names, in order, of type parameters of the examined generic subroutine.
+     * @return The altered name of this type for subroutine signature generation.
+     */
     public String toSymbolTableString(List<String> typeParameterNames) {
         if (this.kind == TypeKind.SubroutineTypeParameter) {
             int index = typeParameterNames.indexOf(this.name);
@@ -249,13 +248,42 @@ public class Type extends TypeOrTypeTemplate {
         else return name;
     }
 
+    /**
+     * Indicates whether this type can be implicitly converted to the specified the type. This can be done if the types are identical,
+     *  or if this type is an integer and the target type is a float.
+     * @param type The target type.
+     * @return Can the implicit conversion be done?
+     */
     public boolean convertibleTo(Type type) {
         if (this.equals(type)) return true;
         if (this.equals(Type.integerType) && type.equals(Type.floatType)) return true;
         return false;
     }
 
+    public Type replaceTypes(ArrayList<Type> replaceWhat, ArrayList<Type> replaceInto) {
+        for (int i = 0; i < replaceWhat.size(); i++) {
+            if (replaceWhat.get(i).equals(this)) {
+                return replaceInto.get(i);
+            }
+        }
+        if (typeArguments != null) {
+            Type tClone = this.copy();
+            tClone.typeArguments = new ArrayList<>();
+            for (Type t : this.typeArguments) {
+                tClone.typeArguments.add(t.replaceTypes(replaceWhat, replaceInto));
+            }
+            return tClone;
+        }
+        return this;
+    }
+
+    /**
+     * A utility enumeration that indicates how this type works during type unification.
+     */
     public enum UnificationKind {
+        /**
+         * This is a type variable. It may be bound, partially bound or unbound.
+         */
         Variable,
         Simple,
         Structured

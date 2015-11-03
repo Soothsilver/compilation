@@ -1,6 +1,6 @@
 TODO These tasks could be completed later on:
 
-
+- Make a note in the report that we are using named types only.
 
 
 - If a local variable is used before it is initialized, report an error.

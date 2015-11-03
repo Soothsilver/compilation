@@ -2,11 +2,18 @@ package compiler.nodes.declarations;
 
 import compiler.Compilation;
 
+import java.util.ArrayList;
+
 /**
- * Represents a global or a local variable, declared at one point in the source code.
+ * Represents a global or a local variable or a member field, declared at one point in the source code.
  */
 public class Variable extends Declaration {
     private Type type;
+
+    /**
+     * Gets the complete type of this variables.
+     * @return The type.
+     */
     public Type getType() {
         return type;
     }
@@ -25,5 +32,15 @@ public class Variable extends Declaration {
     @Override
     public String getFullString() {
         return name + " : " + type + ";";
+    }
+
+    public Variable instantiate(ArrayList<Type> typeParameters, ArrayList<Type> typeArguments) {
+        Variable v = this.copy();
+        v.type = v.type.replaceTypes(typeParameters, typeArguments);
+        return v;
+    }
+    private Variable copy() {
+        Variable v = new Variable(name, type, line, column);
+        return v;
     }
 }

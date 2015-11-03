@@ -48,8 +48,8 @@ In the first phase, evaluate call expressions like this:
 4.2.2.6 Unifying a variable that is under the constraint "must be an integer or float" can only succeed if the other part is an integer, a float or a type variable not under the constraint "must be an object".
 4.2.2.7 It is possible to unify a "float" in the signature with an "int" in the type, but doing so puts a "+1 badness" to the resultant inferred subroutine.
 /*
-DO NOT DO THIS MAYBE? MAYBE DEFER IT UNTIL SECOND PHASE?
-4.2.3 For each type parameter, if it remains free, but it has the constraint "must be an integer or float", it becomes an integer. (This will cause some unexpected behavior sometimes. TODO add a test for it)
+Removed:
+4.2.3 For each type parameter, if it remains free, but it has the constraint "must be an integer or float", it becomes an integer. (This will cause some unexpected behavior sometimes.
 */
 4.2.4 The unified subroutine/type combination may still contain a free type variable. That does not remove it from consideration. We will deal with that in phase two.
 4.2.5. Create an inferred subroutine from this subroutine and this combination of types. It may still be incomplete.
