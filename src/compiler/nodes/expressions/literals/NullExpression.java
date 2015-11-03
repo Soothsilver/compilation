@@ -18,7 +18,6 @@ public class NullExpression extends LiteralExpression {
         for (Type setType : types) {
             if (setType.canBeNulled()) return;
         }
-        // TODO T t = null;
         compilation.semanticError("None of the following types is nullable: " + types, line, column);
     }
 

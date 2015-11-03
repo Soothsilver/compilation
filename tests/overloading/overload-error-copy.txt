@@ -1,5 +1,5 @@
 //EXPECT-SEMANTICAL-ERROR: The expression 'copy?(copy?(copy?(copy?("NOT INTEGER"))))' is not convertible to type 'integer'.
-function copy[[T]] ( t : T ) : T { return null; }
+function copy[[T]] (  t : T ) : T { return null; }
 
 
 procedure main()

@@ -1,0 +1,15 @@
+//EXPECT-SEMANTICAL-ERROR: Semantic error at line 13, column 5: No considered subroutine with the name 'getSource' accepts arguments of the given types.
+//EXPECT-SEMANTICAL-ERROR: Semantic error at line 14, column 5: Type inference failed for 'getGrid' because some type variables remain free.
+type C = structure [[ T ]] { };
+
+function getGrid [[T]] () : C[[C[[T]]]] { return null; }
+function getSource [[T]] ( c : C[[T]] ) : T { return null; }
+
+procedure main()
+{
+    grid : C[[C[[integer]]]];
+    grid = getGrid();
+    getSource(grid);
+    getSource(getSource(getSource(grid)));
+    getGrid();
+}

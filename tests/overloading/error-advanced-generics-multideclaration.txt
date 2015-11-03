@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: was already defined at line 4, column 11.
 procedure a () { }
 procedure a [[T1]] () { }
 procedure a [[T1,T2]] (t1 : T1, t2 : T2)  { }

@@ -1,0 +1,13 @@
+PROGRAM[
+type C = class[[T]] {
+};
+function getGrid[[T]]():C[[C[[T]]]] { return null; }
+function getSource[[T]](c:C[[T]]):T { return null; }
+procedure main() { 
+i : integer;
+grid : C[[C[[integer]]]];
+grid=getGrid[[T=integer]][]:C[[C[[T]]]]();
+getSource[[T=C[[integer]]]][C[[T]]]:T(grid);
+i=getSource[[T=integer]][C[[T]]]:T(getSource[[T=C[[integer]]]][C[[T]]]:T(grid));
+}
+]

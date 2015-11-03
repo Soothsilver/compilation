@@ -68,7 +68,7 @@ public class Subroutine extends Declaration {
     }
     public String getSignature(boolean forSymbolTables, boolean callsite, ArrayList<Type> types) {
         String signature = "";
-        if (!callsite) {
+        if (!callsite && !forSymbolTables) {
             if (kind == SubroutineKind.FUNCTION) {
                 signature += "function ";
             } else {
@@ -102,7 +102,7 @@ public class Subroutine extends Declaration {
                 signature += param.type;
             } else {
                 if (forSymbolTables) {
-                    signature += param.type;
+                    signature += param.type.toSymbolTableString(typeParameterNames);
                 } else {
                     signature += param.name + ":" + param.type; // TODO type variables
                 }

@@ -3,6 +3,7 @@ package compiler.nodes.declarations;
 import compiler.Compilation;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Type extends TypeOrTypeTemplate {
@@ -138,6 +139,7 @@ public class Type extends TypeOrTypeTemplate {
     public static Type createClass(String name, int line, int column) {
         Type t = new Type(name, line, column);
         t.kind = TypeKind.SimpleType;
+        t.isReferenceType = true;
         // TODO (elsewhere) make a note in the rapport that we are using named types only
         return t;
     }
@@ -184,6 +186,8 @@ public class Type extends TypeOrTypeTemplate {
         t.isReferenceType = true;
         t.kind = TypeKind.GenericTypeInstance;
         t.typeArguments = typeArguments;
+        t.subroutines = template.subroutines;
+        t.declarations = template.declarations;
         return t;
     }
     public static Type createArray(Type inner, int line, int column) {
@@ -198,7 +202,8 @@ public class Type extends TypeOrTypeTemplate {
     @Override
     public String getFullString() {
         return "type " + name + " = class {\n"
-                + declarations.stream().map(decl->decl.getFullString()).collect(Collectors.joining(","))
+                + declarations.stream().map(decl->decl.getFullString()).collect(Collectors.joining("\n"))
+                + (declarations.size() > 0 ? "\n" : "")
                 + subroutines
                 + "};";
     }
@@ -231,6 +236,23 @@ public class Type extends TypeOrTypeTemplate {
             }
         }
         return this;
+    }
+
+    public String toSymbolTableString(List<String> typeParameterNames) {
+        if (this.kind == TypeKind.SubroutineTypeParameter) {
+            int index = typeParameterNames.indexOf(this.name);
+            return "!T" + index;
+        }
+        else if (typeArguments != null && typeArguments.size() > 0) {
+            return name + "[[" +  typeArguments.stream().map(targ -> targ.toSymbolTableString(typeParameterNames)).collect(Collectors.joining(","))      + "]]";
+        }
+        else return name;
+    }
+
+    public boolean convertibleTo(Type type) {
+        if (this.equals(type)) return true;
+        if (this.equals(Type.integerType) && type.equals(Type.floatType)) return true;
+        return false;
     }
 
     public enum UnificationKind {

@@ -1,0 +1,7 @@
+PROGRAM[
+function copy[[T]](t:T):T { return null; }
+procedure main() { 
+i : integer;
+i=copy[[T=integer]][T]:T(copy[[T=integer]][T]:T(copy[[T=integer]][T]:T(copy[[T=integer]][T]:T(5))));
+}
+]

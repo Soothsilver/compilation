@@ -81,6 +81,8 @@ public class TestUtilities {
                     {
                         System.out.println(" " + message);
                     }
+                    String actual = compilation.abstractSyntaxTree.toString();
+                    System.out.println(actual);
                     testCase.fail("Test has not run okay.");
                 }
             }
@@ -100,7 +102,8 @@ public class TestUtilities {
             }
         }
         catch (Exception e){
-            System.out.println("file could not be opened!");
+            System.out.println("file could not be opened (" + e + ")");
+            e.printStackTrace();
             testCase.fail("file error");
         }
     }

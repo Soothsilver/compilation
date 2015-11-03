@@ -19,6 +19,5 @@ public abstract class LiteralExpression extends Expression {
         if (!types.contains(this.type)) {
             compilation.semanticError("A " + this.type.name + " cannot be converted to any of the following types: " + types, line, column);
         }
-        // TODO but generics?
     }
 }

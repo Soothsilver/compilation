@@ -1,6 +1,5 @@
 package compiler.nodes;
 
-import compiler.nodes.Node;
 import compiler.nodes.declarations.Subroutine;
 
 import java.util.ArrayList;
@@ -13,8 +12,8 @@ public class Subroutines extends ArrayList<Subroutine> {
     @Override
     public String toString() {
         String res = "";
-        for (Subroutine s : this) {
-            res += s.toString() + "\n";
+        for (Subroutine subroutine : this) {
+            res += subroutine.toString() + "\n";
         }
         return res;
     }

@@ -148,6 +148,6 @@
       target: rebuild-all
       ================================= -->
     <target name="rebuild-all" depends="clean, test"
-        description="Destroys all generated files, then runs syntax tests.">
+        description="Destroys all generated files, then runs all tests.">
     </target>
 </project>

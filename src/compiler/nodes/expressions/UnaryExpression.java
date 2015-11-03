@@ -15,7 +15,7 @@ public class UnaryExpression extends CallExpression {
         ex.arguments = new Expressions();
         ex.side = side;
         ex.arguments.add(expression);
-        ex.group = SubroutineGroup.create((side == UnaryExpressionSide.Prefix ? "PRE" : "POST") + operator, line, column, compilation);
+        ex.group = SubroutineGroup.create( (operator.equals("++") || operator.equals("--") ? (side == UnaryExpressionSide.Prefix ? "PRE" : "POST") : "") + operator, line, column, compilation);
         ex.kind = ExpressionKind.ArithmeticExpression;
         switch (operator) {
             case "++":

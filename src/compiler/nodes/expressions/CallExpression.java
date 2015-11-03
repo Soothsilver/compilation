@@ -68,7 +68,7 @@ public class CallExpression extends Expression {
     @Override
     public String toString() {
         if (callee == null) {
-            return group.name + "?(" + arguments.stream().map(arg -> arg.toString()).collect(Collectors.joining(",")) + ")";
+            return group + "?(" + arguments.stream().map(arg -> arg.toString()).collect(Collectors.joining(",")) + ")";
         } else {
             Subroutine sub = callee.subroutine;
             String callstring = sub.getSignature(false, true, callee.types) + "(" + arguments.toWithoutBracketsString() + ")";

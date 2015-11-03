@@ -1,44 +1,44 @@
 The overload resolution process attempts to assign a subroutine to a subroutine call, and to infer type arguments for generic subroutines that might participate in overload resolution.
 
-In principle, the process should find the most suitable subroutine that does not violate any constraints on argument types. If there is not such subroutine, it fails. If there are two or more subroutines better than all the rest but equally good themselves, the process fails. If there is a single best subroutine, but it is generic, and there is more than one possible type that could be inferred, the process fails. Otherwise, the process succeeds.
+In principle, the process should find the most suitable subroutine that does not violate any constraints on argument types. If there is no such subroutine, it fails. If there are two or more subroutines better than all the rest but equally good themselves, the process fails. If there is a single best subroutine, but it is generic, and there is more than one possible type that could be inferred, the process fails. Otherwise, the process succeeds.
 
 The principle is not followed exactly by the resolution process, however, and in some exotic situations, it can fail even though there is a combination of subroutines that would be better that than all other combinations of subroutines. However, in these situations, it would be hard for the user to understand what subroutines the compiler chose.
 
 Thus, among all the subroutine combinations that do not violate type constraints, the best combinations are chosen from leaf to root. At the point where a best subroutine is being selected for a given subroutine call, only types from arguments are considered (which are decided upon at this point) and also legal return types are considered (even from the root). However, it is not considered which result type would be better or would enable some other combination to work. But even so, an "int" return type is preferred over a "float" return type if there is the option.
 
 Definitions.
-- A "root expression" is the expression in an expression statement, each expression in a cycle header and each argument of a subroutine call. No other expressions are root expressions.
+- A "root expression" is the expression in an expression statement, each expression in a cycle header, each argument of a subroutine call, the expression in a member access or array access and similarly.
 - An "inferred subroutine" is a non-generic subroutine or a tuple of a generic subroutine and its type arguments.
 
 Overload Resolution proceeds in two phases. The general overview is this:
-1. The first phase proceeds from expressions in leaves of the abstract syntax tree and, for each expression, produces a set of possible types and a set of inferred subroutines. These are stored in the expression.
-2. Root expressions, after finishing the first phase, automatically enter the second phase. In this phase, the set of possible types is checked.
+1. The first phase proceeds from expressions in leaves of the abstract syntax tree and, for each expression, produces a set of possible types and a set of inferred subroutines. These are stored in the expression. It guarantees that exactly those types would enable it to find at least one inferred subroutine. However, it does not yet guarantee that any of those types would enable it to select the best inferred subroutine. It may still fail later due to having too many choices. These return types may contain unbound type variables.
+2. Root expressions, after finishing the first phase, automatically enter the second phase. In this phase, the set of possible types (formed during the first phase) is checked.
 2a. If it contains zero types, the process fails.
-2b. If it contains one or more types, the list of inferred subroutines is reduced to leave only those that return one of these types. Then,
+2b. If it contains one or more types, the list of inferred subroutines is reduced to leave only those that return the return type forced by the parent expression. As a simplification, this forced return type MUST NOT be unbound. Then,
 2ba. If the list is empty, the process fails.
-2bb. If the list contains exactly one best candidate subroutine, that subroutine is chosen and the second phase is started for all arguments of that subroutine.
-2bc. If the list does not contain a single best candidate subroutine, then, for each argument, a set of possible types is constructed and sent to the upper expression as propagation. Then, the upper expressions' types (now fixed) are compared against candidate subroutines. If, even at this point, there are multiple candidates, the process fails.
+2bb. If the list contains exactly one best candidate subroutine, that subroutine is chosen and the second phase is started for all arguments of that subroutine. The candidate subroutine forces its parameter types on the arguments.
+2bc. If the list does not contain a single best candidate subroutine, then, for each argument, a set of possible types is constructed and sent to the upper expression as propagation. NONE of these types may be unbound. Then, the upper expressions' types (now fixed) are compared against candidate subroutines. If, even at this point, there are multiple candidates, the process fails.
 
 In the first phase, each expression is evaluated thus:
-1. If it's a literal expression, class constructor or variable expression, its type is set directly. Such expression does not participate in the second phase.
+1. If it's a literal expression, class constructor or variable expression, its type is set directly.
 2. If it's an arithmetic expression (i.e. an operator with operands), it is transformed into a function call of a special predefined hidden function. Then proceed to 3.
 3. Otherwise, it is a call expression with or without type arguments an with or without arguments.
 
 
 
 In the first phase, evaluate call expressions like this:
-(If at any point you signal an error, set the type of the expression to the special Type.getErrorType() and stop evaluating the first phase.)
+(If at any point you signal an error, set the type of the expression to the special Type.errorType and stop evaluating the first phase.)
 1. Retrieve all subroutines with the callsite name. This subroutines become the "considered subroutines".
 1.1 If none exist, signal an error.
 2. If type arguments were specified, remove from consideration all subroutines with a different number of type parameters. Also remove from consideration all non-generic subroutines.
 2.1. If none remain, signal an error.
 2a. Remove from consideration all subroutines with a different number of parameters than actual arguments.
 2a.1. If none remain, signal an error.
-3. If type arguments were specified, transform all considered subroutines into inferred subroutines. Only those will now be considered.
 4. Do the following procedure for all considered subroutines:
 4.1.If it is a generic subroutine and type arguments were not specified, it's called an "incomplete subroutine".
 4.2 For each combination of types of its parameters, perform unification in this way:
-4.2.1 We will try to unify the subroutine signature, including its return type,  with the function signature where all parameters were replaced by types from the combination. Type variables of the signature are renamed so they don't conflict with the free types of arguments.
+4.2.0 If type arguments were specified, unify the type variables with the types given as type arguments.
+4.2.1 We will try to unify the subroutine signature, including its return type,  with the function signature where all parameters were replaced by types from the combination. Names of type variables do not matter. A new type variable is created for the actual return type. This does not serve much purpose except to simplify algorithm. Although, perhaps the algorithm would be simpler without.
 4.2.2 Perform the unification algorithm with some cave-ats. If the unification algorithm fails, then don't consider this combination. These are the cave-ats:
 4.2.2.1 Unifying a null with a type variable puts the constraint "must be an object" on the variable.
 4.2.2.2 Unifying a null with a structured type or a class type succeeds.
@@ -47,8 +47,11 @@ In the first phase, evaluate call expressions like this:
 4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is a null, a structured type, a class or another variable that is not under the constraint "must be an integer or float".
 4.2.2.6 Unifying a variable that is under the constraint "must be an integer or float" can only succeed if the other part is an integer, a float or a type variable not under the constraint "must be an object".
 4.2.2.7 It is possible to unify a "float" in the signature with an "int" in the type, but doing so puts a "+1 badness" to the resultant inferred subroutine.
+/*
+DO NOT DO THIS MAYBE? MAYBE DEFER IT UNTIL SECOND PHASE?
 4.2.3 For each type parameter, if it remains free, but it has the constraint "must be an integer or float", it becomes an integer. (This will cause some unexpected behavior sometimes. TODO add a test for it)
-4.2.4 The unified subroutine/type combination may still contain a free type variable. That does not remove it from consideration.
+*/
+4.2.4 The unified subroutine/type combination may still contain a free type variable. That does not remove it from consideration. We will deal with that in phase two.
 4.2.5. Create an inferred subroutine from this subroutine and this combination of types. It may still be incomplete.
 4.2.6. Add this inferred's subroutine return type to the set of return types.
 5. If the list of inferred subroutines is empty, signal an error.
@@ -56,12 +59,13 @@ In the first phase, evaluate call expressions like this:
 
 In the second phase, proceed like this:
 (If during this phase you signal an error, stop evaluating, and set the type to error.)
-1. We receive a set of possible types.
+1. We receive a set of possible types. These are guaranteed to be complete.
 1a. If we signalled an error in the first phase, end.
-2. Remove from consideration all inferred subroutines whose return type cannot be unified with any type given in the set of possible types. A "float" possible type is unifiable with a subroutine return type of "int" but adds +1 badness.
+2. Remove from consideration all inferred subroutines whose return type cannot be unified with any type given in the set of possible types. A "float" possible type is unifiable with a subroutine return type of "int" but adds +1 badness. The unifications remain.
+2a. Numerically-bound type variables become integers.
 3. Remove from consideration all inferred subroutines that still have a free variable left.
 4. If there is no subroutine left, signal an error.
 5. If there is exactly one subroutine left, launch this phase for all of its arguments with the unification made, and sending only a single possible return type.
-6. If there are still at least two inferred subroutines considered, then discover if one is better than all others. A subroutine is better than another subroutine if it has less badness. If there is one best subroutine, consider it best. If not, signal an error (TODO this can be made better perhaps).
-
-TODO add test for T copy(T t)
+6. If there are still at least two inferred subroutines considered, send their combined types for each argument to the parents.
+6a. After that, with the specific types from parents, discover if one is better than all others. A subroutine is better than another subroutine if it has less badness. If there is one best subroutine, consider it best. If not, signal an error.
+6b. End.

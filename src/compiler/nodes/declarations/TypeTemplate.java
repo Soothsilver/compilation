@@ -16,7 +16,8 @@ public class TypeTemplate extends TypeOrTypeTemplate {
     @Override
     public String getFullString() {
         return "type " + name + " = class[[" + typeParameters.stream().map(tp->tp.toString()).collect(Collectors.joining(",")) + "]] {\n"
-                + declarations.stream().map(decl->decl.getFullString()).collect(Collectors.joining(","))
+                + declarations.stream().map(decl->decl.getFullString()).collect(Collectors.joining("\n"))
+                + (declarations.size() > 0 ? "\n" : "")
                 + subroutines
                 + "};";
     }

@@ -10,6 +10,9 @@ public class VariableExpression extends Expression {
     public String name;
     public Variable variable;
 
+
+
+
     public VariableExpression (String identifier, int line, int column, Compilation compilation) {
         name = identifier;
         this.line = line;

@@ -513,7 +513,7 @@ expr1_postfix ::=
   | expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR expressions:args RPAR {: RESULT = CallExpression.create(id, targs, args, idleft, idright, parser.compilation); :}
   | expr1_subroutinegroup:id LEFTTYPEBRACKET type_arguments:targs RIGHTTYPEBRACKET LPAR RPAR {: RESULT = CallExpression.create(id, targs, null, idleft, idright, parser.compilation); :}
   | expr1_postfix PERIOD IDENTIFIER /* Variable expression */
-  | expr1_postfix LBRACKET expression RBRACKET /* Variable expression */
+  | expr1_postfix:array LBRACKET expression:index RBRACKET {: RESULT = ArrayAccessExpression.create(array, index, parser.compilation); :}
   | expr1_postfix:left INCREMENT:op {: RESULT = UnaryExpression.create("++", UnaryExpressionSide.Postfix, left, opleft, opright, parser.compilation); :}
   | expr1_postfix:left DECREMENT:op {: RESULT = UnaryExpression.create("--", UnaryExpressionSide.Postfix, left, opleft, opright, parser.compilation); :}
   | expr0_simple:e  {: RESULT = e; :}
@@ -540,5 +540,5 @@ constant	       ::=
                     new_list:data {: RESULT = data; :}
                     ;
 new_list	       ::= LBRACKET expressions:ex RBRACKET {: RESULT = ArrayConstructorExpression.infer(ex, exleft, exright, parser.compilation); :}
-                     | NEW type:t LBRACKET INTEGER:i RBRACKET {: RESULT = new ArrayConstructorExpression(t, i, tleft, tright, parser.compilation); :}
+                     | NEW type:t LBRACKET expression:i RBRACKET {: RESULT = new ArrayConstructorExpression(t, i, tleft, tright, parser.compilation); :}
                      ;

@@ -43,6 +43,11 @@ public abstract class Expression extends Node {
         return new BooleanLiteralExpression(data, line, column, compilation);
     }
 
+    /**
+     * Starts the second phase of overload resolution for this expression.
+     * @param types The set of types that are permitted for this expression. All of these types are guaranteed to be complete and not contain any type variables. If this is null, it means that there is no limitation on type by the parent (such as in an ExpressionStatement).
+     * @param compilation The compilation object.
+     */
     public abstract void propagateTypes(Set<Type> types, Compilation compilation);
 
     public void setErrorType() {

@@ -25,7 +25,7 @@ public final class OverloadResolution {
         debug("Overload resolution begins for " + call + ", subroutine group has " + group.subroutines.size() + " candidates.");
 //1.1 If none exist, signal an error.
         if (group.subroutines.isEmpty()) {
-            compilation.semanticError("There is no subroutine with the name '" + group.name + "' at this point.", group.line, group.column);
+            compilation.semanticError("There is no subroutine with the name '" + group + "' at this point.", group.line, group.column);
             call.setErrorType();
             return;
         }
@@ -34,7 +34,7 @@ public final class OverloadResolution {
         if (call.typeArguments != null) {
             group.subroutines.removeIf(sbrt -> sbrt.typeParameterNames.size() != call.typeArguments.size());
             if (group.subroutines.isEmpty()) {
-                compilation.semanticError("No subroutine with the name '" + group.name + "' has " + call.typeArguments.size() + " type parameters.", group.line, group.column);
+                compilation.semanticError("No subroutine with the name '" + group + "' has " + call.typeArguments.size() + " type parameters.", group.line, group.column);
                 call.setErrorType();
                 return;
             }
@@ -43,7 +43,7 @@ public final class OverloadResolution {
 //2a.1. If none remain, signal an error.
         group.subroutines.removeIf(sbrt -> sbrt.parameters.size() != call.arguments.size());
         if (group.subroutines.size() == 0) {
-            compilation.semanticError("No overload of the subroutine '" + group.name + "' takes " + call.arguments.size() + " arguments.", call.line, call.column);
+            compilation.semanticError("No overload of the subroutine '" + group + "' takes " + call.arguments.size() + " arguments.", call.line, call.column);
             call.setErrorType();
             return;
         }
@@ -254,18 +254,17 @@ public final class OverloadResolution {
     }
 
     public static void phaseTwo(CallExpression call, Set<Type> returnTypes, Compilation compilation) {
-
 //        In the second phase, proceed like this:
 //        (If during this phase you signal an error, stop evaluating, and set the type to error.)
+//        1. We receive a set of possible types. These are guaranteed to be complete.
 //        1a. If we signalled an error in the first phase, end.
         if (call.type == Type.errorType) {
             return;
         }
-        debug ("Phase 2 for " + call.group.name);
+        debug ("Phase 2 for " + call.group);
         debug ("Token count: " + call.subroutineTokens.size());
-//        1. We receive a set of possible types.
           ArrayList<SubroutineToken> legalSubroutines = call.subroutineTokens;
-//        2. Remove from consideration all inferred subroutines whose return type cannot be unified with any type given in the set of possible types. A "float" possible type is unifiable with a subroutine return type of "int" but adds +1 badness.
+//        2. Remove from consideration all inferred subroutines whose return type cannot be unified with any type given in the set of possible types. A "float" possible type is unifiable with a subroutine return type of "int" but adds +1 badness. The unifications remain. TODO
           if (returnTypes != null) {
               for (int sti = legalSubroutines.size() - 1; sti >= 0; sti--) {
                   boolean unifiable = false;
@@ -315,20 +314,27 @@ public final class OverloadResolution {
              }
               return false;
           });
+
+//        4. If there is no subroutine left, signal an error.
         if (legalSubroutines.size() == 0) {
             compilation.semanticError("Type inference failed for '" + call.group.name + "' because some type variables remain free. You may need to specify type arguments directly.", call.line, call.column);
             call.setErrorType();
             return;
         }
-//        4. If there is no subroutine left, signal an error.
+
+
+
+
+        // TODO make a complete overhaul of this
+
 //        5. If there is exactly one subroutine left, launch this phase for all of its arguments with the unification made, and sending only a single possible return type.
         if (legalSubroutines.size() == 1) {
             bestSubroutineSelected(legalSubroutines.get(0), call, compilation);
             return;
             // TODO
-
             // TODO
         }
+
         debug ("Phase 2: We are choosing among " + legalSubroutines.size() + " subroutines.");
 
 //        6. If there are still at least two inferred subroutines considered, then discover if one is better than all others. A subroutine is better than another subroutine if it has less badness. If there is one best subroutine, consider it best. If not, signal an error (TODO this can be made better perhaps).
@@ -346,6 +352,8 @@ public final class OverloadResolution {
         if (bestSubroutine != null) {
             bestSubroutineSelected(bestSubroutine, call, compilation);
         } else {
+            final int bb = bestBadness;
+            legalSubroutines.removeIf(sbrt -> sbrt.badness > bb);
             compilation.semanticError("The call is ambiguous between the following subroutines: " + legalSubroutines.stream().map(sbtk -> "'" + sbtk.subroutine.getSignature(false, false) + "'").collect(Collectors.joining(",")) + ".", call.line, call.column);
             call.setErrorType();
         }

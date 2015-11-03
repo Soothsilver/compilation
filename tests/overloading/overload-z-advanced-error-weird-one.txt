@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE ambiguity
+//EXPECT-SEMANTICAL-ERROR: The call is ambiguous between the following subroutines: 'function get(s:float):float','function get(s:integer):integer'.
 
 function get(s : integer) : integer { return 1; }
 function get(s : integer) : string { return "a"; }

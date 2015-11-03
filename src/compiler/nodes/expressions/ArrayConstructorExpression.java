@@ -3,29 +3,32 @@ package compiler.nodes.expressions;
 import compiler.Compilation;
 import compiler.nodes.declarations.Type;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ArrayConstructorExpression extends Expression {
     private Type innerType;
-    private int size;
+    private Expression size;
 
-    public ArrayConstructorExpression(Type innerType, int size, int line, int column, Compilation compilation) {
+    public ArrayConstructorExpression(Type innerType, Expression size, int line, int column, Compilation compilation) {
         this.line = line;
         this.column = column;
         this.size = size;
         this.innerType = innerType;
         this.type = Type.createArray(innerType, line, column);
+        this.size.propagateTypes(new HashSet<>(Arrays.asList(Type.integerType)), compilation);
         this.possibleTypes.add(this.type);
     }
     public static ArrayConstructorExpression infer(Expressions expressions, int line, int column, Compilation compilation) {
         // TODO make this actually work
-        ArrayConstructorExpression expression = new ArrayConstructorExpression(Type.errorType, expressions.size(), line, column, compilation);
+        ArrayConstructorExpression expression = new ArrayConstructorExpression(Type.errorType, Expression.createFromConstant(expressions.size(), line, column, compilation), line, column, compilation);
         return expression;
     }
 
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
-        if (!types.contains(this.type)) { //todo unify
+        if (!types.contains(this.type)) {
             compilation.semanticError("An array of '" + this.innerType + "' cannot be converted to any of the following types: " + types, line, column);
         }
     }

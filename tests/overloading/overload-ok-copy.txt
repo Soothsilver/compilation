@@ -1,0 +1,9 @@
+
+function copy[[T]] ( t : T ) : T { return null; }
+
+
+procedure main()
+{
+    i : integer;
+    i = copy(copy(copy(copy(5))));
+}

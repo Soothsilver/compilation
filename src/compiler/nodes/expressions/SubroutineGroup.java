@@ -36,7 +36,7 @@ public class SubroutineGroup extends Node {
      * @return A created subroutine group.
      */
     public static SubroutineGroup create(String identifier, int line, int column, Compilation compilation) {
-         compilation.environment.debugPrintSubroutines();
+         //compilation.environment.debugPrintSubroutines();
          SubroutineGroup g = new SubroutineGroup(compilation.environment.findSubroutines(identifier));
          g.name = identifier;
          g.line = line;
@@ -58,6 +58,8 @@ public class SubroutineGroup extends Node {
         SubroutineGroup g = new SubroutineGroup(new LinkedList<>());
         g.owner = parent;
         g.owner.propagateTypes(null, compilation);
+        System.out.println(parent.type);
+        System.out.println(parent.type.subroutines.size());
         if (!g.owner.type.isReferenceType) {
             compilation.semanticError("The parent expression's type (" + parent.type + ") is not a reference type and cannot contain subroutines.", line, column);
         }
@@ -66,6 +68,7 @@ public class SubroutineGroup extends Node {
         }
         else {
             for(Subroutine member : g.owner.type.subroutines) {
+                System.out.println("Testing against: " + member.name);
                 if (member.name.equals(memberSubroutine))
                     g.subroutines.add(member);
             }
@@ -78,6 +81,7 @@ public class SubroutineGroup extends Node {
 
     @Override
     public String toString() {
-        return "[" + subroutines.stream().map(sr -> sr.getSig()).collect(Collectors.joining(" AND ")) + "]";
+        if (owner == null) return name;
+        else return owner + "." + name;
     }
 }
