@@ -38,6 +38,8 @@ public class Type extends TypeOrTypeTemplate {
         clone.boundToReferenceType = this.boundToReferenceType;
         clone.boundToSpecificType = this.boundToSpecificType;
         clone.kind = this.kind;
+        clone.declarations = this.declarations;
+        clone.subroutines = this.subroutines;
         if (this.typeArguments != null) {
             clone.typeArguments = new ArrayList<>();
             for (int i = 0; i < this.typeArguments.size(); i++) {

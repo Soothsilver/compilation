@@ -83,6 +83,9 @@ public class Subroutine extends Declaration {
             }
         }
         signature += name;
+        if (forSymbolTables) {
+            signature += " ";
+        }
         if (typeParameterNames.size() > 0) {
             signature += "[[";
             if (forSymbolTables) {
