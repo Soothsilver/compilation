@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The type 'C' is generic and requires type arguments.
 type C = structure [[ T ]] { };
 procedure main()
 {

@@ -1,6 +1,6 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The symbol 'a' was already defined at line 3, column 6.
 
-type a = structure { }
+type a = structure { };
 type a = class [[ T1 ]] { };
 
 procedure main()

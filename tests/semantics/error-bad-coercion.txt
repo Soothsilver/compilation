@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: Cannot implicitly convert from float to integer.
 procedure main()
 {
     i : integer;

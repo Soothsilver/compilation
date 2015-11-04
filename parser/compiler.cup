@@ -93,6 +93,7 @@ non terminal Variable variable_declaration;
 
 non terminal Subroutines subroutines;
 non terminal Subroutine subroutine;
+non terminal Subroutines optional_subroutines;
 non terminal Subroutine function;
 non terminal Subroutine procedure;
 non terminal Subroutine procedure_header;
@@ -194,6 +195,12 @@ subroutine      ::= function:f
                      | procedure:p
                     {: RESULT = p; :}
                     ;
+                    
+optional_subroutines ::= {: RESULT = new Subroutines(); :}
+						| subroutines:s {: RESULT = s; :}
+						;
+
+                    
 procedure       ::= procedure_header:p block:b {:
                         getEnvironment().leaveSubroutine();
                         if (Subroutine.typeParametersEntered) {
@@ -402,7 +409,7 @@ store_statically_type_name ::= IDENTIFIER:id {: TypeDefinitionProcess.beginTypeD
 
 class_type_parameters ::= type_parameters:tp {: RESULT = tp; :};
 
-class_type_contents ::= local_declarations:ld subroutines:sbrt
+class_type_contents ::= local_declarations:ld optional_subroutines:sbrt
                         {:
                             TypeDefinitionProcess.currentType.setDeclarations ( ld );
                             TypeDefinitionProcess.currentType.setSubroutines ( sbrt );

@@ -375,7 +375,7 @@ public final class OverloadResolution {
 
                 call.arguments.set(i, new IntegerToFloatExpression(argument));
                 if (i == 0 && call.kind == ExpressionKind.Assignment) {
-                    compilation.semanticError("Cannot implicitly convert from integer to float.", call.line, call.column);
+                    compilation.semanticError("Cannot implicitly convert from float to integer.", call.line, call.column);
                     call.setErrorType();
                     return;
                 }

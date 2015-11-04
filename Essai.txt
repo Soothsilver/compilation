@@ -1,7 +1,22 @@
-v : float;
-function copy [[T]] (input : T) : T {  }
-function copy ( input : integer ) : float { }
+type c = class [[ T ]] {
+    a : T;
+    b : list of T;
+    d : c[[T]]; // <--- Will this work?
+    e : list of c[[T]];
+    function f() : T {
+        t : T;
+        t = new T();
+        return t;
+    }
+};
+
 procedure main()
 {
-   v = copy(copy(copy(5)));
+    into : c [[integer]];
+    out : c [[string]];
+    b : integer;
+    b = into.f();
+    out.a = "hello";
+    out.d.f();
+   
 }

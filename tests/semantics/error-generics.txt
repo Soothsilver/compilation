@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The expression '"fail"' is not convertible to type 'integer'.
 type c = class [[ T ]] {
     a : T;
     b : list of T;
@@ -9,14 +9,14 @@ type c = class [[ T ]] {
         t = new T();
         return t;
     }
-}
+};
 
 procedure main()
 {
-    in : c [[integer];
+    into : c [[integer]];
     out : c [[string]];
     b : integer;
-    in.a = "fail";
-    b = in.f();
-    out.a = "hello";
+    into.a = "fail";
+    b = into.f();
+    out.a = "hello";    
 }

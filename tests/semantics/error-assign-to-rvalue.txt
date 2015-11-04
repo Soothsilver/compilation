@@ -1,5 +1,5 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The left-hand side of an assignment must be a variable, array member or a class member.
+//EXPECT-SEMANTICAL-ERROR: The left-hand side of an assignment must be a variable, array member or a class member.
 function s() : integer { return 1; }
 procedure main()
 {

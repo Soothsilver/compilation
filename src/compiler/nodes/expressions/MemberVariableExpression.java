@@ -1,6 +1,7 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
+import compiler.nodes.declarations.Subroutine;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.declarations.Variable;
 
@@ -21,9 +22,15 @@ public class MemberVariableExpression extends VariableExpression {
             expression.setErrorType();
         } else {
             Type parentType = parent.type;
-            Variable variable = parentType.declarations.stream().filter(vr -> vr.name.equals(name)).findAny().orElse(null);
+            Variable variable = null;
+            System.out.println(parentType);
+            for(Variable member : parentType.declarations) {
+                System.out.println("Testing against: " + member.name);
+                if (member.name.equals(name))
+                    variable = member;
+            }
             if (variable == null) {
-                compilation.semanticError("The type '" + parent.type + "' does not contain a field with the name '" + name + "'.", line, column);
+                compilation.semanticError("The type '" + parent.type.getFullString() + "' does not contain a field with the name '" + name + "'.", line, column);
                 expression.setErrorType();;
             } else {
                 expression.variable = variable;

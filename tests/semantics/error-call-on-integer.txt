@@ -1,5 +1,6 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The parent expression's type (integer) is not a reference type and cannot contain subroutines.
 procedure main()
-{
-    2.hello();
+{	
+	a : integer;
+    a.hello();
 }
