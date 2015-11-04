@@ -13,7 +13,7 @@ import java.nio.file.Paths;
  * This is a class you can use to run tests in the "semantics" folder
  * if you cannot run JUnit.
  */
-public class AncientSemanticTests {
+public class SemanticTests {
     /**
      * Runs the tests.
      * @param args Unused.

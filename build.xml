@@ -42,7 +42,7 @@
        target: semantics-tests
        ================================= -->
     <target name="semantics-tests" depends="parser, lexer, compile-all"
-            description="Creates the compiler and runs it against all tests in the directory tests/syntax.">
+            description="Creates the compiler and runs it against all tests in the directory tests/semantics.">
         <java
                 fork = "true"
                 dir = "${bin.dir}"
