@@ -1,0 +1,14 @@
+PROGRAM[
+type s = class {
+};
+procedure a(a:s) {  }
+procedure main() { 
+a : s;
+b : integer;
+c : !array[[integer]];
+a=null;
+a[s](a);
+a[s](null);
+c=null;
+}
+]

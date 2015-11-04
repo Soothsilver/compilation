@@ -1,12 +1,12 @@
 
 global : integer;
-procedure hello() { }
 type s = class {
     global : float;
     procedure hello() {
 
     }
 };
+procedure hello() { }
 
 procedure main()
 {

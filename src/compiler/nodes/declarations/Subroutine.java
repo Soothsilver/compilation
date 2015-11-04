@@ -70,10 +70,19 @@ public class Subroutine extends Declaration {
     public String getSig() {
         return getSignature(true, false);
     }
+
+    @Override
+    public String getHumanSig() {
+        return getSignature(true, false, null, true);
+    }
+
     public String getSignature(boolean forSymbolTables, boolean callsite) {
         return getSignature(forSymbolTables, callsite, null);
     }
     public String getSignature(boolean forSymbolTables, boolean callsite, ArrayList<Type> types) {
+        return getSignature(forSymbolTables, callsite, types, false);
+    }
+    public String getSignature(boolean forSymbolTables, boolean callsite, ArrayList<Type> types, boolean humanSignature) {
         String signature = "";
         if (!callsite && !forSymbolTables) {
             if (kind == SubroutineKind.FUNCTION) {
@@ -83,7 +92,7 @@ public class Subroutine extends Declaration {
             }
         }
         signature += name;
-        if (forSymbolTables) {
+        if (forSymbolTables && !humanSignature) {
             signature += " ";
         }
         if (typeParameterNames.size() > 0) {

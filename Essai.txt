@@ -1,10 +1,22 @@
-type s = class {
-    a : integer;
-};
 
-function func() : s { return null;}
+global : integer;
+type s = class {
+    global : float;
+    procedure hello() {
+
+    }
+};
+procedure hello() { }
 
 procedure main()
 {
-    func().a = 5;
+    a : integer;
+    global = 5;
+    {
+        global : boolean;
+        a : boolean;
+        {
+            a : string;
+        }
+    }
 }

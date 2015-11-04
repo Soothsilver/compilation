@@ -104,7 +104,7 @@ public class Environment {
                 //System.out.println("Adding :" + decl.getId() + ":");
                 return new ScopeTree<T>(left, right, decl, depth);
             } else if (decl.getSig().compareTo(this.decl.getSig()) == 0) {
-                compilation.semanticError("The symbol '" + decl.getSig() + "' was already defined at line " + (1 + this.decl.line) + ", column " + (1 + this.decl.column) + ".", decl.line, decl.column);
+                compilation.semanticError("The symbol '" + decl.getHumanSig() + "' was already defined at line " + (1 + this.decl.line) + ", column " + (1 + this.decl.column) + ".", decl.line, decl.column);
                 return tree;
             } else if (decl.getSig().compareTo(this.decl.getSig()) < 0)
                 if (left == null)
@@ -118,6 +118,11 @@ public class Environment {
         }
     }
 
+    /**
+     * Searches the symbol tables for a type or a type template with the specified name. Returns null if it cannot be found.
+     * @param identifier Name of the type to find.
+     * @return The found type, or null.
+     */
     public TypeOrTypeTemplate findType(String identifier) {
         // This means we don't support type overloading.
         // i.e. this code is an error:
@@ -298,6 +303,12 @@ public class Environment {
         addBinaryOperator("+", Type.booleanType, Type.stringType, Type.stringType);
         addBinaryOperator("-", Type.integerType, Type.integerType, Type.integerType);
         addBinaryOperator("-", Type.floatType, Type.floatType, Type.floatType);
+        addUnaryOperator("+", Type.integerType, Type.integerType);
+        addUnaryOperator("-", Type.integerType, Type.integerType);
+        addUnaryOperator("+", Type.floatType, Type.floatType);
+        addUnaryOperator("-", Type.floatType, Type.floatType);
+
+
 //terminal CONCATENATE;
         addSubroutine(OperatorFunction.createConcatenate());
 //terminal EQUAL;

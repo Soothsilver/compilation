@@ -1,0 +1,7 @@
+PROGRAM[
+procedure main() { 
+f : float;
+i : integer;
+f=!float(i);
+}
+]

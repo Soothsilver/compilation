@@ -1,0 +1,20 @@
+PROGRAM[
+global : integer;
+type s = class {
+global : float;
+procedure hello() {  }
+};
+procedure hello() {  }
+procedure main() { 
+a : integer;
+global=5;
+{ 
+global : boolean;
+a : boolean;
+{ 
+a : string;
+
+}
+}
+}
+]

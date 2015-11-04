@@ -1,8 +1,7 @@
-/*
- //EXPECT-SEMANTICAL-ERROR: TO DEFINE 
- //EXPECT-SEMANTICAL-ERROR: TO DEFINE
- //EXPECT-SEMANTICAL-ERROR: TO DEFINE
-*/
+//EXPECT-SEMANTICAL-ERROR: There is no subroutine with the name 'returnS[]:s().funcG' at this point.
+//EXPECT-SEMANTICAL-ERROR: The expression '"sth"' is not convertible to type 'integer'.
+//EXPECT-SEMANTICAL-ERROR: The type 's' does not contain a field with the name 'b'.
+
 
 type s = class {
     a : integer;

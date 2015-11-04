@@ -16,6 +16,14 @@ public class ConstructorExpression extends Expression {
         this.column = column;
         this.type = (Type)compilation.environment.findType(typeName);
         this.possibleTypes.add(this.type);
+        if (this.type == null) {
+            compilation.semanticError("The type '" + typeName + "' could not be found.", line, column);
+            this.setErrorType();
+        }
+        else if (!this.type.isReferenceType) {
+            compilation.semanticError("The type '" + typeName + "' cannot be constructed. Only classes, arrays and structures can be constructed.", line, column);
+            this.setErrorType();
+        }
     }
     public ConstructorExpression(String typeName, ArrayList<Type> typeArguments, int line, int column, Compilation compilation) {
         this.typeName = typeName;

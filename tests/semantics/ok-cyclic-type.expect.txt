@@ -1,0 +1,7 @@
+PROGRAM[
+type LinkedListNode = class[[T]] {
+data : T;
+next : LinkedListNode[[T]];
+};
+procedure main() {  }
+]

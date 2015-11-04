@@ -1,0 +1,6 @@
+PROGRAM[
+procedure main() { 
+a : integer;
+a+=a-=1;
+}
+]

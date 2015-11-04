@@ -1,3 +1,4 @@
+// This test fails because we didn't implement inferred array initializers.
 type s = structure { };
 procedure main()
 {

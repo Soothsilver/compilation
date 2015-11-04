@@ -78,7 +78,7 @@ public class OperatorFunction extends Subroutine {
         s.parameters = new ArrayList<>();
         s.parameters.add(new Parameter("lefthand", standInType));
         s.parameters.add(new Parameter("righthand", standInType));
-        s.returnType = standInType;
+        s.returnType = Type.booleanType;
         return s;
     }
 
@@ -92,7 +92,7 @@ public class OperatorFunction extends Subroutine {
         s.parameters = new ArrayList<>();
         s.parameters.add(new Parameter("lefthand", standInType));
         s.parameters.add(new Parameter("righthand", standInType));
-        s.returnType = standInType;
+        s.returnType = Type.booleanType;
         return s;
     }
 

@@ -23,4 +23,12 @@ public abstract class Declaration extends Node {
     public String getFullString() {
         return name;
     }
+
+    /**
+     * Returns the signature that is equal to all other signature-equivalent declarations from the view of symbol tables, but is readable by a human. Override this in subroutine.
+     * @return The signature string.
+     */
+    public String getHumanSig() {
+        return name;
+    }
 }

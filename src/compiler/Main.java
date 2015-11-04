@@ -16,9 +16,10 @@ public class Main {
      */
     public static void main(String[] args) {
 
+        Compilation compilation = null;
         try {
             FileReader myFile = new FileReader(args[0]);
-            Compilation compilation = new Compilation(new File(args[0]));
+            compilation = new Compilation(new File(args[0]));
             CompilerLexer myLex = new CompilerLexer(myFile);
             myLex.compilation = compilation;
             CompilerParser myParser = new CompilerParser(myLex);
@@ -37,7 +38,13 @@ public class Main {
                 t.printStackTrace();
             }
         } catch (Exception e) {
-            System.out.println("Exception: " + e + "\n");
+            System.out.println("Exception: " + e);
+            if (compilation != null) {
+                System.out.println("Errors: " + compilation.errorMessages.size());
+                for (String message : compilation.errorMessages) {
+                    System.out.println(" " + message);
+                }
+            }
             e.printStackTrace();
         } catch (Error e) {
             System.out.println("Unexpected error.");

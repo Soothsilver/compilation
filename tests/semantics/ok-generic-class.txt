@@ -8,14 +8,14 @@ type c = class [[ T ]] {
         t = new T();
         return t;
     }
-}
+};
 
 procedure main()
 {
-    in : c [[integer];
+    into : c [[integer];
     out : c [[string]];
     b : integer;
-    in.a = 5;
-    b = in.f();
+    into.a = 5;
+    b = into.f();
     out.a = "hello";
 }

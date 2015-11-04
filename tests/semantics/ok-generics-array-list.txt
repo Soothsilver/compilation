@@ -7,7 +7,7 @@ type arraylist = class [[T]] {
     procedure clearAndSetCapacity( capacity : integer ) {
         array = new T [ capacity ];
     }
-    function set ( index : integer, t : T) {
+    procedure set ( index : integer, t : T) {
         array[index] = t;
     }
 };

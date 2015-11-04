@@ -71,7 +71,8 @@ public class CallExpression extends Expression {
             return group + "?(" + arguments.stream().map(arg -> arg.toString()).collect(Collectors.joining(",")) + ")";
         } else {
             Subroutine sub = callee.subroutine;
-            String callstring = sub.getSignature(false, true, callee.types) + "(" + arguments.toWithoutBracketsString() + ")";
+            // TODO also display owner
+            String callstring =  sub.getSignature(false, true, callee.types) + "(" + arguments.toWithoutBracketsString() + ")";
             return callstring;
         }
     }
