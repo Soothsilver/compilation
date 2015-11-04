@@ -10,9 +10,8 @@ import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
 
 public class ForStatement extends CycleStatement{
-	
 	public Expression test;
-	public Expression initialisaton;
+	public Expression initialisation;
 	public Expression incrementation;
 	
 	 private static List<ExpressionKind> permittedKinds = Arrays.asList(
@@ -23,12 +22,12 @@ public class ForStatement extends CycleStatement{
 	    );									
 
 
-	public ForStatement(Expression initialisaton, Expression test,Expression incrementation, Compilation compilation) {
-		this.initialisaton = initialisaton;
+	public ForStatement(Expression initialisation, Expression test, Expression incrementation, Compilation compilation) {
+		this.initialisation = initialisation;
 		this.test = test;
 		this.incrementation = incrementation;
 		this.test.propagateTypes(new HashSet<Type>(Arrays.asList(Type.booleanType)), compilation);
-		this.initialisaton.propagateTypes(null, compilation);
+		this.initialisation.propagateTypes(null, compilation);
 		this.incrementation.propagateTypes(null, compilation);
 		
 		 if (!permittedKinds.contains(incrementation.kind)) {
@@ -36,16 +35,13 @@ public class ForStatement extends CycleStatement{
 	            		incrementation.line, incrementation.column);
 	        }
 		 
-		 if (!permittedKinds.contains(initialisaton.kind)) {
+		 if (!permittedKinds.contains(initialisation.kind)) {
 	            compilation.semanticError("Only assignment, increment, decrement and subroutine call expressions are permitted as statements.", 
-	            		initialisaton.line, initialisaton.column);
+	            		initialisation.line, initialisation.column);
 	        }
-
-		 
-		
 	}
 	
 	 public String toString() {
-	      	return "for(" + initialisaton + ";" + test + ";" + incrementation + ") " + body;	      
+	      	return "for(" + initialisation + ";" + test + ";" + incrementation + ") " + body;
 	    }
 }

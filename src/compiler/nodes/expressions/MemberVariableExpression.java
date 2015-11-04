@@ -30,7 +30,7 @@ public class MemberVariableExpression extends VariableExpression {
                     variable = member;
             }
             if (variable == null) {
-                compilation.semanticError("The type '" + parent.type.getFullString() + "' does not contain a field with the name '" + name + "'.", line, column);
+                compilation.semanticError("The type '" + parent.type + "' does not contain a field with the name '" + name + "'.", line, column);
                 expression.setErrorType();;
             } else {
                 expression.variable = variable;

@@ -187,6 +187,7 @@ public class Type extends TypeOrTypeTemplate {
         tArray.kind = TypeKind.ArrayType;
         tArray.typeArguments = new ArrayList<>();
         tArray.typeArguments.add(inner);
+        tArray.isReferenceType = true;
         return tArray;
         // TODO (elsewhere) unifying should work differently for method calls (int-to-float) and types (exactitude)
     }

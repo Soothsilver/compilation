@@ -1,0 +1,4 @@
+PROGRAM[
+procedure main() {  }
+procedure main(irrelevant:float) {  }
+]

@@ -1,0 +1,14 @@
+PROGRAM[
+procedure main() { 
+i : integer;
+f : float;
+b : boolean;
+s : string;
+c : character;
+b=true;
+b=false;
+c='A';
+f=2.4E-5;
+i=7;
+}
+]

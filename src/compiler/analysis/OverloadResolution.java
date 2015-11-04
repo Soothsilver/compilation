@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 /**
  * This class groups together the algorithms used during type inference and overload resolution.
  */
+@SuppressWarnings("OverlyComplexClass")
 public final class OverloadResolution {
     /**
      * Performs phase one of the Overload Resolution Process (see the txt file in this folder).
@@ -66,7 +67,13 @@ public final class OverloadResolution {
             debug("Considering " + subroutine + "...");
 //4.1.If it is a generic subroutine and type arguments were not specified, it's called an "incomplete subroutine."
 //4.2 For each combination of types of its parameters, perform unification in this way:
-            ArrayList<Types> typeCombinations = call.arguments.getTypeCombinations();
+            for(Expression arg : call.arguments) {
+                if (arg == null) {
+                    compilation.semanticError("COMPILER INTERNAL ERROR. An argument of call '" + call + "' is null.", call.line, call.column);
+                    return;
+                }
+            }
+            Iterable<Types> typeCombinations = call.arguments.getTypeCombinations();
             for (Types actualTypes : typeCombinations) {
                 Type returnType = Type.createNewTypeVariable("!RET" + Uniqueness.getUniqueId());
                 actualTypes.add(returnType);
@@ -119,11 +126,19 @@ public final class OverloadResolution {
         if (call.subroutineTokens.isEmpty()) {
             compilation.semanticError(call.getErrorMessageTypeMismatch(), group.line, group.column);
             call.setErrorType();
+            //noinspection UnnecessaryReturnStatement
             return;
         }
 //6. The first phase is now complete.
     }
 
+    /**
+     * Attempts to unify the type of a formal parameter with the type of an actual argument. The actual argument may be a type variable as well, especially in the case of the return type.
+     * @param formal The type of the formal parameter.
+     * @param actual The type of the actual argument.
+     * @param badness A boxed integer that will be increased if this unification increases badness.
+     * @return True if the unification suceeeds.
+     */
     public static boolean unify(Type formal, Type actual, IntegerHolder badness) {
         // Technical.
         if (formal.kind == Type.TypeKind.TypeVariable) {
@@ -150,8 +165,9 @@ public final class OverloadResolution {
                         if (formal.isNull()) return true;
                         return false;
                     case Variable:
+                        //noinspection VariableNotUsedInsideIf
                         if (actual.boundToSpecificType != null) {
-                            if (!actual.objectify().equals(formal)) {
+                            if (!actual.objectify().equals(formal.objectify())) {
                                 return false;
                             }
                         }
@@ -189,6 +205,14 @@ public final class OverloadResolution {
         }
         throw new RuntimeException("Unification of this kind of type parameter is not supported.");
     }
+
+    /**
+     * Attempts to unify the type of a formal parameter with the type of an actual argument. It is guaranteed that both types are simple, i.e. not type variables and not structured.
+     * @param formal The type of the formal parameter.
+     * @param actual The type of the actual argument.
+     * @param badness A boxed integer that will be increased if this unification increases badness.
+     * @return True if the unification suceeeds.
+     */
     public static boolean unifySimpleTypes(Type formal, Type actual, IntegerHolder badness) {
         if (formal.name.equals(actual.name)) return true;
         if (formal.name.equals(Type.floatType.name) && actual.name.equals(Type.integerType.name)) {
@@ -202,6 +226,13 @@ public final class OverloadResolution {
         //4.2.2.3 Unifying a null with anything except structured type, class type or class variable fails.
         return false;
     }
+
+    /**
+     * Attempts to unify a type variable with another type. The other type could also be a type variable. It is not guaranteed that the first type is from formal parameters and the second is from arguments. This operation will never increase badness.
+     * @param variable The variable type.
+     * @param type The other type.
+     * @return True if the unification suceeeds.
+     */
     public static boolean unifyVariableWithSomething(Type variable, Type type) {
         //4.2.2.5 Unifying a variable that is under the constraint "must be an object" can only succeed if the other part is a null, a structured type, a class or another variable that is not under the constraint "must be an integer or float". TODO
         //4.2.2.6 Unifying a variable that is under the constraint "must be an integer or float" can only succeed if the other part is an integer, a float or a type variable not under the constraint "must be an object".
@@ -240,6 +271,13 @@ public final class OverloadResolution {
         }
         throw new RuntimeException("This unification type is impossible.");
     }
+    /**
+     * Attempts to unify the types of a formal parameter(s) with the types of an actual argument(s). This method is called for subroutine signatures and for type arguments of structured types.
+     * @param formal The types of the formal parameter.
+     * @param actual The types of the actual argument.
+     * @param badness A boxed integer that will be increased if this unification increases badness.
+     * @return True if the unification suceeeds.
+     */
     public static boolean unify(Types formal, Types actual, IntegerHolder badness) {
         for (int i = 0; i < formal.size(); i++) {
             Type formalType = formal.get(i);
@@ -253,12 +291,19 @@ public final class OverloadResolution {
         return true;
     }
 
+    /**
+     * The second phase of Overload Resolution makes sure that the the expression (and all expressions under this in the expression tree) has exactly one type.
+     * @param call The call expression that needs to be type-resolved.
+     * @param returnTypes The types that the expression can legally take, as determined by its parent.
+     * @param compilation The compilation object.
+     */
+    @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
     public static void phaseTwo(CallExpression call, Set<Type> returnTypes, Compilation compilation) {
 //        In the second phase, proceed like this:
 //        (If during this phase you signal an error, stop evaluating, and set the type to error.)
 //        1. We receive a set of possible types. These are guaranteed to be complete.
 //        1a. If we signalled an error in the first phase, end.
-        if (call.type == Type.errorType) {
+        if (Objects.equals(call.type, Type.errorType)) {
             return;
         }
         debug ("Phase 2 for " + call.group);
@@ -269,6 +314,7 @@ public final class OverloadResolution {
               for (int sti = legalSubroutines.size() - 1; sti >= 0; sti--) {
                   boolean unifiable = false;
                   SubroutineToken st = legalSubroutines.get(sti);
+                  //noinspection LoopStatementThatDoesntLoop
                   for (Type rType : returnTypes) {
                       // Test unification
                       // TODO For now, let's suppose only a single return type.
@@ -300,7 +346,7 @@ public final class OverloadResolution {
 
             for (Type t : token.formalTypes) {
                 Type tFinalBind = t.objectify();
-                if (tFinalBind == null && tFinalBind.boundToNumeric) {
+                if (tFinalBind.boundToSpecificType == null && tFinalBind.boundToNumeric) {
                     debug("Binding " + tFinalBind + " to integer.");
                     tFinalBind.boundToSpecificType = Type.integerType;
                 }
@@ -352,8 +398,8 @@ public final class OverloadResolution {
         if (bestSubroutine != null) {
             bestSubroutineSelected(bestSubroutine, call, compilation);
         } else {
-            final int bb = bestBadness;
-            legalSubroutines.removeIf(sbrt -> sbrt.badness > bb);
+            final int finalBestBadness = bestBadness;
+            legalSubroutines.removeIf(sbrt -> sbrt.badness > finalBestBadness);
             compilation.semanticError("The call is ambiguous between the following subroutines: " + legalSubroutines.stream().map(sbtk -> "'" + sbtk.subroutine.getSignature(false, false) + "'").collect(Collectors.joining(",")) + ".", call.line, call.column);
             call.setErrorType();
         }
@@ -386,9 +432,16 @@ public final class OverloadResolution {
 
     // Utilities
     private static void debug(String line) {
-        /* System.out.println("- " + line); */
+        System.out.println("- " + line);
     }
+
+    /**
+     * A boxed integer.
+     */
     private static class IntegerHolder {
+        /**
+         * The integer boxed by the class.
+         */
         public int value;
     }
 }

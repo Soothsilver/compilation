@@ -57,6 +57,8 @@ public class TestUtilities {
                             try {
                                 expect = new String(java.nio.file.Files.readAllBytes(Paths.get(new File(file.getParentFile(), file.getName().substring(0, file.getName().length() - 4) + ".expect.txt").toURI())));
                             } catch (Exception fileEx) {
+                                System.out.println("ACTUAL:");
+                                System.out.println(actual);
                                 testCase.fail("Expect file not found.");
                             }
                             if (actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "").equals(
