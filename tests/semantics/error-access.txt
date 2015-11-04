@@ -1,7 +1,7 @@
 //EXPECT-SEMANTICAL-ERROR: TO DEFINE
 //EXPECT-SEMANTICAL-ERROR: TO DEFINE
 //EXPECT-SEMANTICAL-ERROR: TO DEFINE
-type s = structure {
+type s = class {
     a : integer;
     procedure func() { }
 };

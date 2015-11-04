@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The expression '"NOT AN INTEGER"' is not convertible to type 'integer'.
 procedure main()
 {
     a : list of integer;

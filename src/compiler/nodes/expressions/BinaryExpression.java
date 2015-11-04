@@ -2,6 +2,7 @@ package compiler.nodes.expressions;
 
 import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
+import compiler.nodes.declarations.Type;
 
 public class BinaryExpression extends CallExpression {
     public String operator;
@@ -48,7 +49,7 @@ public class BinaryExpression extends CallExpression {
 
     @Override
     public String getErrorMessageTypeMismatch() {
-        if (this.kind == ExpressionKind.Assignment) {
+    	if (this.kind == ExpressionKind.Assignment) {
             return "The expression '" + arguments.get(1) + "' is not convertible to type '" + arguments.get(0).type + "'.";
         }
         else {
