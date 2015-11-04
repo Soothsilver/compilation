@@ -1,4 +1,4 @@
-type s = structure {
+type s = class {
     a : integer;
     procedure func() { }
 };

@@ -1,7 +1,7 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: An integer cannot be converted to any of the following types: [boolean]
+//EXPECT-SEMANTICAL-ERROR: An integer cannot be converted to any of the following types: [boolean]
+//EXPECT-SEMANTICAL-ERROR: An integer cannot be converted to any of the following types: [boolean]
+//EXPECT-SEMANTICAL-ERROR: An integer cannot be converted to any of the following types: [boolean]
 procedure hello() { }
 procedure main()
 {

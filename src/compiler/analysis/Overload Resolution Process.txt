@@ -60,7 +60,7 @@ Removed:
 In the second phase, proceed like this:
 (If during this phase you signal an error, stop evaluating, and set the type to error.)
 1. We receive a set of possible types. These are guaranteed to be complete.
-1a. If we signalled an error in the first phase, end.
+1a. If we signaled an error in the first phase, end.
 2. Remove from consideration all inferred subroutines whose return type cannot be unified with any type given in the set of possible types. A "float" possible type is unifiable with a subroutine return type of "int" but adds +1 badness. The unifications remain.
 2a. Numerically-bound type variables become integers.
 3. Remove from consideration all inferred subroutines that still have a free variable left.

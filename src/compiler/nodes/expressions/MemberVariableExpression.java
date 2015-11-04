@@ -23,9 +23,9 @@ public class MemberVariableExpression extends VariableExpression {
         } else {
             Type parentType = parent.type;
             Variable variable = null;
-            System.out.println(parentType);
+            /* System.out.println(parentType); */
             for(Variable member : parentType.declarations) {
-                System.out.println("Testing against: " + member.name);
+                /* System.out.println("Testing against: " + member.name); */
                 if (member.name.equals(name))
                     variable = member;
             }

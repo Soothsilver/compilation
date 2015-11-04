@@ -12,7 +12,7 @@ type c = class [[ T ]] {
 
 procedure main()
 {
-    into : c [[integer];
+    into : c [[integer]];
     out : c [[string]];
     b : integer;
     into.a = 5;

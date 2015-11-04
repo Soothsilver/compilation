@@ -58,8 +58,8 @@ public class SubroutineGroup extends Node {
         SubroutineGroup g = new SubroutineGroup(new LinkedList<>());
         g.owner = parent;
         g.owner.propagateTypes(null, compilation);
-        System.out.println(parent.type);
-        System.out.println(parent.type.subroutines.size());
+        /* System.out.println(parent.type);
+        System.out.println(parent.type.subroutines.size()); */
         if (!g.owner.type.isReferenceType) {
             compilation.semanticError("The parent expression's type (" + parent.type + ") is not a reference type and cannot contain subroutines.", line, column);
         }
@@ -68,7 +68,7 @@ public class SubroutineGroup extends Node {
         }
         else {
             for(Subroutine member : g.owner.type.subroutines) {
-                System.out.println("Testing against: " + member.name);
+                /* System.out.println("Testing against: " + member.name); */
                 if (member.name.equals(memberSubroutine))
                     g.subroutines.add(member);
             }
