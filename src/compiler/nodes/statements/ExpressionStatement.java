@@ -16,7 +16,7 @@ public class ExpressionStatement extends Statement {
             ExpressionKind.Increment,
             ExpressionKind.Subroutine,
             ExpressionKind.MemberSubroutine
-    );
+    );									
 
     public ExpressionStatement(Expression expression, Compilation compilation) {
         this.expression = expression;
@@ -30,7 +30,7 @@ public class ExpressionStatement extends Statement {
         this.expression.propagateTypes(null, compilation);
     }
 
-
+    	
     @Override
     public String toString() {
         if (expression == null) {
