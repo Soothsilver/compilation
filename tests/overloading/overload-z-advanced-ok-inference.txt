@@ -1,3 +1,4 @@
+// Too difficult.
 type A = structure { };
 type B = structure { };
 type C = structure { };

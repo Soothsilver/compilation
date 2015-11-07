@@ -72,7 +72,7 @@ public class CallExpression extends Expression {
         } else {
             Subroutine sub = callee.subroutine;
             // TODO also display owner
-            String callstring =  sub.getSignature(false, true, callee.types) + "(" + arguments.toWithoutBracketsString() + ")";
+            String callstring =  sub.getSignature(false, true, callee.types, true) + "(" + arguments.toWithoutBracketsString() + ")";
             return callstring;
         }
     }

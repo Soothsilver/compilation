@@ -1,9 +1,8 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
-
+//EXPECT-SEMANTICAL-ERROR: column 14: An integer cannot be converted to any of the following types: [boolean]
+//EXPECT-SEMANTICAL-ERROR: column 18: Only assignment, increment, decrement and subroutine call expressions are permitted as statements.
+//EXPECT-SEMANTICAL-ERROR: column 10: Only assignment, increment, decrement and subroutine call expressions are permitted as statements.
 procedure main() {
-    for ( 2 ; 2 ; 2 ) {
+    for (2 ; 2 ; 2) {
 
     }
 }

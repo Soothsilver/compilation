@@ -1,7 +1,4 @@
-TODO These tasks could be completed later on:
-
-- Make a note in the report that we are using named types only.
-
+These tasks could be completed later on if we want to:
 
 - If a local variable is used before it is initialized, report an error.
 - If there exists an execution path in a function that is not ended by a return statement, report an error.

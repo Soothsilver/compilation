@@ -1,7 +1,10 @@
-//EXPECT-SYNTAX-ERROR: TO DEFINE
-//EXPECT-SYNTAX-ERROR: TO DEFINE
+//EXPECT-SYNTAX-ERROR: Analysis continues at next semicolon.
+//EXPECT-SYNTAX-ERROR:Analysis continues at next semicolon.
 procedure main()
 {
+    i : integer;
     if : integer;
-    null : string;
+    i = 5;
+    i = 8;
+    null : integer;
 }

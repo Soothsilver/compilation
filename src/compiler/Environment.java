@@ -176,21 +176,17 @@ public class Environment {
 
     public void enterFunction() {
         inFunction = true;
-        enterScope();
     }
 
     public void enterProcedure() {
         inProcedure = true;
-        enterScope();
     }
 
     public void leaveSubroutine() {
         inFunction = inProcedure = false;
         returnType = null;
-        leaveScope();
         leaveVariableScope();
         leaveTypeScope();
-
     }
 
 
@@ -356,7 +352,7 @@ public class Environment {
 
     private void debug(String line) {
         line = "ENV: " + line;
-        /* System.out.println(line); */
+        System.out.println(line);
     }
     public <T extends Declaration> void debugPrint (ScopeTree<T> tree, String sign, int level) {
         if (tree == null) return;

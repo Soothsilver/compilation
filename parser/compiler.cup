@@ -127,6 +127,7 @@ non terminal Statement statement;
 non terminal Statement open_statement;
 non terminal Statement closed_statement;
 non terminal BlockStatement block;
+non terminal BlockStatement unscoped_block;
 non terminal open_scope, close_scope, enter_cycle, leave_cycle;
 non terminal IfStatement if_short;
 non terminal IfStatement if_long_closed_open;
@@ -201,7 +202,7 @@ optional_subroutines ::= {: RESULT = new Subroutines(); :}
 						;
 
                     
-procedure       ::= procedure_header:p block:b {:
+procedure       ::= procedure_header:p unscoped_block:b {:
                         getEnvironment().leaveSubroutine();
                         if (Subroutine.typeParametersEntered) {
                             Subroutine.leaveTypeParameters(parser.compilation);
@@ -209,7 +210,7 @@ procedure       ::= procedure_header:p block:b {:
                         p.block = b;
                         RESULT = p;
                     :};
-function        ::= function_header:h block:b {:
+function        ::= function_header:h unscoped_block:b {:
                         getEnvironment().leaveSubroutine();
                         if (Subroutine.typeParametersEntered) {
                             Subroutine.leaveTypeParameters(parser.compilation);
@@ -265,6 +266,13 @@ parameter  	::= IDENTIFIER:id COLON type:t
    ------------------------------------------------- */
 open_scope  ::= {: getEnvironment().enterScope(); :};
 close_scope ::= {: getEnvironment().leaveScope(); :};
+unscoped_block      ::= LBRACE local_declarations:d statements:s RBRACE
+                                                {:
+                                                    RESULT = new BlockStatement();
+                                                    RESULT.declarations = d;
+                                                    RESULT.statements = s;
+                                                :}
+                                                ;
 block	        	::= LBRACE open_scope local_declarations:d statements:s close_scope RBRACE
                         {:
                             RESULT = new BlockStatement();
@@ -343,7 +351,7 @@ loop_open	        ::=   foreach_head:c enter_cycle open_statement:s leave_cycle 
 		       
 foreach_head	       ::= FOREACH LPAR IDENTIFIER:id IN expression:ex RPAR {: RESULT = new CycleStatement(); :};
 while_head	       ::= WHILE LPAR expression:ex RPAR {: RESULT = new WhileStatement(ex, null, parser.compilation); :};
-for_head	       ::= FOR LPAR expression:one SEMICOLON expression:two SEMICOLON expression:three RPAR {: RESULT = new CycleStatement(); :};
+for_head	       ::= FOR LPAR expression:one SEMICOLON expression:two SEMICOLON expression:three RPAR {: RESULT = new ForStatement(one, two, three, parser.compilation); :};
 
 
 /* -------------------------------------------------

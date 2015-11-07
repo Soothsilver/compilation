@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: Semantic error at line 4, column 5: The symbol 'b' was already defined at line 2, column 13.
 procedure a(b : integer)
 {
     b : float;
