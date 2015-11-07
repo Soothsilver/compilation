@@ -1,0 +1,21 @@
+PROGRAM[
+type c = class[[T]] {
+a : T;
+b : !array[[T]];
+d : c[[T]];
+e : !array[[c[[T]]]];
+function f():T {
+t : T;
+t=new T();
+return t;
+}
+};
+procedure main() {
+into : c[[integer]];
+out : c[[string]];
+b : integer;
+into.a=5;
+b=f[]:integer();
+out.a="hello";
+}
+]

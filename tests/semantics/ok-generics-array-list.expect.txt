@@ -1,0 +1,15 @@
+PROGRAM[
+type arraylist = class[[T]] {
+array : !array[[T]];
+function get(index:integer):T { return array[index]; }
+procedure clearAndSetCapacity(capacity:integer) { array=new T[capacity]; }
+procedure set(index:integer,t:T) { array[index]=t; }
+};
+procedure main() {
+l : arraylist[[integer]];
+clearAndSetCapacity[integer](4);
+set[integer,integer](3,5);
+set[integer,integer](1,-[integer]:integer(4));
+set[integer,integer](2,get[integer]:integer(1));
+}
+]

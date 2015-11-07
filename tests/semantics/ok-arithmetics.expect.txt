@@ -1,0 +1,9 @@
+PROGRAM[
+procedure main() { 
+a : integer;
+b : integer;
+a=a+b;
+b=2*5;
+a=a+b*a-b*3;
+}
+]

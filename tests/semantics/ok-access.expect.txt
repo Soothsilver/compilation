@@ -1,0 +1,11 @@
+PROGRAM[
+type s = class {
+a : integer;
+procedure func() {  }
+};
+function returnS():s {
+st : s;
+return st;
+}
+procedure main() { func[](); returnS[]:s().a=5; }
+]

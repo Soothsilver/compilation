@@ -1,4 +1,4 @@
-// Failure Explanation: Nested generic types was not implemented.
+// Failure Explanation: Nested generic types was not implemented. This is way too tough.
 type c = class [[ T ]] {
     d : c[[T]];
 };

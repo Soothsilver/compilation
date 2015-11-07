@@ -20,8 +20,8 @@ public class ConstructorExpression extends Expression {
             compilation.semanticError("The type '" + typeName + "' could not be found.", line, column);
             this.setErrorType();
         }
-        else if (!this.type.isReferenceType) {
-            compilation.semanticError("The type '" + typeName + "' cannot be constructed. Only classes, arrays and structures can be constructed.", line, column);
+        else if (!this.type.isReferenceType && this.type.kind != Type.TypeKind.ClassTypeParameter && this.type.kind != Type.TypeKind.SubroutineTypeParameter) {
+            compilation.semanticError("The type '" + typeName + "' cannot be constructed. Only classes, arrays, structures and type parameters can be constructed.", line, column);
             this.setErrorType();
         }
     }
