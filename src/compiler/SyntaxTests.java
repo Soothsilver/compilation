@@ -21,11 +21,11 @@ public class SyntaxTests {
 		dir = new File(dir, "syntax");
 		File[] listing = dir.listFiles();
 		assert listing != null;
-		int testno = 0;
+		int testNumber = 0;
 		int successfulTests = 0;
 		for (File child : listing) {
-            testno++;
-			System.out.print("Syntax test " + testno + " (" + child.getName() + "): ");
+            testNumber++;
+			System.out.print("Syntax test " + testNumber + " (" + child.getName() + "): ");
 			 try {
 	               FileReader  myFile = new FileReader(child);
 	               Compilation compilation = new Compilation(child);	               

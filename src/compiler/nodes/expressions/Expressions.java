@@ -39,6 +39,6 @@ public class Expressions extends ArrayList<Expression> {
     }
 
     public String toWithoutBracketsString() {
-        return this.stream().map(expr -> expr.toString()).collect(Collectors.joining(","));
+        return this.stream().map(Object::toString).collect(Collectors.joining(","));
     }
 }

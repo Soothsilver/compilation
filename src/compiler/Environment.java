@@ -351,8 +351,10 @@ public class Environment {
     }
 
     private void debug(String line) {
-        line = "ENV: " + line;
-        //System.out.println(line);
+        boolean doDebug = false;
+        if (doDebug) {
+            System.out.println(line);
+        }
     }
     public <T extends Declaration> void debugPrint (ScopeTree<T> tree, String sign, int level) {
         if (tree == null) return;

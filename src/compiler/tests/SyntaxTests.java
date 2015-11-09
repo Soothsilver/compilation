@@ -18,11 +18,9 @@ public class SyntaxTests extends TestCase {
         return TestUtilities.getFiles("syntax");
     }
 
-    private String name;
     private File file;
 
     public SyntaxTests(final String name, final File file) {
-        this.name = name;
         this.file = file;
     }
 

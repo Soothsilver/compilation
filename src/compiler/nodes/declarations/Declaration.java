@@ -16,7 +16,7 @@ public abstract class Declaration extends Node {
         return name;
     }
     public String getSig() {
-        // This should be overriden for subroutines.
+        // This should be overridden for subroutines.
         return name;
     }
 

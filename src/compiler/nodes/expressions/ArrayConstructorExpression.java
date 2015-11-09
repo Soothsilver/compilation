@@ -23,8 +23,7 @@ public class ArrayConstructorExpression extends Expression {
     }
     public static ArrayConstructorExpression infer(Expressions expressions, int line, int column, Compilation compilation) {
         // TODO make this actually work
-        ArrayConstructorExpression expression = new ArrayConstructorExpression(Type.errorType, Expression.createFromConstant(expressions.size(), line, column, compilation), line, column, compilation);
-        return expression;
+        return new ArrayConstructorExpression(Type.errorType, Expression.createFromConstant(expressions.size(), line, column, compilation), line, column, compilation);
     }
 
     @Override

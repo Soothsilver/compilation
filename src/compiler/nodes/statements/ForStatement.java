@@ -26,7 +26,7 @@ public class ForStatement extends CycleStatement{
 		this.initialisation = initialisation;
 		this.test = test;
 		this.incrementation = incrementation;
-		this.test.propagateTypes(new HashSet<Type>(Arrays.asList(Type.booleanType)), compilation);
+		this.test.propagateTypes(new HashSet<>(Arrays.asList(Type.booleanType)), compilation);
 		this.initialisation.propagateTypes(null, compilation);
 		this.incrementation.propagateTypes(null, compilation);
 		

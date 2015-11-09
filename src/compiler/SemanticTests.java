@@ -13,6 +13,7 @@ import java.nio.file.Paths;
  * This is a class you can use to run tests in the "semantics" folder
  * if you cannot run JUnit.
  */
+@SuppressWarnings("Duplicates")
 public class SemanticTests {
     /**
      * Runs the tests.
@@ -25,14 +26,14 @@ public class SemanticTests {
         dir = new File(dir, "semantics");
         File[] listing = dir.listFiles();
         assert listing != null;
-        int testno = 0;
+        int testNumber = 0;
         int successfulTests = 0;
         for (File child : listing) {
             if (child.getName().endsWith(".expect.txt")) {
                 continue;
             }
-            testno++;
-            System.out.print("Semantics test " + testno + " (" + child.getName() + "): ");
+            testNumber++;
+            System.out.print("Semantics test " + testNumber + " (" + child.getName() + "): ");
             try {
                 FileReader myFile = new FileReader(child);
                 Compilation compilation = new Compilation(child);
@@ -84,6 +85,6 @@ public class SemanticTests {
                 System.out.println("file could not be opened!");
             }
         }
-        System.out.println(successfulTests + " / " + testno + " tests passed.");
+        System.out.println(successfulTests + " / " + testNumber + " tests passed.");
     }
 }

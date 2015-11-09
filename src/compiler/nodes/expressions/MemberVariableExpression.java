@@ -1,7 +1,6 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
-import compiler.nodes.declarations.Subroutine;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.declarations.Variable;
 
@@ -31,7 +30,7 @@ public class MemberVariableExpression extends VariableExpression {
             }
             if (variable == null) {
                 compilation.semanticError("The type '" + parent.type + "' does not contain a field with the name '" + name + "'.", line, column);
-                expression.setErrorType();;
+                expression.setErrorType();
             } else {
                 expression.variable = variable;
                 expression.type = variable.getType();

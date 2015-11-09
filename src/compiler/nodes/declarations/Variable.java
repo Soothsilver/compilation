@@ -40,7 +40,6 @@ public class Variable extends Declaration {
         return v;
     }
     private Variable copy() {
-        Variable v = new Variable(name, type, line, column);
-        return v;
+        return new Variable(name, type, line, column);
     }
 }

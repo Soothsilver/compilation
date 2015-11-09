@@ -5,9 +5,7 @@ import compiler.nodes.Node;
 import compiler.nodes.declarations.Subroutine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 public class SubroutineGroup extends Node {
     /**

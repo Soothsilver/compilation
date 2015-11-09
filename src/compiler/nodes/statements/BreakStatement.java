@@ -2,6 +2,9 @@ package compiler.nodes.statements;
 
 import compiler.Compilation;
 
+/**
+ * Represents the statement "break;".
+ */
 public class BreakStatement extends Statement {
     public BreakStatement(int line, int column, Compilation compilation) {
         this.line = line;

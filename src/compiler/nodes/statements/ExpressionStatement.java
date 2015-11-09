@@ -1,13 +1,15 @@
 package compiler.nodes.statements;
 
 import compiler.Compilation;
-import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Represents the statement "EXPRESSION;". Verifies that the given expression can be used as a statement.
+ */
 public class ExpressionStatement extends Statement {
     public Expression expression;
 

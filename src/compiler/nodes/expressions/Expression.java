@@ -66,7 +66,7 @@ public abstract class Expression extends Node {
 
     /**
      * Sets the real type and the only possible type in possibleTypes of this expression to "!error". Use this method when an attempt
-     * to evalute the type of this expression fails (report a semantic error yourself).
+     * to evaluate the type of this expression fails (report a semantic error yourself).
      */
     public void setErrorType() {
         this.type = Type.errorType;

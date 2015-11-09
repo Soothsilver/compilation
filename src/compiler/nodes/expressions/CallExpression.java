@@ -1,12 +1,12 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
-import compiler.analysis.*;
+import compiler.analysis.OverloadResolution;
+import compiler.analysis.SubroutineToken;
 import compiler.nodes.declarations.Subroutine;
 import compiler.nodes.declarations.Type;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,12 +68,11 @@ public class CallExpression extends Expression {
     @Override
     public String toString() {
         if (callee == null) {
-            return group + "?(" + arguments.stream().map(arg -> arg.toString()).collect(Collectors.joining(",")) + ")";
+            return group + "?(" + arguments.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
         } else {
             Subroutine sub = callee.subroutine;
             // TODO also display owner
-            String callstring =  sub.getSignature(false, true, callee.types, true) + "(" + arguments.toWithoutBracketsString() + ")";
-            return callstring;
+            return sub.getSignature(false, true, callee.types, true) + "(" + arguments.toWithoutBracketsString() + ")";
         }
     }
 
@@ -88,7 +87,7 @@ public class CallExpression extends Expression {
                     }
                     subroutineTokens.remove(j);
                     j--;
-                    continue;
+                    // Continue with next cycle iteration.
                 }
             }
         }

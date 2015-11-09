@@ -3,9 +3,6 @@ package compiler.nodes.declarations;
 import compiler.nodes.Declarations;
 import compiler.nodes.Subroutines;
 import compiler.nodes.VariableDeclarations;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-
-import java.util.ArrayList;
 
 public abstract class TypeOrTypeTemplate extends Declaration {
     public VariableDeclarations declarations;

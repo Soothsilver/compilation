@@ -105,7 +105,7 @@ public class Type extends TypeOrTypeTemplate {
             else
                 return "VAR:" + name;
         } else if (typeArguments != null) {
-            return name + "[[" + typeArguments.stream().map(t -> t.toString()).collect(Collectors.joining(",")) + "]]";
+            return name + "[[" + typeArguments.stream().map(Type::toString).collect(Collectors.joining(",")) + "]]";
         } else return name;
     }
 
@@ -198,7 +198,7 @@ public class Type extends TypeOrTypeTemplate {
     @Override
     public String getFullString() {
         return "type " + name + " = class {\n"
-                + declarations.stream().map(decl->decl.getFullString()).collect(Collectors.joining("\n"))
+                + declarations.stream().map(Variable::getFullString).collect(Collectors.joining("\n"))
                 + (declarations.size() > 0 ? "\n" : "")
                 + subroutines
                 + "};";

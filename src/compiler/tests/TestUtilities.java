@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 
 public class TestUtilities {
     public static Collection<Object[]> getFiles(String folder) {
@@ -19,12 +18,7 @@ public class TestUtilities {
         dir = new File(dir, folder);
         File[] listing = dir.listFiles();
         ArrayList<Object[]> files = new ArrayList<>();
-        Arrays.sort(listing, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        Arrays.sort(listing, (o1, o2) -> o1.getName().compareTo(o2.getName()));
         for (File child : listing) {
             if (child.getName().endsWith(".expect.txt")) {
                 continue;
@@ -49,7 +43,7 @@ public class TestUtilities {
                 if (compilation.hasTestRunOkay())
                 {
                     if (syntaxOnly) {
-
+                        System.out.println("OK!");
                     } else {
                         if (!compilation.errorTriggered) {
                             String actual = compilation.abstractSyntaxTree.toString();
@@ -59,10 +53,11 @@ public class TestUtilities {
                             } catch (Exception fileEx) {
                                 System.out.println("ACTUAL:");
                                 System.out.println(actual);
-                                testCase.fail("Expect file not found.");
+                                TestCase.fail("Expect file not found.");
                             }
                             if (actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "").equals(
                                 expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", ""))) {
+                                System.out.println("OK!");
                             } else {
                                 System.out.println("OUTPUT MISMATCH!");
                                 System.out.println("ACTUAL:");
@@ -72,7 +67,7 @@ public class TestUtilities {
                                 System.out.println("SHORT FORM ACTUAL::" + actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
                                 System.out.println("SHORT FORM FORMAL::" + expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
                                 System.out.println("END.");
-                                testCase.fail("Output mismatch!");
+                                TestCase.fail("Output mismatch!");
                             }
                         } else {
                             System.out.println("OK (correct error triggered)!");
@@ -85,7 +80,7 @@ public class TestUtilities {
                     }
                     String actual = compilation.abstractSyntaxTree.toString();
                     System.out.println(actual);
-                    testCase.fail("Test has not run okay.");
+                    TestCase.fail("Test has not run okay.");
                 }
             }
             catch (Exception e) {
@@ -95,18 +90,18 @@ public class TestUtilities {
                 {
                     System.out.println(n.getFileName() + ":" + n.getLineNumber() + " in " + n.getClassName()+"::"+n.getMethodName());
                 }
-                testCase.fail("parse exception");
+                TestCase.fail("parse exception");
             }
             catch (Error e)
             {
                 System.out.println(" parse error (" + e.toString() + ")!");
-                testCase.fail("parse error");
+                TestCase.fail("parse error");
             }
         }
         catch (Exception e){
             System.out.println("file could not be opened (" + e + ")");
             e.printStackTrace();
-            testCase.fail("file error");
+            TestCase.fail("file error");
         }
     }
 

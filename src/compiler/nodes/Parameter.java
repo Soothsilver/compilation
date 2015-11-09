@@ -1,7 +1,6 @@
 package compiler.nodes;
 
 import compiler.Compilation;
-import compiler.nodes.Node;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.declarations.Variable;
 
@@ -34,10 +33,10 @@ public class Parameter extends Node {
     }
 
     public Parameter copy() {
-        Parameter pnew = new Parameter(name, type);
-        pnew.line = line;
-        pnew.column =column;
-        pnew.variable = variable;
-        return pnew;
+        Parameter pNew = new Parameter(name, type);
+        pNew.line = line;
+        pNew.column =column;
+        pNew.variable = variable;
+        return pNew;
     }
 }

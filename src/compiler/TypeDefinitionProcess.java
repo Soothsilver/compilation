@@ -14,6 +14,7 @@ public class TypeDefinitionProcess {
     private static ArrayList<TypeParameter> typeParameters;
     public static TypeOrTypeTemplate currentType;
 
+    @SuppressWarnings("UnusedParameters")
     public static void beginTypeDefinition(String name, int line, int column, Compilation compilation) {
         TypeDefinitionProcess.line = line;
         TypeDefinitionProcess.column = column;
@@ -44,6 +45,7 @@ public class TypeDefinitionProcess {
             for (TypeParameter typeParameter : TypeDefinitionProcess.typeParameters) {
                 Type type = Type.createClassTypeVariable(typeParameter.name, typeParameter.line, typeParameter.column);
                 compilation.environment.addType(type);
+                //noinspection ConstantConditions
                 ((TypeTemplate)newType).typeParameters.add(type);
             }
         }

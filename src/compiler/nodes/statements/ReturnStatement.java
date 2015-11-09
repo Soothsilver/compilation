@@ -17,7 +17,7 @@ public class ReturnStatement extends Statement {
             compilation.semanticError("The return statement can be used only inside a function.", line, column);
             return;
         }
-        this.expression.propagateTypes(new HashSet<Type>(Arrays.asList((Type)compilation.environment.returnType)), compilation);
+        this.expression.propagateTypes(new HashSet<>(Arrays.asList((Type) compilation.environment.returnType)), compilation);
     }
 
     @Override

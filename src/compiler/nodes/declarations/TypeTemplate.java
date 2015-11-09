@@ -9,14 +9,13 @@ public class TypeTemplate extends TypeOrTypeTemplate {
         super(name, line, column);
     }
     public static TypeTemplate createTemplate(String name, int line, int column) {
-        TypeTemplate template = new TypeTemplate(name, line, column);
-        return template;
+        return new TypeTemplate(name, line, column);
     }
 
     @Override
     public String getFullString() {
-        return "type " + name + " = class[[" + typeParameters.stream().map(tp->tp.toString()).collect(Collectors.joining(",")) + "]] {\n"
-                + declarations.stream().map(decl->decl.getFullString()).collect(Collectors.joining("\n"))
+        return "type " + name + " = class[[" + typeParameters.stream().map(Type::toString).collect(Collectors.joining(",")) + "]] {\n"
+                + declarations.stream().map(Variable::getFullString).collect(Collectors.joining("\n"))
                 + (declarations.size() > 0 ? "\n" : "")
                 + subroutines
                 + "};";

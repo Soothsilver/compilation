@@ -13,7 +13,7 @@ public class WhileStatement extends CycleStatement {
     public WhileStatement(Expression booleanTest, Statement body, Compilation compilation) {
         this.body = body;
         this.booleanTest = booleanTest;
-        this.booleanTest.propagateTypes(new HashSet<Type>(Arrays.asList(Type.booleanType)), compilation);
+        this.booleanTest.propagateTypes(new HashSet<>(Arrays.asList(Type.booleanType)), compilation);
 
     }
 

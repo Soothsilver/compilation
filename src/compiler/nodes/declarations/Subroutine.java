@@ -2,7 +2,6 @@ package compiler.nodes.declarations;
 
 import compiler.Compilation;
 import compiler.nodes.Parameter;
-import compiler.nodes.statements.BlockStatement;
 import compiler.nodes.statements.Statement;
 
 import java.util.ArrayList;
@@ -156,9 +155,9 @@ public class Subroutine extends Declaration {
         subroutine.returnType = subroutine.returnType.replaceTypes(typeParameters, typeArguments);
         subroutine.parameters = new ArrayList<>();
         for(Parameter p : parameters) {
-            Parameter pnew = p.copy();
-            pnew.type = p.type.replaceTypes(typeParameters, typeArguments);
-            subroutine.parameters.add(pnew);
+            Parameter pNew = p.copy();
+            pNew.type = p.type.replaceTypes(typeParameters, typeArguments);
+            subroutine.parameters.add(pNew);
         }
         return subroutine;
     }

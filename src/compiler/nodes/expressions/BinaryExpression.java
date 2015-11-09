@@ -2,7 +2,6 @@ package compiler.nodes.expressions;
 
 import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
-import compiler.nodes.declarations.Type;
 
 public class BinaryExpression extends CallExpression {
     public String operator;
