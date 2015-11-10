@@ -1,0 +1,5 @@
+//EXPECT: A constructed object of type
+type s = structure {};
+function get() : integer { return new s(); }
+procedure main() {
+}

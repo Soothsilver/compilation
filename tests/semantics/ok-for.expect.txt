@@ -1,0 +1,6 @@
+PROGRAM[
+procedure main() { 
+i : integer;
+for(i=2;i<5;POST++[integer]:integer(i)) { break; }
+}
+]

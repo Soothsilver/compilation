@@ -74,6 +74,11 @@ public class Subroutine extends Declaration {
     }
 
     @Override
+    public String getFullString() {
+        return toString();
+    }
+
+    @Override
     public String getHumanSig() {
         return getSignature(true, false, null, true);
     }

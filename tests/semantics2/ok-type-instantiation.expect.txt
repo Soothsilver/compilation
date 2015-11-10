@@ -1,0 +1,10 @@
+PROGRAM[
+type template = class[[A]] {
+a : A;
+};
+procedure main() { 
+instance : template[[integer]];
+instance=new template[[integer]]();
+instance.a=2;
+}
+]
