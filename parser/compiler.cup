@@ -208,6 +208,7 @@ procedure       ::= procedure_header:p unscoped_block:b {:
                             Subroutine.leaveTypeParameters(parser.compilation);
                         }
                         p.block = b;
+                        p.block.flowAnalysis(parser.compilation);
                         RESULT = p;
                     :};
 function        ::= function_header:h unscoped_block:b {:
@@ -216,6 +217,9 @@ function        ::= function_header:h unscoped_block:b {:
                             Subroutine.leaveTypeParameters(parser.compilation);
                         }
                         h.block = b;
+                        if (h.block.flowAnalysis(parser.compilation)) {
+                            parser.compilation.semanticError("Not all execution paths of the function '" + h.name + "' return a value.", hleft, hright);
+                        }
                         RESULT = h;
                     :};
 procedure_header ::= PROCEDURE procedure_name:subroutine optional_subroutine_type_parameters:tp LPAR optional_parameters:ps RPAR
@@ -312,8 +316,8 @@ closed_statement       ::= simple_statement:s SEMICOLON
 		                 {: RESULT = s; :}
 		                 | loop_closed:s
 		                 {: RESULT = s; :}
-		                 | error SEMICOLON
-		                 {: parser.compilation.addSuffix(" Analysis continues at next semicolon."); :}
+		                 | error SEMICOLON:smcln
+		                 {: RESULT = new EmptyStatement(smclnleft, smclnright); parser.compilation.addSuffix(" Analysis continues at next semicolon."); :}
 		                 ;
 simple_statement       ::=  expression:ex
                          {:
@@ -350,8 +354,8 @@ loop_open	        ::=   foreach_head:c enter_cycle open_statement:s leave_cycle 
 		                ;
 		       
 foreach_head	       ::= FOREACH LPAR IDENTIFIER:id IN expression:ex RPAR {: RESULT = new CycleStatement(); :};
-while_head	       ::= WHILE LPAR expression:ex RPAR {: RESULT = new WhileStatement(ex, null, parser.compilation); :};
-for_head	       ::= FOR LPAR expression:one SEMICOLON expression:two SEMICOLON expression:three RPAR {: RESULT = new ForStatement(one, two, three, parser.compilation); :};
+while_head	       ::= WHILE:w LPAR expression:ex RPAR {: RESULT = new WhileStatement(ex, wleft, wright, parser.compilation); :};
+for_head	       ::= FOR:f LPAR expression:one SEMICOLON expression:two SEMICOLON expression:three RPAR {: RESULT = new ForStatement(one, two, three, fleft, fright, parser.compilation); :};
 
 
 /* -------------------------------------------------
@@ -555,6 +559,7 @@ constant	       ::=
                     NULL:data {: RESULT = new NullExpression(dataleft, dataright, parser.compilation); :} |
                     new_list:data {: RESULT = data; :}
                     ;
-new_list	       ::= LBRACKET expressions:ex RBRACKET {: RESULT = ArrayConstructorExpression.infer(ex, exleft, exright, parser.compilation); :}
+new_list	       ::= LBRACKET expressions:ex RBRACKET {: RESULT = ArrayInferenceCreationExpression.create(ex, exleft, exright, parser.compilation); :}
+                     | LBRACKET:ex RBRACKET {: RESULT = ArrayInferenceCreationExpression.create(new Expressions(), exleft, exright, parser.compilation); :}
                      | NEW type:t LBRACKET expression:i RBRACKET {: RESULT = new ArrayConstructorExpression(t, i, tleft, tright, parser.compilation); :}
                      ;

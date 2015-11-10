@@ -1,0 +1,6 @@
+procedure main() {
+    i : integer;
+    for ( i = 2; i < 5; i++ ) {
+        break;
+    }
+}

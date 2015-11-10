@@ -18,4 +18,9 @@ public class BreakStatement extends Statement {
     public String toString() {
         return "break;";
     }
+
+    @Override
+    public boolean flowAnalysis(Compilation compilation) {
+        return false;
+    }
 }

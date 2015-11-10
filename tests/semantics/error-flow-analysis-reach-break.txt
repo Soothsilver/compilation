@@ -1,0 +1,8 @@
+//WARNINGS-ARE-ERRORS
+//EXPECT-SEMANTICAL-ERROR: unreachable
+procedure main() {
+    while(true) {
+        break;
+        stop;
+    }
+}

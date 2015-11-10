@@ -1,0 +1,6 @@
+PROGRAM[
+procedure main() {
+a : !array[[integer]];
+a=[I=integer;];
+}
+]

@@ -1,0 +1,10 @@
+PROGRAM[
+type s = class {
+};
+procedure main() { 
+a : !array[[float]];
+b : !array[[s]];
+a=[I=float;!float(2),3.2];
+b=[I=s;null,new s()];
+}
+]

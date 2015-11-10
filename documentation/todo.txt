@@ -1,7 +1,5 @@
 These tasks could be completed later on if we want to:
 
-- If a local variable is used before it is initialized, report an error.
-- If there exists an execution path in a function that is not ended by a return statement, report an error.
-- If there exists an inaccessible statement, report it as an error.
-- Accept "[2,4]" as an array constructor of an integer array of type 2
-- Accept "[]" as the empty array of an inferred type and "new [3]" as an array of size 3 of an inferred type.
+- Statements must have a line and column, even cycles.
+- Do not permit casting of !array[[integer]] to !array[[float]].
+- If a local variable is used before it is initialized, report a warning.

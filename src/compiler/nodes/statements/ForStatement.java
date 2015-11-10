@@ -22,7 +22,8 @@ public class ForStatement extends CycleStatement{
 	    );									
 
 
-	public ForStatement(Expression initialisation, Expression test, Expression incrementation, Compilation compilation) {
+	public ForStatement(Expression initialisation, Expression test, Expression incrementation, int line, int column, Compilation compilation) {
+		super(line, column);
 		this.initialisation = initialisation;
 		this.test = test;
 		this.incrementation = incrementation;

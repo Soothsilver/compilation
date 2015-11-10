@@ -1,0 +1,6 @@
+//EXPECT-SEMANTICAL-ERROR: Type inference failed for 'set' because some type variables remain free. You may need to specify type arguments directly.
+procedure set[[T]](t : T) { }
+procedure main()
+{
+    set([]);
+}

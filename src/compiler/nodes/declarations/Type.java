@@ -27,7 +27,8 @@ public class Type extends TypeOrTypeTemplate {
         if (typeParameters != null) {
             for (int i = 0; i < typeParameters.size(); i++) {
                 if (typeParameters.get(i).name.equals(this.name)) {
-                    return typeParameters.get(i); // TODO copy here? probably not
+                    return typeParameters.get(i);
+                    // TODO copy here? probably not
                     // TODO this is strange?
                 }
             }
@@ -140,6 +141,12 @@ public class Type extends TypeOrTypeTemplate {
         t.isReferenceType = true;
         return t;
     }
+
+    /**
+     * Creates a new type variable with the specified name.
+     * @param name Name of the type variable.
+     * @return The type variable.
+     */
     public static Type createNewTypeVariable(String name) {
         Type t = new Type(name, -1, -1);
         t.kind = TypeKind.TypeVariable;
@@ -151,6 +158,14 @@ public class Type extends TypeOrTypeTemplate {
         t.isReferenceType = true;
         return t;
     }
+
+    /**
+     * Creates a type of the given name and sets its kind as SubroutineTypeParameter. This does not create a type variable and cannot be unified with other types.
+     * @param typename Name of the type.
+     * @param line Line where it is declared.
+     * @param column Column where it is declared.
+     * @return The type.
+     */
     public static Type createSubroutineTypeVariable(String typename, int line, int column) {
         Type t = new Type(typename, line, column);
         t.kind = TypeKind.SubroutineTypeParameter;
@@ -181,6 +196,9 @@ public class Type extends TypeOrTypeTemplate {
         t.kind = TypeKind.GenericTypeInstance;
         t.typeArguments = typeArguments;
         t.subroutines = template.subroutines.instantiate(template.typeParameters, typeArguments);
+        for (Subroutine subroutine : t.subroutines) {
+            subroutine.owner = t;
+        }
         t.declarations = template.declarations.instantiate(template.typeParameters, typeArguments);
         return t;
     }

@@ -10,8 +10,9 @@ import java.util.HashSet;
 public class WhileStatement extends CycleStatement {
     public Expression booleanTest;
 
-    public WhileStatement(Expression booleanTest, Statement body, Compilation compilation) {
-        this.body = body;
+    public WhileStatement(Expression booleanTest, int line, int column, Compilation compilation) {
+        this.line = line;
+        this.column = column;
         this.booleanTest = booleanTest;
         this.booleanTest.propagateTypes(new HashSet<>(Arrays.asList(Type.booleanType)), compilation);
 

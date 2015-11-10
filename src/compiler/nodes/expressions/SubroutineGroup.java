@@ -7,6 +7,9 @@ import compiler.nodes.declarations.Subroutine;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+/**
+ * Represents a node of the syntax tree that contains all subroutines with a given identifier name (perhaps in a specified class).
+ */
 public class SubroutineGroup extends Node {
     /**
      * List of all subroutines with the given name (and object)  that are visible at the point this group appear in the source code.
@@ -40,6 +43,20 @@ public class SubroutineGroup extends Node {
          g.line = line;
          g.column = column;
          return g;
+    }
+
+    /**
+     * Creates a subroutine group by creating a single-item list of the specified subroutine. This is useful in ArrayInferenceCreationExpression/
+     * @param singleSubroutine The subroutine to pack into a group.
+     * @return The subroutine group.
+     */
+    public static SubroutineGroup create(Subroutine singleSubroutine, int line, int column) {
+        SubroutineGroup g = new SubroutineGroup(new LinkedList<>());
+        g.subroutines.add(singleSubroutine);
+        g.line = line;
+        g.column = column;
+        g.name = singleSubroutine.name;
+        return g;
     }
 
     /**

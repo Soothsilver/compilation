@@ -20,7 +20,8 @@ import java_cup.runtime.*;
  * It is also used to report errors.
  */
 public class Compilation {
-    /**
+	private boolean warningsAreErrors = false;
+	/**
      * Indicates whether any error triggered during compilation. If yes, we will not proceed to code generation.
      */
 	public boolean errorTriggered = false;
@@ -120,6 +121,15 @@ public class Compilation {
 				if (line.startsWith("//EXPECT-SEMANTICAL-ERROR:")) {
 					errorsExpected.add(line.substring("//EXPECT-SEMANTICAL-ERROR:".length()).trim());
 				}
+				if (line.startsWith("//EXPECT:")) {
+					errorsExpected.add(line.substring("//EXPECT:".length()).trim());
+				}
+				if (line.startsWith("// EXPECT:")) {
+					errorsExpected.add(line.substring("// EXPECT:".length()).trim());
+				}
+				if (line.startsWith("//WARNINGS-ARE-ERRORS")) {
+					warningsAreErrors = true;
+				}
 			}
 		}
 
@@ -137,6 +147,11 @@ public class Compilation {
         errorTriggered = true;
         errorMessages.add("Semantic error: " + message);
     }
+	public void warning(String warningMessage, int line, int column) {
+		if (ignoreSemanticErrors) return;
+		if (warningsAreErrors) errorTriggered = true;
+		errorMessages.add("Warning at line " + (line+1) + ", column " + (column+1) + ": " + warningMessage);
+	}
 	public void lexicalError(String message, int line, int column) {
 		errorTriggered = true;
 		errorMessages.add("Lexical error at line " + (line+1) + ", column " + (column+1) + ": " + message);
@@ -186,4 +201,5 @@ public class Compilation {
         }
         return "UNKNOWN_SYMBOL(" + symbol + ")";
     }
+
 }

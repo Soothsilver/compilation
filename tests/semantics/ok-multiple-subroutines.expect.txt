@@ -3,9 +3,9 @@ procedure hello(a:integer) {  }
 procedure hello(b:integer,c:string) {  }
 procedure hello() {  }
 procedure hello(a:string,b:integer) {  }
-function hello():integer {  }
-function hello(a:integer):integer {  }
-function hello():string {  }
-function hello(a:string,b:integer):boolean {  }
+function hello():integer { return 2; }
+function hello(a:integer):integer { return 0; }
+function hello():string { return ""; }
+function hello(a:string,b:integer):boolean { return false; }
 procedure main() {  }
 ]

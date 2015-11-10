@@ -1,10 +1,6 @@
-type s = class {
-    a : integer;
-    procedure func() { }
-};
-function returnS() : s { st : s; return st; }
-procedure main()
-{
-    returnS().func();
-    returnS().a = 5;
+procedure main() {
+    a : list of float;
+    a = [3, 2];
+    stop;
+    a = [5];
 }

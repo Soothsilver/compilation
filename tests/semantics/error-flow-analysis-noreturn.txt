@@ -1,0 +1,7 @@
+//EXPECT-SEMANTICAL-ERROR: return a value
+function hello() : integer {
+
+}
+procedure main() {
+
+}

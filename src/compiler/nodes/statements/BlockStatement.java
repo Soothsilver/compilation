@@ -1,5 +1,6 @@
 package compiler.nodes.statements;
 
+import compiler.Compilation;
 import compiler.nodes.Declarations;
 
 /**
@@ -17,5 +18,18 @@ public class BlockStatement extends Statement {
              return "{ " + statements.toString() + " }";
         else
             return "{ \n" + declarations.toString() + statements.toLongString() + "\n}";
+    }
+
+    @Override
+    public boolean flowAnalysis(Compilation compilation) {
+        boolean reachable = true;
+        for (Statement statement : statements) {
+            if (!reachable) {
+                compilation.warning("The statement '" + statement + "' is unreachable.", statement.line, statement.column);
+                return false;
+            }
+            reachable = statement.flowAnalysis(compilation);
+        }
+        return reachable;
     }
 }

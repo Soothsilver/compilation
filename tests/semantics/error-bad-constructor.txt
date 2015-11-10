@@ -1,0 +1,7 @@
+//EXPECT: The type 'a' could not be found.
+//EXPECT: Only classes, arrays, structures and type parameters can be constructed.
+procedure main()
+{
+    new a();
+    new integer();
+}

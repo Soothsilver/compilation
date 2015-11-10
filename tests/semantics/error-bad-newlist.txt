@@ -1,5 +1,5 @@
 // Failure Explanation: Array initialization without specifying a type was not implemented.
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: The expressions in the array creation expression do not share a common bottom type.
 procedure main()
 {
     a : list of integer;

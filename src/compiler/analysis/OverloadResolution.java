@@ -53,13 +53,6 @@ public final class OverloadResolution {
         for (Subroutine sub : group.subroutines) {
             SubroutineToken stoken = new SubroutineToken(sub, call.typeArguments != null);
             consideredSubroutines.add(stoken);
-            //3. If type arguments were specified, transform all considered subroutines into inferred subroutines. Only those will now be considered.
-            /* TODO clean this up
-            if (call.typeArguments != null) {
-                stoken.types = new ArrayList<>();
-                stoken.types.addAll(call.typeArguments);
-            }
-            */
         }
         debug ("Core of phase one begins for " + call + " with " + consideredSubroutines.size() + " considered subroutines.");
 //4. Do the following procedure for all considered subroutines:

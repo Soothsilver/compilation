@@ -21,10 +21,7 @@ public class ArrayConstructorExpression extends Expression {
         this.possibleTypes.add(this.type);
         this.kind = ExpressionKind.ArrayConstructor;
     }
-    public static ArrayConstructorExpression infer(Expressions expressions, int line, int column, Compilation compilation) {
-        // TODO make this actually work
-        return new ArrayConstructorExpression(Type.errorType, Expression.createFromConstant(expressions.size(), line, column, compilation), line, column, compilation);
-    }
+
 
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {

@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Expressions extends ArrayList<Expression> {
-    public void addExpression(Expression ex) {
-        this.add(ex);
-    }
 
     public ArrayList<Types> getTypeCombinations() {
         ArrayList<Types> combinations = new ArrayList<>();

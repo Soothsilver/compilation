@@ -37,15 +37,15 @@ public class SubroutineToken {
 
     @Override
     public String toString() {
-        return subroutine.getSignature(false, false) +  (types == null ? "" : "[" + types.stream().map(tp -> tp.toString()).collect(Collectors.joining(","))+"]");
+        return subroutine.getSignature(false, false) +  (types == null ? "" : "[" + types.stream().map(Type::toString).collect(Collectors.joining(","))+"]");
     }
 
     public SubroutineToken copy()
     {
-        SubroutineToken stoken = new SubroutineToken(subroutine, inferred);
-        stoken.types = this.types; // NO COPY INTENDED.
-        stoken.badness = this.badness;
-        return stoken;
+        SubroutineToken subroutineToken = new SubroutineToken(subroutine, inferred);
+        subroutineToken.types = this.types; // NO COPY INTENDED.
+        subroutineToken.badness = this.badness;
+        return subroutineToken;
     }
     public SubroutineToken(Subroutine subroutine, boolean inferred) {
         this.subroutine = subroutine;

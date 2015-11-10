@@ -36,7 +36,7 @@ public class ConstructorExpression extends Expression {
 
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
-        if (!types.contains(this.type)) { //todo unify
+        if (!types.contains(this.type)) {
             compilation.semanticError("A constructed object of type " + this.type.name + " cannot be converted to any of the following types: " + types, line, column);
         }
     }

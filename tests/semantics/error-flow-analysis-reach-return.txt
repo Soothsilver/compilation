@@ -1,0 +1,9 @@
+//WARNINGS-ARE-ERRORS
+//EXPECT-SEMANTICAL-ERROR: unreachable
+function hello():integer {
+    a : integer;
+    return 2;
+    a = 2;
+}
+procedure main() {
+}

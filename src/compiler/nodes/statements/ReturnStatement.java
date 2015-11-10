@@ -24,4 +24,9 @@ public class ReturnStatement extends Statement {
     public String toString() {
         return "return " + this.expression + ";";
     }
+
+    @Override
+    public boolean flowAnalysis(Compilation compilation) {
+        return false;
+    }
 }

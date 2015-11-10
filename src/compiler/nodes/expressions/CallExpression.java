@@ -70,8 +70,8 @@ public class CallExpression extends Expression {
         if (callee == null) {
             return group + "?(" + arguments.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
         } else {
+            // TODO display what object is the subroutined called on
             Subroutine sub = callee.subroutine;
-            // TODO also display owner
             return sub.getSignature(false, true, callee.types, true) + "(" + arguments.toWithoutBracketsString() + ")";
         }
     }

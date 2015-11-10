@@ -3,6 +3,6 @@ procedure a() {  }
 procedure a [[T1]]() {  }
 procedure a [[T1,T2]]() {  }
 procedure a [[T1,T2]](t1:T1) {  }
-function a [[T1,T2]](t1:T1):T2 {  }
+function a [[T1,T2]](t1:T1):T2 { return null; }
 procedure main() {  }
 ]

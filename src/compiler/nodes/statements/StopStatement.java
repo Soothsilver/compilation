@@ -15,4 +15,9 @@ public class StopStatement extends Statement {
     public String toString() {
         return "stop;";
     }
+
+    @Override
+    public boolean flowAnalysis(Compilation compilation) {
+        return false;
+    }
 }

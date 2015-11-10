@@ -1,0 +1,14 @@
+PROGRAM[
+procedure main() { 
+a : !array[[integer]];
+b : !array[[integer]];
+c : !array[[integer]];
+a=[I=integer;1,5];
+b=new integer[3];
+b[0]=1;
+b[1]=2;
+b[2]=3;
+c=a@b;
+b[0]=a[0];
+}
+]

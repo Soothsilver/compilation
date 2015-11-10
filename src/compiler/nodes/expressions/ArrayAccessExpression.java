@@ -38,8 +38,6 @@ public class ArrayAccessExpression extends Expression {
             if (this.type.convertibleTo(t)) return;
         }
         compilation.semanticError("An array member of type '" + this.type + "' cannot be converted to any of the following types: " + types, line, column);
-        // TODO unification
-        // TODO check validity, perhaps?
     }
 
     @Override

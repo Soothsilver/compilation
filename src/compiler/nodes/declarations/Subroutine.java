@@ -13,6 +13,8 @@ public class Subroutine extends Declaration {
     public List<String> typeParameterNames = new ArrayList<>();
     public List<Parameter> parameters = new ArrayList<>();
     public Type returnType;
+    public TypeOrTypeTemplate owner;
+
     private static Subroutine constructingWhatSubroutine = null;
 
     private Subroutine copy() {
@@ -22,6 +24,7 @@ public class Subroutine extends Declaration {
         subroutine.typeParameterNames = typeParameterNames;
         subroutine.parameters = parameters;
         subroutine.returnType = returnType;
+        subroutine.owner = owner;
         return subroutine;
     }
     public static boolean typeParametersEntered = false;
@@ -90,6 +93,7 @@ public class Subroutine extends Declaration {
                 signature += "procedure ";
             }
         }
+
         signature += name;
         if (forSymbolTables && !humanSignature) {
             signature += " ";
@@ -122,7 +126,7 @@ public class Subroutine extends Declaration {
                 if (forSymbolTables) {
                     signature += param.type.toSymbolTableString(typeParameterNames);
                 } else {
-                    signature += param.name + ":" + param.type; // TODO type variables
+                    signature += param.name + ":" + param.type;
                 }
             }
             if (i != parameters.size() - 1) {
@@ -132,7 +136,11 @@ public class Subroutine extends Declaration {
         signature += callsite ? "]" : ")";
         if (kind == SubroutineKind.FUNCTION) {
             signature += ":";
-            signature += returnType; // TODO type variables
+            if (forSymbolTables) {
+                signature += returnType.toSymbolTableString(typeParameterNames);
+            } else {
+                signature += returnType;
+            }
         }
         return signature;
     }
@@ -141,6 +149,13 @@ public class Subroutine extends Declaration {
         return getSignature(false, false) + " " +  block;
     }
 
+    /**
+     * Creates a subroutine with no type parameters and no parameters at line -1, column -1. Does not add the subroutine to the environment.
+     * @param kind Procedure or function.
+     * @param name Name of the predefined subroutine.
+     * @param returnType Return type of the function (or !void).
+     * @return The created subroutine.
+     */
     public static Subroutine createPredefined(SubroutineKind kind, String name, Type returnType) {
         Subroutine subroutine = new Subroutine(name, -1,-1);
         subroutine.parameters = new ArrayList<>();

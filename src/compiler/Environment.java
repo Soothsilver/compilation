@@ -197,7 +197,7 @@ public class Environment {
     }
 
     public void leaveCycle() {
-        cycleDepth++;
+        cycleDepth--;
     }
 
     public boolean inCycle() {

@@ -26,4 +26,16 @@ public class IfStatement extends Statement {
             return "if (" + test + ") " + thenStatement + " else " + elseStatement;
         }
     }
+
+    @Override
+    public boolean flowAnalysis(Compilation compilation) {
+        if (elseStatement == null) {
+            thenStatement.flowAnalysis(compilation);
+            return true;
+        } else {
+            boolean bothBlocked = !thenStatement.flowAnalysis(compilation) && !elseStatement.flowAnalysis(compilation);
+            if (bothBlocked) return false;
+            else return true;
+        }
+    }
 }

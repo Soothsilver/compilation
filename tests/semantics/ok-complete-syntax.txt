@@ -51,10 +51,6 @@ procedure main( num : integer, strs : list of string)
         repeat { break; } while (false);
         {
             a : list of integer;
-            foreach(int in a) {
-                break;
-            }
-            break;
         }
         while (false)
             while (true)

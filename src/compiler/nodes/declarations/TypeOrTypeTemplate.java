@@ -15,6 +15,9 @@ public abstract class TypeOrTypeTemplate extends Declaration {
     }
     public void setSubroutines(Subroutines subroutines) {
         this.subroutines = subroutines;
+        for (Subroutine subroutine : this.subroutines) {
+            subroutine.owner = this;
+        }
     }
 
     protected TypeOrTypeTemplate(String name, int line, int column) {

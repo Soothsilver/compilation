@@ -29,6 +29,8 @@ public class ExpressionStatement extends Statement {
         if (!permittedKinds.contains(expression.kind)) {
             compilation.semanticError("Only assignment, increment, decrement and subroutine call expressions are permitted as statements.", expression.line, expression.column);
         }
+        this.line = expression.line;
+        this.column = expression.column;
         this.expression.propagateTypes(null, compilation);
     }
 
@@ -39,5 +41,10 @@ public class ExpressionStatement extends Statement {
             return "COMPILER-ERROR;";
         }
         return expression.toString() + ";";
+    }
+
+    @Override
+    public boolean flowAnalysis(Compilation compilation) {
+        return true;
     }
 }
