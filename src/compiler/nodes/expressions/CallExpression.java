@@ -82,8 +82,8 @@ public class CallExpression extends Expression {
             for (int j = i + 1; j < subroutineTokens.size(); j++) {
                 SubroutineToken second = subroutineTokens.get(j);
                 if (first.equals(second)) {
-                    if (first.badness > second.badness) {
-                        first.badness = second.badness;
+                    if (first.getBadness() > second.getBadness()) {
+                        first.setBadness(second.getBadness());
                     }
                     subroutineTokens.remove(j);
                     j--;

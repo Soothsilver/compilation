@@ -1,6 +1,18 @@
-procedure main() {
-    a : list of float;
-    a = [3, 2];
-    stop;
-    a = [5];
+// Too difficult.
+type A = structure { };
+type B = structure { };
+type C = structure { };
+
+function get(a : integer) : A { return null; }
+function get(b : float) : B { return null; }
+function get(c : integer) : C { return null; }
+
+function copy[[T]](a : T) : T { return a; }
+
+procedure set(b : B) { }
+procedure set(a : A) { }
+
+procedure main()
+{
+   set(get(2));
 }

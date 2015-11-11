@@ -13,6 +13,7 @@ public class Type extends TypeOrTypeTemplate {
     public boolean boundToReferenceType;
     public Type boundToSpecificType;
     public boolean isReferenceType;
+    public int integerBindCount;
 
     public boolean canBeNulled() {
         return isReferenceType || kind == TypeKind.ClassTypeParameter || kind == TypeKind.SubroutineTypeParameter;

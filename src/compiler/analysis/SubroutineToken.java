@@ -15,9 +15,24 @@ public class SubroutineToken {
      * The underlying subroutine. This field is read only.
      */
     public Subroutine subroutine;
-    public ArrayList<Type> types; // Type arguments
+    /**
+     * List of type arguments for the subroutine. This will be "null" if the underlying subroutine is not generic/
+     */
+    public ArrayList<Type> types;
     public boolean inferred;
-    public int badness = 0;
+    private int badness = 0;
+    public void raiseBadness() {
+        badness++;
+    }
+    public void doubleBadness() {
+        badness*=2;
+    }
+    public int getBadness() {
+        return badness;
+    }
+    /**
+     * Types of the subroutine's arguments, from first to last. The final type in this array is the return type.
+     */
     public Types formalTypes;
 
     @Override
@@ -37,7 +52,8 @@ public class SubroutineToken {
 
     @Override
     public String toString() {
-        return subroutine.getSignature(false, false) +  (types == null ? "" : "[" + types.stream().map(Type::toString).collect(Collectors.joining(","))+"]");
+        return subroutine.getSignature(false, false) +  (types == null ? "" : "[" + types.stream().map(Type::toString).collect(Collectors.joining(","))+"]")
+                + (badness != 0 ? ": badness " + badness : "");
     }
 
     public SubroutineToken copy()
@@ -67,6 +83,21 @@ public class SubroutineToken {
         formalTypes.add(subroutine.returnType.copy(types)); // TODO copy here?
 
         return formalTypes;
+    }
+
+    public void objectifySelf() {
+        if (types != null) {
+            for (int i = 0; i < types.size(); i++) {
+                types.set(i, types.get(i).objectify());
+            }
+        }
+        for (int i = 0; i < formalTypes.size(); i++) {
+            formalTypes.set(i, formalTypes.get(i).objectify());
+        }
+    }
+
+    public void setBadness(int badness) {
+        this.badness = badness;
     }
 }
 
