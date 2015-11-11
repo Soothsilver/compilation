@@ -1,14 +1,14 @@
-type A = structure { };
-type B = structure { };
-type C = structure { };
-
-function get(a : integer) : A { return null; }
-function get(b : float) : B { return null; }
-function get(c : integer) : C { return null; }
-procedure set(a : A) { }
-procedure set(b : B) { }
-
-procedure main()
-{
-   set(get(2));
-}
+PROGRAM[
+type A = class {
+};
+type B = class {
+};
+type C = class {
+};
+function get(a:integer):A { return null; }
+function get(b:float):B { return null; }
+function get(c:integer):C { return null; }
+procedure set(a:A) {  }
+procedure set(b:B) {  }
+procedure main() { set[A](get[integer]:A(2)); }
+]

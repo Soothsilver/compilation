@@ -14,19 +14,7 @@ public class Unification {
      * @return True if the unification succeeds.
      */
     public static boolean unify(Types formal, Types actual, IntegerHolder badness, boolean exactly) {
-        OverloadResolution.debug_level++;
-        for (int i = 0; i < formal.size(); i++) {
-            Type formalType = formal.get(i);
-            Type actualType = actual.get(i);
-            boolean unification = unify(formalType, actualType, badness, exactly, new UnificationSubstitution());
-            if (!unification ) {
-                debug("Cannot unify " + formalType + " with " + actualType + ".");
-                OverloadResolution.debug_level--;
-                return false;
-            }
-        }
-        OverloadResolution.debug_level--;
-        return true;
+        return unify(formal, actual, badness, exactly, new UnificationSubstitution());
     }
 
     /**
@@ -41,9 +29,15 @@ public class Unification {
         for (int i = 0; i < formal.size(); i++) {
             Type formalType = formal.get(i);
             Type actualType = actual.get(i);
+            if (actualType.objectify().equals(Type.voidType) && i != formal.size()-1) {
+                debug("An argument is !void, cannot unify.");
+                OverloadResolution.debug_level--;
+                return false;
+            }
             boolean unification = unify(formalType, actualType, badness, exactly, substitution);
             if (!unification ) {
                 debug("Cannot unify " + formalType + " with " + actualType + ".");
+                OverloadResolution.debug_level--;
                 return false;
             }
         }
@@ -95,6 +89,7 @@ public class Unification {
                         if (actual.boundToNumeric && !formal.equals(Type.integerType) && !formal.equals(Type.floatType)) {
                             return false;
                         }
+
                         actual.boundToSpecificType = formal;
                         return true;
                     // TODO check this is correct

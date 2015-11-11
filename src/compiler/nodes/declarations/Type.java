@@ -279,6 +279,7 @@ public class Type extends TypeOrTypeTemplate {
     public boolean convertibleTo(Type type) {
         if (this.equals(type)) return true;
         if (this.equals(Type.integerType) && type.equals(Type.floatType)) return true;
+        if (this.equals(Type.nullType) && type.isReferenceType) return true;
         return false;
     }
 

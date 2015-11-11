@@ -148,49 +148,34 @@ public final class OverloadResolution {
             debug(token.toString());
         }
         debug_level--;
-        debug ("Possible return types are: " + returnTypes);
         //        2. Remove from consideration all inferred subroutines whose return type cannot be unified with any type given in the set of possible types. A "float" possible type is unifiable with a subroutine return type of "int" but adds +1 badness. The unifications remain.
-        debug_level++;
+        if (returnTypes != null) {
             for (int sti = legalSubroutines.size() - 1; sti >= 0; sti--) {
                 boolean unifiableAtLeastInOneWay = false;
-                boolean unifiableWihtoutBadnessIncrease = false;
                 SubroutineToken st = legalSubroutines.get(sti);
-                if (returnTypes != null) {
-                    for (Type rType : returnTypes) {
-                        // Test unification
-                        IntegerHolder isBad = new IntegerHolder();
-                        UnificationSubstitution substitution = new UnificationSubstitution();
-                        boolean unifiable = unify(rType, st.formalTypes.get(st.formalTypes.size() - 1), isBad, false, substitution);
-                        if (unifiable) {
-                            unifiableAtLeastInOneWay = true;
-                            for (int i = 0; i < call.arguments.size(); i++) {
-                                argumentTypes.get(i).add(st.formalTypes.get(i).objectify());
-                            }
-                            unifiableWihtoutBadnessIncrease = isBad.getValue() == 0;
-                            substitution.undoAll();
-                            if (unifiableWihtoutBadnessIncrease) {
-                                break;
-                            }
-                        } else {
-                            substitution.undoAll();
+                //noinspection LoopStatementThatDoesntLoop
+                for (Type rType : returnTypes) {
+                    // Test unification
+                    IntegerHolder isBad = new IntegerHolder();
+                    UnificationSubstitution substitution = new UnificationSubstitution();
+                    boolean unifiable = unify(rType, st.formalTypes.get(st.formalTypes.size() - 1), isBad, false, substitution);
+                    if (unifiable) {
+                        unifiableAtLeastInOneWay = true;
+                        for (int i = 0; i < call.arguments.size(); i++) {
+                            argumentTypes.get(i).add(st.formalTypes.get(i).objectify());
                         }
+                        substitution.undoAll();
+                        break;
+                        // TODO st.setBadness(st.getBadness() + 2 * isBad.getValue());
+                    } else {
+                        substitution.undoAll();
                     }
-                } else {
-                    for (int i = 0; i < call.arguments.size(); i++) {
-                        argumentTypes.get(i).add(st.formalTypes.get(i).objectify());
-                    }
-                    unifiableAtLeastInOneWay = true;
-                }
-                if (!unifiableWihtoutBadnessIncrease) {
-                    st.setBadness(st.getBadness() + 2);
                 }
                 if (!unifiableAtLeastInOneWay) {
-                    debug("Removing " + st + " from consideration.");
                     legalSubroutines.remove(sti);
                 }
             }
-
-        debug_level--;
+        }
         if (legalSubroutines.size() == 0) {
             compilation.semanticError("No function with the name '" + call.group.name + "' has a return type unifiable with one of the possible return types: " + returnTypes, call.line, call.column);
             call.setErrorType();
@@ -254,77 +239,27 @@ public final class OverloadResolution {
         int oldlevel = debug_level;
 //        5. If there is exactly one subroutine left, launch this phase for all of its arguments with the unification made, and sending only a single possible return type.
 //        6. If there are still at least two inferred subroutines considered, send their combined types for each argument to the parents.
-        Types types = new Types();
         for (int i = 0; i < call.arguments.size(); i++) {
-            HashSet<Type> hashSet = new HashSet<>();
-            for (Type t : argumentTypes.get(i) ) {
-                hashSet.add(t.objectify());
-            }
-            // A hack for assignments:
-            if (
-                    call.kind == ExpressionKind.Assignment &&
-                        hashSet.contains(Type.integerType) &&
-                        hashSet.contains(Type.floatType)
-                    ) {
-                hashSet.clear();
-                hashSet.add(Type.integerType);
-            }
-
-
-            call.arguments.get(i).propagateTypes(hashSet, compilation);
-            types.add(call.arguments.get(i).type);
+            call.arguments.get(i).propagateTypes(argumentTypes.get(i), compilation);
         }
-        Type returnType = Type.createNewTypeVariable("!PHASE" + Uniqueness.getUniqueId());
-        types.add(returnType);
 //        6a. After that, with the specific types from parents, discover if one is better than all others. A subroutine is better than another subroutine if it has less badness. If there is one best subroutine, consider it best. If not, signal an error.
 
         debug_level = oldlevel;
-        debug("Phase 3 begins for " + call + ": We are selecting from among " + legalSubroutines.size() + " subroutines.");
-        debug_level++;
-        for (SubroutineToken consideredSubroutine : legalSubroutines) {
-            debug(consideredSubroutine.toString());
-        }
-        debug_level--;
+        debug("Phase 3: We are selecting from among " + legalSubroutines.size() + " subroutines.");
 
         int bestBadness = Integer.MAX_VALUE;
         SubroutineToken bestSubroutine = null;
 
-        nextsubroutine:
         for (SubroutineToken consideredSubroutine : legalSubroutines) {
-            for (int i = 0; i < call.arguments.size(); i++) {
-                if (!types.get(i).convertibleTo(consideredSubroutine.formalTypes.get(i))) {
-                    debug("Removing " + consideredSubroutine + " from consideration because " + types.get(i) + " is not convertible to " + consideredSubroutine.formalTypes.get(i));
-                    continue nextsubroutine;
+            if (unify(consideredSubroutine.formalTypes, types, new IntegerHolder(), false)) {
+                if (consideredSubroutine.getBadness() < bestBadness) {
+                    bestBadness = consideredSubroutine.getBadness();
+                    bestSubroutine = consideredSubroutine;
+                } else if (consideredSubroutine.getBadness() == bestBadness) {
+                    bestSubroutine = null;
                 }
-            }
-            if (consideredSubroutine.getBadness() < bestBadness) {
-                bestBadness = consideredSubroutine.getBadness();
-                bestSubroutine = consideredSubroutine;
-            } else if (consideredSubroutine.getBadness() == bestBadness) {
-                bestSubroutine = null;
-            }
-        }
-        // TODO Were all removed?
-        final int finalBestBadness = bestBadness;
-        if (bestSubroutine == null) {
-            legalSubroutines.removeIf(sbrt -> sbrt.getBadness() > finalBestBadness);
-            compilation.semanticError("The call is ambiguous between the following subroutines: " + legalSubroutines.stream().map(sbtk -> "'" + sbtk.subroutine.getSignature(false, false) + "'").collect(Collectors.joining(",")) + ".", call.line, call.column);
-            call.setErrorType();
-        } else {
-            call.callee = bestSubroutine;
-            call.type = bestSubroutine.formalTypes.get(bestSubroutine.formalTypes.size() - 1).objectify();
-            for (int i = 0; i < call.arguments.size(); i++) {
-                Expression argument = call.arguments.get(i);
-                Type formalType = bestSubroutine.formalTypes.get(i).objectify();
-                Type actualType = argument.type.objectify();
-                if (Objects.equals(actualType.name, Type.integerType.name) && Objects.equals(formalType.name, Type.floatType.name)) {
-                    call.arguments.set(i, new IntegerToFloatExpression(argument));
-                    if (i == 0 && call.kind == ExpressionKind.Assignment) {
-                        compilation.semanticError("Cannot implicitly convert from float to integer.", call.line, call.column);
-                        call.setErrorType();
-                        return;
-                    }
-                }
+            } else {
+                debug("Removing " + consideredSubroutine + " from consideration.");
             }
         }
         debug_level--;
@@ -365,10 +300,9 @@ public final class OverloadResolution {
         */
     }
 
-    /*
     private static void bestSubroutineSelected(SubroutineToken bestSubroutine, CallExpression call, Compilation compilation) {
         call.callee = bestSubroutine;
-        call.type = bestSubroutine.formalTypes.get(bestSubroutine.formalTypes.size() - 1).objectify();
+        call.type = bestSubroutine.formalTypes.get(bestSubroutine.formalTypes.size() - 1); // TODO iterate through to get the last final in type unification procedure
         debug("Best subroutine: " + call);
         for (int i = 0; i < call.arguments.size(); i++) {
             Expression argument = call.arguments.get(i);
@@ -391,7 +325,7 @@ public final class OverloadResolution {
         }
         // TODO Propagate
     }
-    */
+
     // Utilities
     public static void debug(String line) {
         for (int i = 0; i < debug_level; i++) {
