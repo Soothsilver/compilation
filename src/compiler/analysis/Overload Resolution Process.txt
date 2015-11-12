@@ -32,7 +32,7 @@ In the first phase, evaluate call expressions like this:
 1.1 If none exist, signal an error.
 2. If type arguments were specified, remove from consideration all subroutines with a different number of type parameters. Also remove from consideration all non-generic subroutines.
 2.1. If none remain, signal an error.
-2a. Remove from consideration all subroutines with a different number of parameters than actual arguments.
+2a. Remove from consideration arll subroutines with a different number of parameters than actual arguments.
 2a.1. If none remain, signal an error.
 4. Do the following procedure for all considered subroutines:
 4.1.If it is a generic subroutine and type arguments were not specified, it's called an "incomplete subroutine".

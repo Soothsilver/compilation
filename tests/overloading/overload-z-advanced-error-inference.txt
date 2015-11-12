@@ -1,4 +1,4 @@
-// Too difficult.
+//EXPECT-SEMANTICAL-ERROR: The call is ambiguous between the following subroutines: 'function get(c:integer):C','function get(a:integer):A'.
 type A = structure { };
 type B = structure { };
 type C = structure { };
@@ -6,7 +6,7 @@ type C = structure { };
 function get(a : integer) : A { return null; }
 function get(b : float) : B { return null; }
 function get(c : integer) : C { return null; }
-function set[[T]](a : T) : T { }
+function set[[T]](a : T) : T { return a; }
 procedure set(b : B) { }
 procedure set(a : A) { }
 
