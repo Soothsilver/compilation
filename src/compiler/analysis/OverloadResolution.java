@@ -81,7 +81,7 @@ public final class OverloadResolution {
                 }
                 subroutineBeingInferred.formalTypes = formalTypes;
                 debug("Formal types are: " + formalTypes);
-//4.2.2 Perform the unification algorithm with some cave-ats. If the unification algorithm fails, then don't consider this combination.
+//4.2.2 Perform the unification algorithm with some caveats. If the unification algorithm fails, then don't consider this combination.
                 IntegerHolder badness = new IntegerHolder();
                 if (!unify(formalTypes, actualTypes, badness, false)) {
                     debug("Unification failed.");
@@ -102,7 +102,7 @@ public final class OverloadResolution {
                 subroutineBeingInferred.objectifySelf();
                 debug("Unification successful, subroutine has types " + formalTypes + " (return type " + returnType + ").");
                 call.subroutineTokens.add(subroutineBeingInferred);
-//4.2.6. Add this inferred's subroutine return type to the set of return types.
+//4.2.6. Add this inferred subroutine's return type to the set of return types.
                 call.possibleTypes.add(returnType);
             }
             debug_level--;
