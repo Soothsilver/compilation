@@ -6,9 +6,23 @@ import compiler.nodes.declarations.Variable;
 
 import java.util.HashSet;
 
+/**
+ * Represents an expression that is the member field of a type. For example "typeInstance.memberVariable" is a MemberVariableExpression.
+ */
 public class MemberVariableExpression extends VariableExpression {
     Expression parent;
 
+    /**
+     * Creates a new MemberVariableExpression. Launches phase 2 resolution for the parent expression, then searches the
+     * resulting type's symbol table for a variable of the given name. If it fails at any of these steps, it triggers an error
+     * and returns a MemberVariableExpression with the error type only.
+     * @param parent An expression that evaluates to the object owning this variable.
+     * @param name Name of the member field.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     * @return The created MemberVariableExpression, perhaps with error type set.
+     */
     public static MemberVariableExpression create(Expression parent, String name, int line, int column, Compilation compilation) {
         MemberVariableExpression expression = new MemberVariableExpression(line, column);
         expression.parent = parent;

@@ -6,8 +6,18 @@ import compiler.nodes.declarations.Variable;
 
 import java.util.Set;
 
+/**
+ * Represents an expression that is just a reference to a variable. For example, in "i = 2;", "i" is a VariableExpression.
+ * An expression such as "classInstance.member" is a MemberVariableExpression which is descended from this class.
+ */
 public class VariableExpression extends Expression {
+    /**
+     * Name of the global or local variable, or name of the variable member of a type.
+     */
     public String name;
+    /**
+     * Variable symbol found in the symbol tables for this expression.
+     */
     public Variable variable;
 
 
@@ -16,6 +26,15 @@ public class VariableExpression extends Expression {
     protected VariableExpression(int line, int column) {
         super(line, column);
     }
+
+    /**
+     * Initializes a new variable expression and performs phase 1 resolution for it. It attempts to find the variable
+     * in symbol tables - if it fails, an expression is created as normal, but it will have the error type only.
+     * @param identifier Name of the local or global variable.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     */
     public VariableExpression (String identifier, int line, int column, Compilation compilation) {
         name = identifier;
         this.line = line;

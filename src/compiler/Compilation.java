@@ -156,6 +156,11 @@ public class Compilation {
 		errorTriggered = true;
 		errorMessages.add("Lexical error at line " + (line+1) + ", column " + (column+1) + ": " + message);
 	}
+	public void notImplementedError(String message, int line, int column) {
+        errorTriggered = true;
+        errorMessages.add("Internal error at line " + (line+1) + ", column " + (column+1) + ": " + message);
+    }
+
 	public void reportSyntaxError(CompilerParser parser, String message, Object something)
 	{
         errorMessages.add(message);

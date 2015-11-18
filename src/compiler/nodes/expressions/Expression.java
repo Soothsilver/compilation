@@ -30,14 +30,10 @@ public abstract class Expression extends Node {
 
 
 
-    protected Expression() {
-
-    }
+    protected Expression() {   }
     protected Expression(int line, int column) {
         super(line, column);
     }
-
-
 
 
     // These five functions create new literal expression nodes. They are used only from the production "constant" in the CUP file.

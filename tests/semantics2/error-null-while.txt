@@ -1,0 +1,4 @@
+//EXPECT: None of the following types is nullable: [boolean]
+procedure main() {
+    if ( null) { } else { }
+}

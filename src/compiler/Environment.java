@@ -98,8 +98,10 @@ public class Environment {
 
         public ScopeTree<T> add(T decl, ScopeTree<T> tree) {
             debug("Adding " + (decl == null ? "null" : decl) + " to " + (tree == null ? "null" : tree.decl) + ", this is " + (decl == null ? "null" : decl));
-            if (tree == null)
-                return new ScopeTree<T>(decl);
+            if (tree == null) {
+                throw new RuntimeException("This should never happen.");
+                //return new ScopeTree<T>(decl);
+            }
             else if (decl.getSig().compareTo(this.decl.getSig()) == 0 && scope != depth) {
                 //System.out.println("Adding :" + decl.getId() + ":");
                 return new ScopeTree<T>(left, right, decl, depth);
@@ -142,9 +144,7 @@ public class Environment {
     }
 
     public LinkedList<Subroutine> findSubroutines(String identifier) {
-        debug("ENV: Finding " + identifier + ".");
         if (subroutineTable == null) {
-            debug("ENV: Returning null immediately.");
             return null;
         } else
             return subroutineTable.findGroup(identifier);

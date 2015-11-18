@@ -1,5 +1,8 @@
 package compiler.nodes.expressions;
 
+/**
+ * Indicates how the expression looks like in source code.
+ */
 public enum ExpressionKind {
     /**
      * An identifier that resolves in a variable.

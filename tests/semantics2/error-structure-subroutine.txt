@@ -1,0 +1,7 @@
+// EXPECT:  The parent expression's type (t) does not contain any subroutines.
+type t = structure {
+};
+procedure main() {
+  t : t;
+  t.hello();
+}

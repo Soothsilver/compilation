@@ -48,6 +48,8 @@ public class SubroutineGroup extends Node {
     /**
      * Creates a subroutine group by creating a single-item list of the specified subroutine. This is useful in ArrayInferenceCreationExpression/
      * @param singleSubroutine The subroutine to pack into a group.
+     * @param line Source line.
+     * @param column Source column.
      * @return The subroutine group.
      */
     public static SubroutineGroup create(Subroutine singleSubroutine, int line, int column) {
@@ -78,8 +80,8 @@ public class SubroutineGroup extends Node {
         if (!g.owner.type.isReferenceType) {
             compilation.semanticError("The parent expression's type (" + parent.type + ") is not a reference type and cannot contain subroutines.", line, column);
         }
-        else if (g.owner.type.subroutines == null) {
-            compilation.semanticError("The parent expression's type (" + parent.type + ") is not a class and cannot contain subroutines.", line, column);
+        else if (g.owner.type.subroutines.size() == 0) {
+            compilation.semanticError("The parent expression's type (" + parent.type + ") does not contain any subroutines.", line, column);
         }
         else {
             for(Subroutine member : g.owner.type.subroutines) {

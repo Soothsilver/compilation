@@ -21,12 +21,6 @@ public class SubroutineToken {
     public ArrayList<Type> types;
     public boolean inferred;
     private int badness = 0;
-    public void raiseBadness() {
-        badness++;
-    }
-    public void doubleBadness() {
-        badness*=2;
-    }
     public int getBadness() {
         return badness;
     }

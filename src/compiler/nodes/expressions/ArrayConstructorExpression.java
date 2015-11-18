@@ -8,9 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ArrayConstructorExpression extends Expression {
-    private Type innerType;
-    private Expression size;
+    protected Type innerType;
+    protected Expression size;
 
+    protected ArrayConstructorExpression() {
+
+    }
     public ArrayConstructorExpression(Type innerType, Expression size, int line, int column, Compilation compilation) {
         this.line = line;
         this.column = column;

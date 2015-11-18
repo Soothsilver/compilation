@@ -1,4 +1,4 @@
-// EXPECT: An array of 'integer' cannot be converted to any of the following types: [boolean]
+// EXPECT: No function with the name '!cons' has a return type unifiable with one of the possible return types: [boolean]
 // EXPECT: An array of 'integer' cannot be converted to any of the following types: [boolean]
 // EXPECT: An array member of type 'integer' cannot be converted to any of the following types: [boolean]
 procedure main() {

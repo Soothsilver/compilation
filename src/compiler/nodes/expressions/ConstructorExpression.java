@@ -6,8 +6,11 @@ import compiler.nodes.declarations.Type;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ * Represents an instance constructor expression, such as "new s()".
+ */
 public class ConstructorExpression extends Expression {
-    public String typeName;
+    private String typeName;
 
     public ConstructorExpression(String typeName, int line, int column, Compilation compilation) {
         this.typeName = typeName;

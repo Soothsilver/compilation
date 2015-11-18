@@ -7,7 +7,13 @@ import compiler.nodes.declarations.TypeTemplate;
 
 import java.util.ArrayList;
 
-public class TypeDefinitionProcess {
+/**
+ * Static
+ */
+public final class TypeDefinitionProcess {
+    private TypeDefinitionProcess() { }
+
+
     private static String typename;
     private static int line;
     private static int column;
@@ -53,4 +59,5 @@ public class TypeDefinitionProcess {
         // 5. Set as current type.
         TypeDefinitionProcess.currentType = newType;
     }
+
 }

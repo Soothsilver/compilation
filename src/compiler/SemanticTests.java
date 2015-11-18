@@ -43,6 +43,7 @@ public class SemanticTests {
                 myParser.compilation = compilation;
                 try {
                     myParser.parse();
+
                     if (compilation.hasTestRunOkay()) {
                         if (!compilation.errorTriggered) {
                             String actual = compilation.abstractSyntaxTree.toString();

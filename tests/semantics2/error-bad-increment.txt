@@ -1,0 +1,7 @@
+//EXPECT: The operand of an increment or decrement operator must be a variable, array member or a class member.
+//EXPECT: The operand of an increment or decrement operator must be a variable, array member or a class member.
+procedure main() {
+    a : integer;
+    2++;
+    (a + 4)++;
+}
