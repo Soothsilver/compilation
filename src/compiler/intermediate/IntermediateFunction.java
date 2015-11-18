@@ -8,19 +8,28 @@ import compiler.nodes.declarations.Subroutine;
 public class IntermediateFunction {
 	public int address;
 	private String name;
+	public List<Instruction> instructions = new ArrayList<Instruction>();
+	
 	public String getName() {
 		return name;
 	}
-	public List<Instruction> instructions = new ArrayList<Instruction>();
+	
 	public static IntermediateFunction create(Subroutine subroutine,
 			Executable executable) {
 		
 		IntermediateFunction function = new IntermediateFunction();
 		function.name = subroutine.name;
+		function.instructions = subroutine.block.generateIntermediateCode(executable, function);
+		
 		return function;
 	}
 	
 	public String toString() {
-		return "";
+		String functionCode = "";
+		for (Instruction instruction : instructions) {
+			functionCode += instruction.toString() + "\n";
+		}
+		return functionCode;
 	};
+	
 }

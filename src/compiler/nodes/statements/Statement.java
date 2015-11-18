@@ -1,6 +1,13 @@
 package compiler.nodes.statements;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import compiler.intermediate.instructions.*;
+
 import compiler.Compilation;
+import compiler.intermediate.Executable;
+import compiler.intermediate.IntermediateFunction;
 import compiler.nodes.Node;
 
 public abstract class Statement extends Node {
@@ -9,6 +16,11 @@ public abstract class Statement extends Node {
      * @return True if the end of this statement is reachable.
      */
     public abstract boolean flowAnalysis(Compilation compilation);
+    
+    public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
+		return new ArrayList<Instruction>();
+    }
+    
     protected Statement(int line, int column) {
         super(line, column);
     }
