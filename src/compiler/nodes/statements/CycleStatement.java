@@ -7,12 +7,18 @@ import compiler.Compilation;
  */
 public class CycleStatement extends Statement {
 
+    /**
+     * The body of a cycle statement. Most often, this will be a BlockStatement.
+     */
     public Statement body;
 
     protected CycleStatement(int line, int column) {
         super(line, column);
     }
 
+    /**
+     * This constructor should only be used until all cycles are actually implemented.
+     */
     public CycleStatement() {
         super();
     }

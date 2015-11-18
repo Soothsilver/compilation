@@ -3,16 +3,10 @@ package compiler.nodes.expressions;
 import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
 import compiler.analysis.SubroutineToken;
-import compiler.analysis.Uniqueness;
-import compiler.intermediate.Executable;
-import compiler.intermediate.ExpressionEvaluationResult;
-import compiler.intermediate.Operand;
-import compiler.intermediate.OperandKind;
+import compiler.intermediate.*;
 import compiler.intermediate.instructions.CallInstruction;
-import compiler.intermediate.instructions.Instruction;
 import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Subroutine;
-import compiler.nodes.declarations.SystemCall;
 import compiler.nodes.declarations.Type;
 
 import java.util.ArrayList;
@@ -136,7 +130,7 @@ public class CallExpression extends Expression {
             operands.add(eer.operand);
             instructions.addAll(eer.code);
         }
-        int returnRegisterIndex = Uniqueness.getUniqueId();
+        IntermediateRegister returnRegisterIndex = executable.summonNewRegister();
         CallInstruction call = new CallInstruction(callee, operands, returnRegisterIndex);
         instructions.add(call);
         if (type.equals(Type.voidType)) {

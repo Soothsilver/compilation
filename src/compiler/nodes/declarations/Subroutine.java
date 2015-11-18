@@ -6,13 +6,40 @@ import compiler.nodes.statements.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Represents a subroutine. There are several subclasses to this class, specifically OperatorFunction and SystemCall,
+ * but this class functions well enough by itself.
+ *
+ * A subroutine maybe a generic or a non-generic subroutine. For generic subroutines, they cannot be called directly,
+ * but first a SubroutineToken (a type instantiation of a Subroutine) must be created for them.
+ */
 public class Subroutine extends Declaration {
+    /**
+     * The statement executed when the subroutine is called.
+     */
     public Statement block;
+    /**
+     * Whether it's a procedure or a function.
+     */
     public SubroutineKind kind;
+    /**
+     * Names of the subroutine's type parameters (in [[ and ]] brackets).
+     */
     public List<String> typeParameterNames = new ArrayList<>();
+    /**
+     * Ordered list of the subroutine's formal parameters.
+     */
     public List<Parameter> parameters = new ArrayList<>();
+    /**
+     * The subroutine's return type. If this subroutine is a procedure, the return type is Type.voidType. If
+     * the subroutine is generic, the return type may contain the formal type parameters.
+     */
     public Type returnType;
+    /**
+     * The type that contains this subroutine. This will be null if it's a global subroutine.
+     */
     public TypeOrTypeTemplate owner;
 
     private static Subroutine constructingWhatSubroutine = null;
@@ -27,10 +54,15 @@ public class Subroutine extends Declaration {
         subroutine.owner = owner;
         return subroutine;
     }
+
+    /**
+     * A static field used during subroutine creation during CUP parsing. It does magic.
+     */
     public static boolean typeParametersEntered = false;
     protected Subroutine(String name, int line, int column) {
         super(name, line, column);
     }
+
     public static Subroutine create(SubroutineKind kind,
                                     String name,
                                     ArrayList<String> typeParameters,
@@ -180,5 +212,13 @@ public class Subroutine extends Declaration {
             subroutine.parameters.add(pNew);
         }
         return subroutine;
+    }
+
+    public String getUniqueLabel() {
+        Subroutine subroutine = this;
+        // TODO This does not work with generics but so what.
+        return subroutine.name + "_" + subroutine.parameters.stream().map(param -> param.type.name).collect(Collectors.joining("_"))
+                + (subroutine.kind == SubroutineKind.PROCEDURE ? "procedure" :
+                (subroutine.returnType.name + "_function"));
     }
 }

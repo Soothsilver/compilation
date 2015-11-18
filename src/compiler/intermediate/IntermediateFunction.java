@@ -48,13 +48,29 @@ public class IntermediateFunction {
 
     /**
      * Transforms this intermediate-code subroutine into MIPS assembly.
+     *
+     * The stack contains:
+     * - old return value
+     * - arguments
+     * Now, we should put on stack:
+     * - local variables
+     *
+     *
+     * At the end of the subroutine, we should:
+     * - remove from the stack local variable
+     * - jump back
+     * These should happen at any call of stop/return, or if we reach the end of a procedure.
+     * We will never reach the end of a function because semantic analysis prevents it.
+     *
      */
     public String toMipsAssembler() {
 		String s = "";
+        s += "\n";
         s += this.getUniqueLabel() + ": \n";
         for (Instruction instruction : instructions) {
             s += instruction.toMipsAssembler();
         }
+        s += "\tjr $ra # return from procedure\n";
 		return s;
 	}
 
@@ -64,10 +80,7 @@ public class IntermediateFunction {
      * @return A label identifier.
      */
     public String getUniqueLabel() {
-        // TODO This does not work with generics but so what.
-        return subroutine.name + "_" + subroutine.parameters.stream().map(param -> param.type.name).collect(Collectors.joining("_"))
-                + (subroutine.kind == SubroutineKind.PROCEDURE ? "procedure" :
-                (subroutine.returnType.name + "_function"));
+        return subroutine.getUniqueLabel();
     }
 
 }

@@ -13,6 +13,6 @@ public class JumpInstruction extends Instruction {
 
     @Override
     public String toMipsAssembler() {
-        return "\tj " +target.getName() + " # Unconditional jump to " + target.getName() + "\n";
+        return "\tj " +target.getName() + "\n";
     }
 }

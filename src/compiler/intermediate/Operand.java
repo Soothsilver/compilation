@@ -1,5 +1,7 @@
 package compiler.intermediate;
 
+import java.rmi.registry.Registry;
+
 /**
  * Represents an operand of an intermediate 3-address instruction.
  */
@@ -12,6 +14,7 @@ public class Operand {
      * The operand's addressing mode.
      */
     public OperandKind kind;
+    public IntermediateRegister register;
 
     /**
      * Initializes a new instance of the Operand class.
@@ -22,6 +25,11 @@ public class Operand {
 		this.integerValue = integerValue;
 		this.kind = kind;
 	}
+
+    public Operand(IntermediateRegister register, OperandKind kind) {
+        this.register = register;
+        this.kind = kind;
+    }
 
     @Override
     public String toString() {
