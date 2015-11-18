@@ -70,7 +70,9 @@ public class SemanticTests {
                     } else {
                         System.out.println("TEST FAILED!");
                         for (String message : compilation.errorMessages) {
-                            System.out.println(" " + message);
+                        	if (!message.contains("!error")) {
+                        		System.out.println(" " + message);
+                        	}
                         }
                     }
                 } catch (Exception e) {

@@ -1,5 +1,6 @@
 package compiler.nodes.expressions.literals;
 
+import compiler.intermediate.*;
 import compiler.Compilation;
 import compiler.nodes.declarations.Type;
 
@@ -26,5 +27,10 @@ public class IntegerLiteralExpression extends LiteralExpression {
         if (!types.contains(Type.integerType) && !types.contains(Type.floatType)) {
             compilation.semanticError("An integer cannot be converted to any of the following types: " + types, line, column);
         }
+    }
+    
+    @Override
+    public Operand generateOperand() {
+    	return new Operand(data, OperandKind.Immediate);
     }
 }

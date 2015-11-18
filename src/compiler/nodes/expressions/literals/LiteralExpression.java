@@ -1,6 +1,8 @@
 package compiler.nodes.expressions.literals;
 
 import compiler.Compilation;
+import compiler.intermediate.Operand;
+import compiler.intermediate.OperandKind;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
@@ -21,5 +23,9 @@ public abstract class LiteralExpression extends Expression {
         if (!types.contains(this.type)) {
             compilation.semanticError("A " + this.type.name + " cannot be converted to any of the following types: " + types, line, column);
         }
+    }
+    
+    public Operand generateOperand() {
+    	return new Operand(1, OperandKind.Immediate);
     }
 }
