@@ -1,0 +1,6 @@
+Intermediate Code Instructions:
+(differences from annex):
+
+
+
+GETPARAM ( register , index ) : Copies the argument at index "index" to register "register". 
