@@ -3,7 +3,16 @@ package compiler.nodes.expressions;
 import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
 import compiler.analysis.SubroutineToken;
+import compiler.analysis.Uniqueness;
+import compiler.intermediate.Executable;
+import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.Operand;
+import compiler.intermediate.OperandKind;
+import compiler.intermediate.instructions.CallInstruction;
+import compiler.intermediate.instructions.Instruction;
+import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Subroutine;
+import compiler.nodes.declarations.SystemCall;
 import compiler.nodes.declarations.Type;
 
 import java.util.ArrayList;
@@ -40,6 +49,17 @@ public class CallExpression extends Expression {
     public SubroutineToken callee;
 
 
+    /**
+     * Initializes a new CallExpression. Launches phase 1 overload resolution that can easily fail. If it fails,
+     * the constructor still succeeds but an error is triggered and the error type is set.
+     * @param subroutineGroup Subroutine group to search for applicable subroutines.
+     * @param typeArguments Type arguments, if any were specified, otherwise null.
+     * @param arguments Actual arguments, if any were specified, otherwise an empty list or null.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     * @return A CallExpression, possibly with error type set.
+     */
     public static CallExpression create(
             SubroutineGroup subroutineGroup,
             ArrayList<Type> typeArguments,
@@ -70,13 +90,17 @@ public class CallExpression extends Expression {
         if (callee == null) {
             return group + "?(" + arguments.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
         } else {
-            // TODO display what object is the subroutined called on
+            // TODO display what object is the subroutine called on
             Subroutine sub = callee.subroutine;
             return sub.getSignature(false, true, callee.types, true) + "(" + arguments.toWithoutBracketsString() + ")";
         }
     }
 
+    /**
+     * Performs magic. Notice the line "first.equals(second)".
+     */
     public void removeRedundantSubroutineTokens() {
+        // TODO: This function appears to contain a bug. Shouldn't we remove the subroutine token with greater badness?
         for (int i = 0; i < subroutineTokens.size(); i++) {
             SubroutineToken first = subroutineTokens.get(i);
             for (int j = i + 1; j < subroutineTokens.size(); j++) {
@@ -93,7 +117,32 @@ public class CallExpression extends Expression {
         }
     }
 
+    /**
+     * Generates an error message with a text such as "No considered subroutine with the name 'name' accepts arguments of the given types.".
+     * This method should be overridden in operator functions that can generate better error messages.
+     * @return Error message text.
+     */
     public String getErrorMessageTypeMismatch() {
         return "No considered subroutine with the name '" + group.name + "' accepts arguments of the given types.";
+    }
+
+
+    @Override
+    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+        Instructions instructions = new Instructions();
+        ArrayList<Operand> operands = new ArrayList<>();
+        for (Expression argument : arguments) {
+            ExpressionEvaluationResult eer = argument.generateIntermediateCode(executable);
+            operands.add(eer.operand);
+            instructions.addAll(eer.code);
+        }
+        int returnRegisterIndex = Uniqueness.getUniqueId();
+        CallInstruction call = new CallInstruction(callee, operands, returnRegisterIndex);
+        instructions.add(call);
+        if (type.equals(Type.voidType)) {
+            return new ExpressionEvaluationResult(instructions, Operand.createOperandWithoutValue());
+        } else {
+            return new ExpressionEvaluationResult(instructions, new Operand(returnRegisterIndex, OperandKind.Register));
+        }
     }
 }

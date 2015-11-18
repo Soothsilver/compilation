@@ -14,6 +14,9 @@ import java.util.List;
  * Represents the statement "EXPRESSION;". Verifies that the given expression can be used as a statement.
  */
 public class ExpressionStatement extends Statement {
+    /**
+     * The expression executed in this statement.
+     */
     public Expression expression;
 
     private static List<ExpressionKind> permittedKinds = Arrays.asList(
@@ -21,8 +24,14 @@ public class ExpressionStatement extends Statement {
             ExpressionKind.Increment,
             ExpressionKind.Subroutine,
             ExpressionKind.MemberSubroutine
-    );									
+    );
 
+    /**
+     * Initializes a new expression statement. Triggers an error if the expression has no side effects.  Launches
+     * phase 2 resolution for the expression.
+     * @param expression The expression.
+     * @param compilation The compilation object.
+     */
     public ExpressionStatement(Expression expression, Compilation compilation) {
         this.expression = expression;
         if (expression == null) {
@@ -54,10 +63,7 @@ public class ExpressionStatement extends Statement {
     @Override
     public List<Instruction> generateIntermediateCode(Executable executable,
     		IntermediateFunction function) {
-    	
     	   return expression.generateIntermediateCode(executable).code;
-    	
-    	
     }
     
     

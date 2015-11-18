@@ -1,12 +1,15 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
-import compiler.intermediate.CodeAndRegister;
+import compiler.intermediate.ExpressionEvaluationResult;
 import compiler.intermediate.Executable;
+import compiler.intermediate.Operand;
+import compiler.intermediate.OperandKind;
 import compiler.nodes.Node;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.literals.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,18 +42,33 @@ public abstract class Expression extends Node {
 
 
     // These five functions create new literal expression nodes. They are used only from the production "constant" in the CUP file.
+    /**
+     * Creates a new literal expression by delegating the responsibility to the appropriate LiteralExpression class.
+     */
     public static Expression createFromConstant(Integer data, int line, int column, Compilation compilation) {
         return new IntegerLiteralExpression(data, line, column, compilation);
     }
+    /**
+     * Creates a new literal expression by delegating the responsibility to the appropriate LiteralExpression class.
+     */
     public static Expression createFromConstant(Character data, int line, int column, Compilation compilation) {
         return new CharacterLiteralExpression(data, line, column, compilation);
     }
+    /**
+     * Creates a new literal expression by delegating the responsibility to the appropriate LiteralExpression class.
+     */
     public static Expression createFromConstant(Float data, int line, int column, Compilation compilation) {
         return new FloatLiteralExpression(data, line, column, compilation);
     }
+    /**
+     * Creates a new literal expression by delegating the responsibility to the appropriate LiteralExpression class.
+     */
     public static Expression createFromConstant(String data, int line, int column, Compilation compilation) {
         return new StringLiteralExpression(data, line, column, compilation);
     }
+    /**
+     * Creates a new literal expression by delegating the responsibility to the appropriate LiteralExpression class.
+     */
     public static Expression createFromConstant(Boolean data, int line, int column, Compilation compilation) {
         return new BooleanLiteralExpression(data, line, column, compilation);
     }
@@ -79,10 +97,19 @@ public abstract class Expression extends Node {
     public boolean isAssignable() {
         return false; // Override this in subclasses.
     }
-    
-    
-    public CodeAndRegister generateIntermediateCode(Executable executable) {
-    	return new CodeAndRegister();
+
+
+    /**
+     * Generates intermediate code that will find the result value of this expression and save it somewhere.
+     * This function returns both the code and identification on where the result value was stored.
+     *
+     * This method should be overridden in all expressions.
+     *
+     * @param executable The Executable object.
+     * @return Intermediate code, and return value access information.
+     */
+    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+    	return new ExpressionEvaluationResult(new ArrayList<>(), new Operand(77, OperandKind.Immediate));
     }
     
 }

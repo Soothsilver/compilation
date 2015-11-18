@@ -338,9 +338,12 @@ public class Environment {
         addSubroutine(OperatorFunction.createSpecialAssignment("|=", Type.integerType, Type.integerType));
         addSubroutine(OperatorFunction.createSpecialAssignment("&=", Type.integerType, Type.integerType));
         // Add predefined subroutines
-        Subroutine writeLine = Subroutine.createPredefined(SubroutineKind.PROCEDURE, "writeln", Type.nullType);
-        writeLine.parameters.add(new Parameter("text", Type.stringType));
-        addSubroutine(writeLine);
+
+        SystemCall exit = new SystemCall("exit", 10, Type.voidType);
+        addSubroutine(exit);
+        SystemCall printInt = new SystemCall("print_int", 1, Type.voidType);
+        printInt.parameters.add((new Parameter("$a0", Type.integerType)));
+        addSubroutine(printInt);
     }
 
     private void addBinaryOperator(String symbol, Type firstOperand, Type secondOperand, Type returnType) {

@@ -15,7 +15,15 @@ import compiler.nodes.Declarations;
  * All subroutines have a BlockStatement as a member.
  */
 public class BlockStatement extends Statement {
+    /**
+     * List of statements used in this block.
+     * Should never be null.
+     */
     public Statements statements = null;
+    /**
+     * List of variables declared at the beginning of this block.
+     * Should never be null.
+     */
     public Declarations declarations = null;
 
     @Override
@@ -41,13 +49,10 @@ public class BlockStatement extends Statement {
    
     @Override
     public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
-    	ArrayList<Instruction> instructions = new ArrayList<Instruction>();
+    	ArrayList<Instruction> instructions = new ArrayList<>();
     	for( Statement stmt : statements) {
     		instructions.addAll(stmt.generateIntermediateCode(executable, function));
     	}
     	return instructions;
     }
-    
-    
-   
 }

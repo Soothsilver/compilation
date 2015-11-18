@@ -5,6 +5,7 @@ import compiler.intermediate.Executable;
 
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Paths;
 
 /**
  * This class contains the main entry-point for running the compiler.
@@ -36,10 +37,17 @@ public class Main {
                 if (!compilation.errorTriggered) {
                 	
                 	Executable executable = new Executable(compilation);
+                    System.out.println("Intermediate code was generated: ");
+                    System.out.println("---------------------------------");
                 	System.out.println(executable.toString());
-                	// TODO transform executable to MIPS
-                	// TODO Run MIPS emulator
-                	
+                    System.out.println("---------------------------------");
+                    System.out.println("Assembler code was generated:");
+                    System.out.println("------------------------------");
+                    String assemblerCode = executable.toMipsAssembler();
+                    System.out.println(assemblerCode);
+                    System.out.println("------------------------------");
+                    java.nio.file.Files.write(Paths.get(args[1]), assemblerCode.getBytes());
+                    System.out.println("Assembler written to file '" + Paths.get(args[1]) + "'.");
                 }
                 
             } catch (Error t) {

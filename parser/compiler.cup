@@ -316,6 +316,8 @@ closed_statement       ::= simple_statement:s SEMICOLON
 		                 {: RESULT = s; :}
 		                 | loop_closed:s
 		                 {: RESULT = s; :}
+		                 | SEMICOLON:smcln
+		                 {: RESULT = new EmptyStatement(smclnleft, smclnright); :} /* The empty statement */
 		                 | error SEMICOLON:smcln
 		                 {: RESULT = new EmptyStatement(smclnleft, smclnright); parser.compilation.addSuffix(" Analysis continues at next semicolon."); :}
 		                 ;

@@ -1,14 +1,20 @@
 package compiler.nodes.expressions.literals;
 
 import compiler.Compilation;
+import compiler.intermediate.Executable;
+import compiler.intermediate.ExpressionEvaluationResult;
 import compiler.intermediate.Operand;
 import compiler.intermediate.OperandKind;
+import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
 
 import java.util.Set;
 
+/**
+ * An abstract class inherited by all literal expressions.
+ */
 public abstract class LiteralExpression extends Expression {
 
     protected LiteralExpression( int line, int column, Compilation compilation) {
@@ -24,8 +30,18 @@ public abstract class LiteralExpression extends Expression {
             compilation.semanticError("A " + this.type.name + " cannot be converted to any of the following types: " + types, line, column);
         }
     }
-    
-    public Operand generateOperand() {
+
+    /**
+     * Generates an operand from a literal expression. This method should be overridden in all literal expressions.
+     * The operand's kind should always be immediate.
+     * @return An operand.
+     */
+    public Operand generateOperand(Executable executable) {
     	return new Operand(1, OperandKind.Immediate);
+    }
+
+    @Override
+    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+        return new ExpressionEvaluationResult(new Instructions(), generateOperand(executable));
     }
 }

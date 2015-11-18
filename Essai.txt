@@ -1,3 +1,13 @@
+procedure falseProcedure() {
+    print_int(123456789);
+}
 procedure main() {
-
+    if ( true ) {
+        print_int(3);
+        stop;
+    } else {
+        print_int(6);
+        stop;
+    }
+    print_int(9);
 }

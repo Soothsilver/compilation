@@ -9,4 +9,13 @@ public class LabelInstruction extends Instruction {
 	public String toString() {
 		return "LABEL(" + name + ")";
 	}
+
+	public String getName() {
+		return name;
+	}
+
+    @Override
+    public String toMipsAssembler() {
+        return getName() + ": \n";
+    }
 }

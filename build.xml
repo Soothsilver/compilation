@@ -9,6 +9,7 @@
   <property name="lexer.dir" location="lexer" />
   <property name="tests.dir" location="tests" />
   <property name="tests.bin.dir" location="${bin.dir}/tests" />
+  <property name="mars.jar" location="lib/Mars4_5.jar" />
 
     <path id="master-classpath">
         <fileset dir="${lib.dir}">
@@ -72,7 +73,12 @@
     <java classname="compiler.Main">
         <classpath refid="master-classpath"/>
         <arg value="Essai.txt"/>
-    </java>    
+        <arg value="Essai.asm" />
+    </java>
+      <java jar="${mars.jar}" fork="true">
+          <classpath refid="master-classpath"/>
+          <arg value="Essai.asm" />
+      </java>
   </target>
   
   <!-- ================================= 

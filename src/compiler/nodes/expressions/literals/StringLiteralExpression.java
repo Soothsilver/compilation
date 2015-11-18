@@ -1,6 +1,9 @@
 package compiler.nodes.expressions.literals;
 
 import compiler.Compilation;
+import compiler.intermediate.Executable;
+import compiler.intermediate.Operand;
+import compiler.intermediate.OperandKind;
 import compiler.nodes.declarations.Type;
 
 public class StringLiteralExpression extends LiteralExpression {
@@ -17,4 +20,5 @@ public class StringLiteralExpression extends LiteralExpression {
     public String toString() {
         return "\"" + data + "\"";
     }
+
 }

@@ -10,7 +10,13 @@ import compiler.intermediate.*;
 import compiler.intermediate.instructions.Instruction;
 import compiler.intermediate.instructions.ReturnInstruction;
 
+/**
+ * Represents the statement "stop;" in the abstract syntax tree.
+ */
 public class StopStatement extends Statement {
+    /**
+     * Instantiates a new StopStatement.
+     */
     public StopStatement(int line, int column, Compilation compilation) {
         this.line = line;
         this.column = column;
@@ -31,10 +37,8 @@ public class StopStatement extends Statement {
     
     @Override
     public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
-    	ArrayList<Instruction> instructions = new ArrayList<Instruction>();
-    	Operand op = new Operand();
-    	op.kind = OperandKind.Immediate;
-    	op.integerValue = 0;
+    	ArrayList<Instruction> instructions = new ArrayList<>();
+    	Operand op = new Operand(0, OperandKind.Immediate);
     	instructions.add(new ReturnInstruction(op));
     	return instructions;
     }

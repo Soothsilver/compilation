@@ -30,7 +30,7 @@ public class IntegerLiteralExpression extends LiteralExpression {
     }
     
     @Override
-    public Operand generateOperand() {
+    public Operand generateOperand(Executable executable) {
     	return new Operand(data, OperandKind.Immediate);
     }
 }
