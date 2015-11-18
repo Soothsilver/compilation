@@ -1,5 +1,5 @@
 PROGRAM[
-procedure main() {
+procedure main() { 
 a : !array[[integer]];
 a=[I=integer;];
 }

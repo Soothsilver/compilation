@@ -22,7 +22,7 @@ Overload Resolution proceeds in two phases. The general overview is this:
 In the first phase, each expression is evaluated thus:
 1. If it's a literal expression, class constructor or variable expression, its type is set directly.
 2. If it's an arithmetic expression (i.e. an operator with operands), it is transformed into a function call of a special predefined hidden function. Then proceed to 3.
-3. Otherwise, it is a call expression with or without type arguments an with or without arguments.
+3. Otherwise, it is a call expression with or without type arguments and with or without arguments.
 
 
 
@@ -39,7 +39,7 @@ In the first phase, evaluate call expressions like this:
 4.2 For each combination of types of its parameters, perform unification in this way:
 4.2.0 If type arguments were specified, unify the type variables with the types given as type arguments.
 4.2.1 We will try to unify the subroutine signature, including its return type,  with the function signature where all parameters were replaced by types from the combination. Names of type variables do not matter. A new type variable is created for the actual return type. This does not serve much purpose except to simplify algorithm. Although, perhaps the algorithm would be simpler without.
-4.2.2 Perform the unification algorithm with some cave-ats. If the unification algorithm fails, then don't consider this combination. These are the cave-ats:
+4.2.2 Perform the unification algorithm with some caveats. If the unification algorithm fails, then don't consider this combination. These are the caveats:
 4.2.2.1 Unifying a null with a type variable puts the constraint "must be an object" on the variable.
 4.2.2.2 Unifying a null with a structured type or a class type succeeds.
 4.2.2.3 Unifying a null with anything else fails.
@@ -53,7 +53,7 @@ Removed:
 */
 4.2.4 The unified subroutine/type combination may still contain a free type variable. That does not remove it from consideration. We will deal with that in phase two.
 4.2.5. Create an inferred subroutine from this subroutine and this combination of types. It may still be incomplete.
-4.2.6. Add this inferred's subroutine return type to the set of return types.
+4.2.6. Add this inferred subroutine's return type to the set of return types.
 5. If the list of inferred subroutines is empty, signal an error.
 6. The first phase is now complete.
 
