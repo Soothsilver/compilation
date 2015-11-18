@@ -15,7 +15,7 @@ public class UnaryExpression extends CallExpression {
      *
      * This function may fail for a number of reasons:
      * a) The operator does not exist.
-     * b] The operator does not accept the argument of the type given.
+     * b) The operator does not accept the argument of the type given.
      * c) The operand is not an assignable expression (i.e. it is not an l-value).
      * @param operator The operator. For example, for increment, use "++".
      * @param side Whether the operator precedes or succeeds the operand. This is only relevant for increment and decrement operators.

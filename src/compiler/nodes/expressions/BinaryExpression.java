@@ -49,6 +49,7 @@ public class BinaryExpression extends CallExpression {
     @Override
     public String getErrorMessageTypeMismatch() {
     	if (this.kind == ExpressionKind.Assignment) {
+        	
             return "The expression '" + arguments.get(1) + "' is not convertible to type '" + arguments.get(0).type + "'.";
         }
         else {
