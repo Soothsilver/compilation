@@ -1,6 +1,9 @@
 package compiler.nodes.statements;
 
 import compiler.Compilation;
+import compiler.intermediate.Executable;
+import compiler.intermediate.IntermediateFunction;
+import compiler.intermediate.instructions.Instruction;
 import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
 
@@ -47,4 +50,15 @@ public class ExpressionStatement extends Statement {
     public boolean flowAnalysis(Compilation compilation) {
         return true;
     }
+    
+    @Override
+    public List<Instruction> generateIntermediateCode(Executable executable,
+    		IntermediateFunction function) {
+    	
+    	   return expression.generateIntermediateCode(executable).code;
+    	
+    	
+    }
+    
+    
 }

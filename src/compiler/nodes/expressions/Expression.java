@@ -1,6 +1,8 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
+import compiler.intermediate.CodeAndRegister;
+import compiler.intermediate.Executable;
 import compiler.nodes.Node;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.literals.*;
@@ -77,4 +79,10 @@ public abstract class Expression extends Node {
     public boolean isAssignable() {
         return false; // Override this in subclasses.
     }
+    
+    
+    public CodeAndRegister generateIntermediateCode(Executable executable) {
+    	return new CodeAndRegister();
+    }
+    
 }
