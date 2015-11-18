@@ -18,7 +18,9 @@ public abstract class Statement extends Node {
     public abstract boolean flowAnalysis(Compilation compilation);
     
     public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
+    	
 		return new ArrayList<Instruction>();
+		
     }
     
     protected Statement(int line, int column) {

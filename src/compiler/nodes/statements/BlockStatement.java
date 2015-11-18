@@ -1,6 +1,12 @@
 package compiler.nodes.statements;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import compiler.Compilation;
+import compiler.intermediate.Executable;
+import compiler.intermediate.IntermediateFunction;
+import compiler.intermediate.instructions.Instruction;
 import compiler.nodes.Declarations;
 
 /**
@@ -32,4 +38,16 @@ public class BlockStatement extends Statement {
         }
         return reachable;
     }
+   
+    @Override
+    public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
+    	ArrayList<Instruction> instructions = new ArrayList<Instruction>();
+    	for( Statement stmt : statements) {
+    		instructions.addAll(stmt.generateIntermediateCode(executable, function));
+    	}
+    	return instructions;
+    }
+    
+    
+   
 }

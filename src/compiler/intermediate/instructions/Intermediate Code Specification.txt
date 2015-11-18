@@ -4,3 +4,18 @@ Intermediate Code Instructions:
 
 
 GETPARAM ( register , index ) : Copies the argument at index "index" to register "register". 
+
+
+
+
+X = Y op Z
+
+
+- Store to register ( register = 2 +2; )
+- Store to memory at immediate address ( Mem(20) = 2 + 2; )
+- Store to memory at indirect address ( Mem( register ) = 2 + 2; )
+
+- Load Immediate ( saveHere = 20; )
+- Load register ( saveHere = register; )
+- Load memory ( saveHere = Mem(20); )
+- Load memory indirect ( saveHere = Mem ( register ) ; )
