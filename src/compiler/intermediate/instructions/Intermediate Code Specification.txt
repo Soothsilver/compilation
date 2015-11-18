@@ -1,21 +1,42 @@
 Intermediate Code Instructions:
-(differences from annex):
-
 
 
 GETPARAM ( register , index ) : Copies the argument at index "index" to register "register". 
+x = y operator z
+x = operator y
+x = y
+LABEL ( labelName )
+JUMP ( labelName / register )
+IF x JUMP ( labelName / register )
+PARAM x
+CALL subroutineName
+RETURN x
+SYSCALL systemCallName
+
+x,y,z are operands:
+- immediate
+- REG(index)
+- MEM(index)
+- MEM(REG(index))
 
 
-
-
-X = Y op Z
-
-
-- Store to register ( register = 2 +2; )
-- Store to memory at immediate address ( Mem(20) = 2 + 2; )
-- Store to memory at indirect address ( Mem( register ) = 2 + 2; )
-
-- Load Immediate ( saveHere = 20; )
-- Load register ( saveHere = register; )
-- Load memory ( saveHere = Mem(20); )
-- Load memory indirect ( saveHere = Mem ( register ) ; )
+	
+	
+	public static enum OperandKind {
+		/**
+		 * The operand is a 4-byte literal value stored directly in assembler, such as "2"  or "2.3" or "'a'" or "true".
+		 */
+		Immediate,
+		/**
+		 * The operand is an integer index of a register. 
+		 */
+		Register,
+		/**
+		 * The operand is an integer index of a register that contains a memory address.
+		 */
+		MemoryIndirect,
+		/**
+		 * The operand is an integer memory address.
+		 */
+		MemoryDirect
+	}

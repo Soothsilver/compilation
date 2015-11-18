@@ -8,5 +8,8 @@ public class Operand {
 		this.integerValue = integerValue;
 		this.kind = kind;
 	}
+	
 }
+
+
 
