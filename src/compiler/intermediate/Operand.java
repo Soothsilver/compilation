@@ -56,12 +56,8 @@ public class Operand {
         switch (kind){
             case Immediate:
                 return Integer.toString(integerValue);
-            case MemoryDirect:
-                return "MEM(" + integerValue + ")";
-            case MemoryIndirect:
-                return "MEM(REG(" + integerValue + "))";
             case Register:
-                return "REG(" + integerValue + ")";
+                return register.toString();
             case LocalVariable:
                 return "LOCAL(" + variable.index + ")";
             case GlobalVariable:
@@ -79,8 +75,9 @@ public class Operand {
      * @return An operand that should never be used.
      */
     public static Operand createOperandWithoutValue() {
-        return new Operand(77, OperandKind.Immediate);
+        return nullOperand;
     }
+    public static Operand nullOperand = new Operand(77, OperandKind.Immediate);
 
     /**
      * Creates an operand from a variable.
@@ -118,12 +115,20 @@ public class Operand {
                                 "\tsw " + MipsRegisters.TEMPORARY_VALUE_0  + "," + this.variable.name + "\n";
                 }
                 break;
+            case Register:
+                switch (this.kind) {
+                    case GlobalVariable:
+                        return
+                                operand.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                                "\tsw " + MipsRegisters.TEMPORARY_VALUE_0  + "," + this.variable.name + "\n";
+                }
         }
         return "!!ERROR(Operand " + operand + " was not saved to " + this + ".)";
     }
     /**
      * Generates MIPS instructions that load the value of this operand into the specified register.
      * The instructions are terminated by a newline character, if any are generated at all.
+     * The generated code must not use TEMPORARY_VALUE_0 nor TEMPORARY_VALUE_1.
      * @param registerName Mnemonic for the register.
      * @return MIPS instructions.
      */
@@ -133,6 +138,8 @@ public class Operand {
                 return "\tli " + registerName + "," + integerValue + "\n";
             case GlobalVariable:
                 return "\tlw " + registerName + "," + variable.name + "\n";
+            case Register:
+                return register.mipsSaveValueToRegister(registerName);
             default:
                 return "!!ERROR This addressing mode is not yet supported.!!";
         }

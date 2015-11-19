@@ -135,7 +135,7 @@ non terminal Statement loop_open;
 non terminal Statement simple_statement;
 non terminal IfStatement if_long_closed_closed;
 non terminal Statement loop_closed;
-non terminal CycleStatement foreach_head;
+non terminal ForeachStatement foreach_head;
 non terminal CycleStatement while_head;
 non terminal CycleStatement for_head;
 
@@ -343,7 +343,7 @@ if_long_closed_closed  ::= IF LPAR expression:ex RPAR closed_statement:st ELSE c
                             RESULT = new IfStatement(ex, st, stelse, parser.compilation);
                         :};
 loop_closed	       ::=
-                         foreach_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
+                         foreach_head:c enter_cycle closed_statement:s close_scope leave_cycle {: c.body = s; c.finish(); RESULT = c; :}
 		    		   | while_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
 		    		   | for_head:c enter_cycle closed_statement:s leave_cycle {: c.body = s; RESULT = c; :}
 		    		   ;
@@ -355,7 +355,7 @@ loop_open	        ::=   foreach_head:c enter_cycle open_statement:s leave_cycle 
 		                | for_head:c enter_cycle open_statement:s leave_cycle {: c.body = s; RESULT = c; :}
 		                ;
 		       
-foreach_head	       ::= FOREACH LPAR IDENTIFIER:id IN expression:ex RPAR {: RESULT = new CycleStatement(); :};
+foreach_head	       ::= FOREACH:f LPAR IDENTIFIER:id IN expression:ex RPAR {: RESULT = new ForeachStatement(id, ex, fleft, fright, parser.compilation); :}
 while_head	       ::= WHILE:w LPAR expression:ex RPAR {: RESULT = new WhileStatement(ex, wleft, wright, parser.compilation); :};
 for_head	       ::= FOR:f LPAR expression:one SEMICOLON expression:two SEMICOLON expression:three RPAR {: RESULT = new ForStatement(one, two, three, fleft, fright, parser.compilation); :};
 

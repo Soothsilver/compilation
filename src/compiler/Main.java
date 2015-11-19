@@ -44,7 +44,10 @@ public class Main {
                     System.out.println("Assembler code was generated:");
                     System.out.println("------------------------------");
                     String assemblerCode = executable.toMipsAssembler();
-                    System.out.println(assemblerCode);
+                    String[] lines = assemblerCode.split("\n");
+                    for (int i = 0; i < lines.length; i++) {
+                        System.out.println((i+1) + ": " + lines[i]);
+                    }
                     System.out.println("------------------------------");
                     java.nio.file.Files.write(Paths.get(args[1]), assemblerCode.getBytes());
                     System.out.println("Assembler written to file '" + Paths.get(args[1]) + "'.");

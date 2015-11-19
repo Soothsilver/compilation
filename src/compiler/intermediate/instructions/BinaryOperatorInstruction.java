@@ -41,6 +41,25 @@ public class BinaryOperatorInstruction extends Instruction {
                 }
 
                 break;
+            case "+":
+                if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
+                    return
+                            left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                            right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+                            "\tadd " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "\n" +
+                            saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
+                            ;
+                }
+            case "*":
+                if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
+                    return
+                            left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                                    right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+                                    "\tmult " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "\n" +
+                                    "\tmflo " + MipsRegisters.TEMPORARY_VALUE_0 + "\n" +
+                                    saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
+                            ;
+                }
 
         }
         return "";

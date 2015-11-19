@@ -31,4 +31,8 @@ public class IntermediateRegister {
     public String toString() {
         return "REG(" + index + ")";
     }
+
+    public String mipsSaveValueToRegister(String saveTheValueIntoThis) {
+        return "\tlw " + saveTheValueIntoThis + "," + Executable.REGISTERS_SPACE + "+" + (4*index) + "\n";
+    }
 }

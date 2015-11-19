@@ -1,10 +1,10 @@
 a : integer;
 b : integer;
-procedure hello() {
-    print_int (2);
+function hello() : integer {
+    return 7 + 2 * 5;
 }
 procedure main() {
-    a = 2;
+    a = hello();
     print_int(a);
 }
 

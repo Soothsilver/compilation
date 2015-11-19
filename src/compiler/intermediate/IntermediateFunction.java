@@ -1,17 +1,15 @@
 package compiler.intermediate;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import compiler.intermediate.instructions.Instruction;
 import compiler.nodes.declarations.Subroutine;
-import compiler.nodes.declarations.SubroutineKind;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a subroutine at the stage of intermediate code.
  */
 public class IntermediateFunction {
-	public int address;
 	private String name;
     private Subroutine subroutine;
     /**

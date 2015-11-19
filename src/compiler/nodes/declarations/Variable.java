@@ -20,6 +20,16 @@ public class Variable extends Declaration {
         return type;
     }
 
+    /**
+     * Creates a new variable and attempts to add it to the current environment. If the variable already exists,
+     * a semantic error is triggered.
+     * @param name Name of the variable.
+     * @param type Type of the variable.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     * @return The created variable.
+     */
     public static Variable createAndAddToEnvironment(String name, Type type, int line, int column, Compilation compilation) {
         Variable variable = new Variable(name, type, line, column);
         compilation.environment.addVariable(variable);
