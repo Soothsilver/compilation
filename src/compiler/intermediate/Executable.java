@@ -11,6 +11,9 @@ import compiler.nodes.declarations.*;
  * Represents a program that passed semantic analysis and is being converted to assembler format.
  */
 public class Executable {
+    /**
+     * The MIPS label into static data portion of the assembler code, where excess intermediate registers are stored.
+     */
     public static final String REGISTERS_SPACE = "____registers";
 
     /**
@@ -24,7 +27,7 @@ public class Executable {
     public LabelInstruction enclosingLoopEnd = null;
 
 	/**
-	 * Instantiates a new Executable instance.
+	 * Instantiates a new Executable instance. This will immediately create intermediate code for the entire source file.
 	 * @param compilation The compilation object that already must have passed, without errors, semantic analysis.
 	 */
 	public Executable(Compilation compilation) {
@@ -50,6 +53,9 @@ public class Executable {
      * Types not yet done. Maybe later.
      */
 	public ArrayList<Object> types;
+    /**
+     * Ordered list of global variables, with kind set.
+     */
     public ArrayList<Variable> globalVariables = new ArrayList<>();
     /**
      * Contains all subroutines of the source code transformed to intermediate code, but no predefined subroutines.
@@ -79,7 +85,7 @@ public class Executable {
         s += ".data\n";
         s += "\t " + REGISTERS_SPACE + ": .space 4000 # Temporary values are stored in this memory.\n";
         for (Variable global : globalVariables) {
-            s += "\t" + global.name + ": .word 0\n";
+            s += "\t" + global.name + ": .word 1\n";
         }
         s += ".text\n";
         s += ".globl main\n";
@@ -103,6 +109,10 @@ public class Executable {
     }
 
     private int registerCount = 0;
+
+    /**
+     * Creates a new unique intermediate register.
+     */
     public IntermediateRegister summonNewRegister() {
         registerCount++;
         return new IntermediateRegister(registerCount);

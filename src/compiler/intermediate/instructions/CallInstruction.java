@@ -43,7 +43,7 @@ public class CallInstruction  extends Instruction {
         // Yes, this is not a three-address instruction, but so what.
         // It's more useful this way. Different assembly languages will have different calling conventions so a single
         // instruction in the intermediate code is more useful than dozens.
-        return "REG(" + returnRegisterIndex + ") = CALL " + function.subroutine.name + " WITH " + operands.stream().map(Operand::toString).collect(Collectors.joining(","));
+        return returnRegisterIndex + " = CALL " + function.subroutine.name + " WITH " + operands.stream().map(Operand::toString).collect(Collectors.joining(","));
     }
 
     @Override

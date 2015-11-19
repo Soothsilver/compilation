@@ -1,0 +1,49 @@
+procedure main ()
+{
+     c : list of integer;
+	 b : integer;
+	 d : boolean;
+	 l1 : list of integer;
+	 l2 : list of integer;
+
+	 b = 2 +2;
+	 b = 2 - 2;
+	 b = 2 *2;
+	 b = 2/2;
+	 b = 2%2;
+	 l1 = l1 @ l2;
+	 b = b++;
+	 b = b--;
+	 b--;
+	 b = ( b + b);
+	 b = (2 + 2) * 5;
+	 b = -5;
+	 d = !true;
+	 b = ~b;
+	 b = b & b;
+	 b &= 2;
+	 b ^= 2;
+	 b |= 2;
+	 d = 2 < 3;
+	 d = 2 <= 3;
+	 d = 2 > 3;
+	 d = 2 >= 3;
+	 d = 2 == 3;
+	 d = 2 != 3;
+	 d = true && false;
+	 d = true || false;
+	 b = 2 & 3;
+	 b = 2 ^ 3;
+	 b = 2 << 3;
+	 b = 2 >> 3;
+	 b = 5;
+	 b += 5;
+	 b -= 5;
+	 b *= 5;
+	 b /= 5;
+	 b %= 5;
+	 b <<= 2;
+	 b >>= 2;
+ 	 b = c[5];
+
+}

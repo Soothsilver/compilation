@@ -9,8 +9,21 @@ import java.util.ArrayList;
  */
 public class Variable extends Declaration {
     private Type type;
+    /**
+     * Indicates whether the variable is global, local, class member or a parameter.
+     * This is only set during intermediate code generation.
+     */
     public VariableKind kind;
+    /**
+     * If this is a parameter, then this is the zero-based index of the parameter (first parameter is zero).
+     * If this is a local variable, then this is the zero-based index of declaration since the beginning of the subroutine.
+     * If this is a class member, then TODO
+     * Otherwise, this field has no meaning.
+     */
     public int index;
+    /**
+     * Indicates whether this is a foreach iteration variable. If yes, then it cannot be modified.
+     */
     public boolean readonly;
 
     /**

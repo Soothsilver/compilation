@@ -31,10 +31,14 @@ public class BinaryOperatorInstruction extends Instruction {
     public String toMipsAssembler() {
         switch (operator) {
             case "=":
-                if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
+                if (
+                        ( leftType.equals(Type.integerType) && rightType.equals(Type.integerType) ) ||
+                                leftType.isReferenceType
+                )
+                {
                     return left.toMipsAcquireFromOperand(right)
                             +
-                           left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0)
+                           right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             +
                            saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
@@ -62,6 +66,6 @@ public class BinaryOperatorInstruction extends Instruction {
                 }
 
         }
-        return "";
+        return "\t!!ERROR(MIPS binary operator not implemented for operator '" + operator + "' and types '" + leftType +"' and '" + rightType + "'.)\n";
     }
 }

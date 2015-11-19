@@ -1,5 +1,10 @@
-//EXPECT-SEMANTICAL-ERROR: The variable 'a' is not defined in this scope.
+a : list of integer;
 procedure main()
 {
-  a = 5;
+  a = [ 2 , 5 , 8 ];
+
+  print_int ( a [ 0*8 ]);
+
+  print_int ( a [ 1+0+0]);
+  print_int ( a [ 2*1*1 ]);
 }

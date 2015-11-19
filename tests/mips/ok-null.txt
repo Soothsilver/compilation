@@ -1,0 +1,14 @@
+type s = structure { };
+procedure a(a : s) {
+    
+}
+procedure main()
+{
+    a : s;
+    b : integer;
+    c : list of integer;
+    a = null;
+    a(a);
+    a(null);
+    c = null;
+}

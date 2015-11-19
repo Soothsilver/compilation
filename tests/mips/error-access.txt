@@ -1,0 +1,12 @@
+//EXPECT-RUNTIME-ERROR: null reference
+type s = class {
+    a : integer;
+    procedure func() { print_int(2); }
+};
+function returnS() : s { st : s; return st; }
+procedure main()
+{
+    returnS().func();
+    returnS().a = 5;
+    print_int ( returnS().a );
+}

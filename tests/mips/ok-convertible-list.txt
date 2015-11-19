@@ -1,0 +1,8 @@
+type s = structure { };
+procedure main()
+{
+    a : list of float;
+    b : list of s;
+    a = [2, 3.2];
+    b = [ null, new s()];
+}

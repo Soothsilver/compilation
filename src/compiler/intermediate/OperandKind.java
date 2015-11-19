@@ -9,17 +9,16 @@ public enum OperandKind {
 	 */
 	Immediate,
 	/**
-	 * The operand is an integer index of a register. 
+	 * The operand is an IntermediateRegister.
 	 */
 	Register,
+    /**
+     * The operand is a global variable, identified by name.
+     */
+    GlobalVariable,
 	/**
-	 * The operand is an integer index of a register that contains a memory address.
+	 * This operand's IntermediateRegister holds a memory address. This operand represents whatever is stored at that memory address.
 	 */
-	MemoryIndirect,
-	/**
-	 * The operand is an integer memory address.
-	 */
-	MemoryDirect,
-	GlobalVariable,
-	LocalVariable
+	RegisterContainsHeapAddress,
+    LocalVariable
 }

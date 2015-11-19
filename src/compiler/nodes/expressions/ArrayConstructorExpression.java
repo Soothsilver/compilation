@@ -1,19 +1,31 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
+import compiler.intermediate.*;
+import compiler.intermediate.instructions.AllocateInstruction;
+import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents the array creation expression "new TYPE[ARRAY_LENGTH]".
+ */
 public class ArrayConstructorExpression extends Expression {
     protected Type innerType;
     protected Expression size;
 
-    protected ArrayConstructorExpression() {
-
-    }
+    /**
+     * Initializes a new ArrayConstructorExpression. Launches phase 2 resolution for the size expression, forcing it
+     * to Type.integerType. Creates a new array type and sets it as the type of this expression.
+     * @param innerType Type of the elements of this array.
+     * @param size Length of the array.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     */
     public ArrayConstructorExpression(Type innerType, Expression size, int line, int column, Compilation compilation) {
         this.line = line;
         this.column = column;
@@ -36,5 +48,18 @@ public class ArrayConstructorExpression extends Expression {
     @Override
     public String toString() {
         return "new " + innerType + "[" + size + "]";
+    }
+
+    @Override
+    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+        IntermediateRegister referenceRegister = executable.summonNewRegister();
+
+        Instructions instructions = new Instructions();
+        ExpressionEvaluationResult sizeResult = size.generateIntermediateCode(executable);
+        instructions.addAll(sizeResult.code);
+        instructions.add(new AllocateInstruction(referenceRegister, sizeResult.operand));
+
+        Operand operand = new Operand(referenceRegister, OperandKind.Register);
+        return new ExpressionEvaluationResult(instructions, operand);
     }
 }

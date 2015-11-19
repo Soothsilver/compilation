@@ -1,0 +1,63 @@
+// Global Declarations
+type tuple = structure {
+    first : integer;
+    second : integer;
+};
+type node = class {
+    data : tuple;
+    next : node;
+    function getNextNode() : node {
+        return next;
+    }
+    procedure modifyData(a : integer, b : integer) {
+        data.first = a;
+        data.second = b;
+    }
+    function checkZero() : boolean {
+        return data.first == 0 && data.second == 0;
+    }
+};
+root : node;
+
+
+
+// Global Subroutines
+procedure clearRootNode() {
+    root = null;
+    stop;
+}
+
+/*
+ multiline comment
+ */
+
+procedure main( num : integer, strs : list of string)
+{
+    root = new node();
+    root.data = new tuple();
+    root.modifyData(1,2);
+    root.next = new node();
+    root.next.data = new tuple();
+    root.next.modifyData(3,4);
+    {
+        b : boolean;
+        b = true;
+        if (b)
+            if (b)
+                if (b)
+                    if (b) { }
+                    else { }
+        while (false) { break; }
+        repeat { break; } while (false);
+        {
+            a : list of integer;
+        }
+        while (false)
+            while (true)
+                if (false)
+                    if (true)
+                        clearRootNode();
+
+
+    }
+}

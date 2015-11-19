@@ -1,0 +1,6 @@
+procedure main()
+{
+    f : float;
+    i : integer;
+    f = i;
+}

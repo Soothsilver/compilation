@@ -30,7 +30,12 @@ public class TestUtilities {
         }
         return files;
     }
-    public static void runTest(File file, boolean syntaxOnly, TestCase testCase) {
+
+    public static Compilation runTest(File file, boolean syntaxOnly, TestCase testCase) {
+        return runTest(file, syntaxOnly, testCase, false);
+    }
+
+    public static Compilation runTest(File file, boolean syntaxOnly, TestCase testCase, boolean noExpect) {
         try {
             Compilation compilation = new Compilation(file);
             if (syntaxOnly) compilation.ignoreSemanticErrors = true;
@@ -40,68 +45,67 @@ public class TestUtilities {
             myParser.compilation = compilation;
             try {
                 myParser.parse();
-                if (compilation.hasTestRunOkay())
-                {
+                if (compilation.hasTestRunOkay()) {
                     if (syntaxOnly) {
                         System.out.println("OK!");
                     } else {
                         if (!compilation.errorTriggered) {
-                            String actual = compilation.abstractSyntaxTree.toString();
-                            String expect = null;
-                            try {
-                                expect = new String(java.nio.file.Files.readAllBytes(Paths.get(new File(file.getParentFile(), file.getName().substring(0, file.getName().length() - 4) + ".expect.txt").toURI())));
-                            } catch (Exception fileEx) {
-                                System.out.println("ACTUAL:");
-                                System.out.println(actual);
-                                TestCase.fail("Expect file not found.");
+                            if (noExpect) {
                             }
-                            if (actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "").equals(
-                                expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", ""))) {
-                                System.out.println("OK!");
-                            } else {
-                                System.out.println("OUTPUT MISMATCH!");
-                                System.out.println("ACTUAL:");
-                                System.out.println(actual);
-                                System.out.println("EXPECTED:");
-                                System.out.println(expect);
-                                System.out.println("SHORT FORM ACTUAL::" + actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
-                                System.out.println("SHORT FORM FORMAL::" + expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
-                                System.out.println("END.");
-                                TestCase.fail("Output mismatch!");
+                            else {
+                                String actual = compilation.abstractSyntaxTree.toString();
+                                String expect = null;
+                                try {
+                                    expect = new String(java.nio.file.Files.readAllBytes(Paths.get(new File(file.getParentFile(), file.getName().substring(0, file.getName().length() - 4) + ".expect.txt").toURI())));
+                                } catch (Exception fileEx) {
+                                    System.out.println("ACTUAL:");
+                                    System.out.println(actual);
+                                    TestCase.fail("Expect file not found.");
+                                }
+                                if (actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "").equals(
+                                        expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", ""))) {
+                                    System.out.println("OK!");
+                                } else {
+                                    System.out.println("OUTPUT MISMATCH!");
+                                    System.out.println("ACTUAL:");
+                                    System.out.println(actual);
+                                    System.out.println("EXPECTED:");
+                                    System.out.println(expect);
+                                    System.out.println("SHORT FORM ACTUAL::" + actual.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
+                                    System.out.println("SHORT FORM FORMAL::" + expect.trim().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "") + "::");
+                                    System.out.println("END.");
+                                    TestCase.fail("Output mismatch!");
+                                }
                             }
                         } else {
                             System.out.println("OK (correct error triggered)!");
                         }
                     }
                 } else {
-                    for (String message : compilation.errorMessages)
-                    {
+                    for (String message : compilation.errorMessages) {
                         System.out.println(" " + message);
                     }
                     String actual = compilation.abstractSyntaxTree.toString();
                     System.out.println(actual);
                     TestCase.fail("Test has not run okay.");
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(" parse exception (" + e.getMessage() + ")!");
                 System.out.println(e.toString());
-                for (StackTraceElement n : e.getStackTrace())
-                {
-                    System.out.println(n.getFileName() + ":" + n.getLineNumber() + " in " + n.getClassName()+"::"+n.getMethodName());
+                for (StackTraceElement n : e.getStackTrace()) {
+                    System.out.println(n.getFileName() + ":" + n.getLineNumber() + " in " + n.getClassName() + "::" + n.getMethodName());
                 }
                 TestCase.fail("parse exception");
-            }
-            catch (Error e)
-            {
+            } catch (Error e) {
                 System.out.println(" parse error (" + e.toString() + ")!");
                 TestCase.fail("parse error");
             }
-        }
-        catch (Exception e){
+            return compilation;
+        } catch (Exception e) {
             System.out.println("file could not be opened (" + e + ")");
             e.printStackTrace();
             TestCase.fail("file error");
+            return null;
         }
     }
 

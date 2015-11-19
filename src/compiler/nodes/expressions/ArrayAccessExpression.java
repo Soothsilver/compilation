@@ -1,15 +1,37 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
+import compiler.intermediate.*;
+import compiler.intermediate.instructions.BinaryOperatorInstruction;
+import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents the expression "ARRAY[INDEX]".
+ */
 public class ArrayAccessExpression extends Expression {
+    /**
+     * The expression that evaluates to an array.
+     */
     public Expression array;
+    /**
+     * The expression that evaluates to an integer and serves as the index to the array.
+     */
     public Expression index;
+
+    /**
+     * Creates a new ArrayAccessExpression.
+     * Launches phase 2 resolution for both the array and the index expressions. If the array expression does not
+     * evaluate into an array, triggers a semantic error. Sets this expression's type directly.
+     * @param array The array expression.
+     * @param index The integer-type index expression.
+     * @param compilation The compilation object.
+     * @return The created ArrayAccessExpression.
+     */
     public static ArrayAccessExpression create(Expression array, Expression index, Compilation compilation) {
         ArrayAccessExpression expression = new ArrayAccessExpression();
         expression.line = array.line;
@@ -48,5 +70,22 @@ public class ArrayAccessExpression extends Expression {
     @Override
     public boolean isAssignable() {
         return true;
+    }
+
+    @Override
+    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+        Instructions instructions = new Instructions();
+        IntermediateRegister register = executable.summonNewRegister();
+
+        ExpressionEvaluationResult eerArray = array.generateIntermediateCode(executable);
+        ExpressionEvaluationResult eerIndex = index.generateIntermediateCode(executable);
+
+        instructions.addAll(eerArray.code);
+        instructions.addAll(eerIndex.code);
+        IntermediateRegister multipliedByFour = executable.summonNewRegister();
+        instructions.add(new BinaryOperatorInstruction("*", Type.integerType, Type.integerType, new Operand(4, OperandKind.Immediate), eerIndex.operand, multipliedByFour));
+        instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType, eerArray.operand, new Operand(multipliedByFour, OperandKind.Register), register));
+        Operand operand = new Operand(register, OperandKind.RegisterContainsHeapAddress);
+        return new ExpressionEvaluationResult(instructions, operand);
     }
 }

@@ -33,6 +33,7 @@ public class Compilation {
     public boolean syntaxAnalysisFatalFailure = false;
 	public ArrayList<String> errorMessages = new ArrayList<>();
 	public ArrayList<String> errorsExpected = new ArrayList<>();
+	public String firstLine = null;
 	public Environment environment = new Environment(this);
     public ProgramNode abstractSyntaxTree = null;
 
@@ -110,8 +111,12 @@ public class Compilation {
 			} catch (IOException e) {
 				// Ignore
 			}
-			assert lines != null;
+			assert lines != null; boolean isFirst = true;
 			for (String line : lines) {
+				if (isFirst) {
+					firstLine = line;
+					isFirst = false;
+				}
 				if (line.startsWith("//EXPECT-LEXICAL-ERROR:")) {
 					errorsExpected.add(line.substring("//EXPECT-LEXICAL-ERROR:".length()).trim());
 				}

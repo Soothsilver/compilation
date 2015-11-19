@@ -66,6 +66,7 @@ public class IntermediateFunction {
         s += "\n";
         s += this.getUniqueLabel() + ": \n";
         for (Instruction instruction : instructions) {
+			s += "#### " + instruction.toString() + "\n";
             s += instruction.toMipsAssembler();
         }
         s += "\tjr $ra # return from procedure\n";
