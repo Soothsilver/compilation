@@ -9,9 +9,21 @@ import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
 
+/**
+ * Represents the "for (init;cond;increment) body;" statement.
+ */
 public class ForStatement extends CycleStatement{
+	/**
+	 * The expression evaluated at the beginning of each iteration.
+	 */
 	public Expression test;
+	/**
+	 * The expression executed at the start of the first iteration.
+	 */
 	public Expression initialisation;
+	/**
+	 * The expression executed at the end of each iteration.
+	 */
 	public Expression incrementation;
 	
 	 private static List<ExpressionKind> permittedKinds = Arrays.asList(
@@ -19,9 +31,20 @@ public class ForStatement extends CycleStatement{
 	            ExpressionKind.Increment,
 	            ExpressionKind.Subroutine,
 	            ExpressionKind.MemberSubroutine
-	    );									
+	    );
 
 
+	/**
+	 * Initializes a new ForStatement. Launches phase 2 resolution for all three expressions, forcing the boolean type on the test expression.
+	 * Also triggers a semantic error if the initialization or incrementation expressions have no side effects.
+	 *
+	 * @param initialisation The expression to execute before the first iteration.
+	 * @param test The expression that is tested for truth at the start of each iteration.
+	 * @param incrementation The expression executed at the end of each iteration.
+	 * @param line Source line.
+	 * @param column Source column.
+	 * @param compilation The compilation object.
+	 */
 	public ForStatement(Expression initialisation, Expression test, Expression incrementation, int line, int column, Compilation compilation) {
 		super(line, column);
 		this.initialisation = initialisation;

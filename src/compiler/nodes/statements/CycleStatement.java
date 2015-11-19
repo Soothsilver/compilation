@@ -5,7 +5,7 @@ import compiler.Compilation;
 /**
  * All cycle statements (for, foreach, while, repeat) inherit from this class.
  */
-public class CycleStatement extends Statement {
+public abstract class CycleStatement extends Statement {
 
     /**
      * The body of a cycle statement. Most often, this will be a BlockStatement.
@@ -14,13 +14,6 @@ public class CycleStatement extends Statement {
 
     protected CycleStatement(int line, int column) {
         super(line, column);
-    }
-
-    /**
-     * This constructor should only be used until all cycles are actually implemented.
-     */
-    public CycleStatement() {
-        super();
     }
 
     @Override

@@ -32,8 +32,7 @@ public class WhileStatement extends CycleStatement {
      * @param compilation Compilation object.
      */
     public WhileStatement(Expression booleanTest, int line, int column, Compilation compilation) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
         this.booleanTest = booleanTest;
         this.booleanTest.propagateTypes(new HashSet<>(Arrays.asList(Type.booleanType)), compilation);
 

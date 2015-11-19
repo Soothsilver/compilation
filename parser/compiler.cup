@@ -308,8 +308,8 @@ if_long_closed_open ::= IF LPAR expression:ex RPAR closed_statement:st ELSE open
                         :};
 closed_statement       ::= simple_statement:s SEMICOLON
                          {: RESULT = s; :}
-		                 | REPEAT enter_cycle statement:st leave_cycle WHILE LPAR expression:ex RPAR SEMICOLON
-		                 {: RESULT = new RepeatStatement(ex, st, parser.compilation); :}
+		                 | REPEAT:rp enter_cycle statement:st leave_cycle WHILE LPAR expression:ex RPAR SEMICOLON
+		                 {: RESULT = new RepeatStatement(ex, st, rpleft, rpright, parser.compilation); :}
 		                 | block:b
 		                 {: RESULT = b; :}
 		                 | if_long_closed_closed:s
