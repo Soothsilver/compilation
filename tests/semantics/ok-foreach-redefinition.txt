@@ -1,4 +1,3 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
 procedure main()
 {
     int : integer;

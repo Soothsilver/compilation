@@ -395,9 +395,9 @@ public final class OverloadResolution {
     // Utilities
     public static void debug(String line) {
         for (int i = 0; i < debug_level; i++) {
-            System.out.print("-");
+         //   System.out.print("-");
         }
-        System.out.println(" " + line);
+       // System.out.println(" " + line);
     }
 
     public static int debug_level;

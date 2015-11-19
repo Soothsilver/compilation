@@ -1,10 +1,5 @@
-a : integer;
-b : integer;
-function hello() : integer {
-    return 7 + 2 * 5;
+//EXPECT-SEMANTICAL-ERROR: The variable 'a' is not defined in this scope.
+procedure main()
+{
+  a = 5;
 }
-procedure main() {
-    a = hello();
-    print_int(a);
-}
-

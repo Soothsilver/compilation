@@ -4,9 +4,8 @@ import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
 import compiler.intermediate.*;
 import compiler.intermediate.instructions.BinaryOperatorInstruction;
-import compiler.intermediate.instructions.CallInstruction;
 import compiler.intermediate.instructions.Instructions;
-import compiler.nodes.declarations.Type;
+import compiler.nodes.declarations.Variable;
 
 import java.util.ArrayList;
 
@@ -55,6 +54,14 @@ public class BinaryExpression extends CallExpression {
             case "|=":
             case "^=":
                 ex.kind = ExpressionKind.Assignment;
+                if (left.kind == ExpressionKind.Variable) {
+                    Variable v = ((VariableExpression)left).variable;
+                    if (v != null && v.readonly) {
+                        compilation.semanticError("It is illegal to assign a value to a foreach iteration variable.", line, column);
+                        ex.setErrorType();
+                        return ex;
+                    }
+                }
                 if (!left.isAssignable()) {
                     compilation.semanticError("The left-hand side of an assignment must be a variable, array member or a class member.", line, column);
                     ex.setErrorType();

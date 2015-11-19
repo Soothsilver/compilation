@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT:  Semantic error at line 4, column 28: The expression 'main[]()' is not an array.
 procedure main()
 {
     foreach( identifier in main() )

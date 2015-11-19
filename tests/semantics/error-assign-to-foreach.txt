@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: TO DEFINE
+//EXPECT-SEMANTICAL-ERROR: It is illegal to assign a value to a foreach iteration variable.
 procedure main()
 {
     foreach(int in [1,2,3]) {

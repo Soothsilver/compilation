@@ -33,12 +33,14 @@ public class ForeachStatement extends CycleStatement {
         this.iterationVariableName = iterationVariableName;
         this.array = array;
         this.array.propagateTypes(null, compilation);
+        compilation.environment.enterScope();
         if (!this.array.type.name.equals("!array")) {
             compilation.semanticError("The expression '" + array + "' is not an array.",
                     array.line, array.column);
+            return;
         }
-        compilation.environment.enterScope();
         iterationVariable  = Variable.createAndAddToEnvironment(iterationVariableName, array.type.typeArguments.get(0), line, column, compilation);
+        iterationVariable.readonly = true;
     }
 
     /**
@@ -50,13 +52,20 @@ public class ForeachStatement extends CycleStatement {
      * }
      */
     public void finish() {
-        BlockStatement block = new BlockStatement();
-        block.line = body.line;
-        block.column = body.column;
-        block.declarations = new Declarations();
-        block.declarations.add(iterationVariable);
-        block.statements = new Statements();
-        block.statements.add(this.body);
-        this.body = block;
+        if (iterationVariable != null) {
+            BlockStatement block = new BlockStatement();
+            block.line = body.line;
+            block.column = body.column;
+            block.declarations = new Declarations();
+            block.declarations.add(iterationVariable);
+            block.statements = new Statements();
+            block.statements.add(this.body);
+            this.body = block;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "foreach (" + iterationVariableName + " in " + array + ") " + this.body;
     }
 }

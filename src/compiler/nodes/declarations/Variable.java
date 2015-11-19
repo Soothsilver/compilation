@@ -11,6 +11,7 @@ public class Variable extends Declaration {
     private Type type;
     public VariableKind kind;
     public int index;
+    public boolean readonly;
 
     /**
      * Gets the complete type of this variables.

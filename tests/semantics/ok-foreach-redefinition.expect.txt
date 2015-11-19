@@ -1,0 +1,9 @@
+PROGRAM[
+procedure main() { 
+int : integer;
+foreach (int in [I=integer;2,3,4]) { 
+int : integer;
+{  }
+}
+}
+]

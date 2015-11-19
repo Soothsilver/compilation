@@ -8,7 +8,13 @@ import compiler.nodes.declarations.Variable;
  * Represents a formal parameter of a subroutine declaration. Not a type parameter. Not an actual argument.
  */
 public class Parameter extends Node {
+    /**
+     * Name of the formal parameter, e.g. "a" for "a : integer"
+     */
     public String name;
+    /**
+     * Type of the formal parameter, e.g. Type.integerType for "a : integer"
+     */
     public Type type;
     private Variable variable; // If the variable's type is generic in a specific way, it stays that way... it's complicated.
 

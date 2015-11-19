@@ -43,6 +43,7 @@ public class VariableExpression extends Expression {
         name = identifier;
         this.line = line;
         this.column = column;
+        this.kind = ExpressionKind.Variable;
         variable =  compilation.environment.findVariable(identifier);
         if (variable == null) {
             compilation.semanticError("The variable '" + identifier + "' is not defined in this scope.", line, column);
@@ -74,7 +75,7 @@ public class VariableExpression extends Expression {
 
     @Override
     public boolean isAssignable() {
-        return true;
+        return variable != null && !variable.readonly;
     }
 
     @Override

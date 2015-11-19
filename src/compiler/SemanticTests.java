@@ -53,7 +53,8 @@ public class SemanticTests {
                             } catch (Exception fileEx) {
                                 expect = "EXPECT FILE NOT FOUND";
                             }
-                            if (actual.trim().replace("\r", "").equals(expect.trim().replace("\r", ""))) {
+                            if (actual.replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "")
+                                    .equals(expect.replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", ""))) {
                                 successfulTests++;
                                 System.out.println("OK!");
                             } else {

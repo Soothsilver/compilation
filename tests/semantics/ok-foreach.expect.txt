@@ -1,0 +1,9 @@
+PROGRAM[
+procedure main() { 
+f : float;
+foreach (fp in [I=float;1.0,3.4,!float(8)]) { 
+fp : float;
+{ f=fp; }
+}
+}
+]
