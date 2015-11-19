@@ -2,10 +2,36 @@ package compiler.nodes.expressions;
 
 import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
+import compiler.intermediate.*;
+import compiler.intermediate.instructions.BinaryOperatorInstruction;
+import compiler.intermediate.instructions.CallInstruction;
+import compiler.intermediate.instructions.Instructions;
+import compiler.nodes.declarations.Type;
 
+import java.util.ArrayList;
+
+/**
+ * Represents a binary expression with an operator, such as "2 + 2" or "i = 3".
+ *
+ * Note that it inherits from CallExpression, because during semantic analysis, we act towards operators as if they were functions.
+ */
 public class BinaryExpression extends CallExpression {
+    /**
+     * Operator (for example, "++", "<<=" or "&").
+     */
     public String operator;
 
+    /**
+     * Initializes a new BinaryExpression and launches phase 1 resolution for it. Also triggers an error if the
+     * expression is an assignment and yet the first operand is not assignable.
+     * @param left The operand to the left of the operator.
+     * @param operator The operator (for example, "++", "<<=" or "&").
+     * @param right The operand to the right of the operator.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     * @return The created BinaryExpression, perhaps with error type set.
+     */
     public static BinaryExpression create(Expression left, String operator, Expression right, int line, int column, Compilation compilation) {
         BinaryExpression ex = new BinaryExpression();
         ex.operator = operator;
@@ -55,5 +81,21 @@ public class BinaryExpression extends CallExpression {
         else {
             return "The operator '" + group.name + "' does not accept operands of type '" + arguments.get(0).type + "' and '" + arguments.get(1).type + "'.";
         }
+    }
+
+    @Override
+    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+        Instructions instructions = new Instructions();
+        ArrayList<Operand> operands = new ArrayList<>();
+        for (Expression argument : arguments) {
+            ExpressionEvaluationResult eer = argument.generateIntermediateCode(executable);
+            operands.add(eer.operand);
+            instructions.addAll(eer.code);
+        }
+        IntermediateRegister returnRegisterIndex = executable.summonNewRegister();
+
+        instructions.add(new BinaryOperatorInstruction(this.operator, this.callee.formalTypes.get(0), this.callee.formalTypes.get(1), operands.get(0), operands.get(1), returnRegisterIndex));
+
+        return new ExpressionEvaluationResult(instructions, new Operand(returnRegisterIndex, OperandKind.Register));
     }
 }

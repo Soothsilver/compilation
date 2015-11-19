@@ -1,6 +1,10 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
+import compiler.intermediate.Executable;
+import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.Operand;
+import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.declarations.Variable;
 
@@ -71,5 +75,10 @@ public class VariableExpression extends Expression {
     @Override
     public boolean isAssignable() {
         return true;
+    }
+
+    @Override
+    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+        return new ExpressionEvaluationResult(new Instructions(), Operand.createFromVariable(variable));
     }
 }

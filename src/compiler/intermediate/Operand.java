@@ -1,20 +1,31 @@
 package compiler.intermediate;
 
-import java.rmi.registry.Registry;
+import compiler.nodes.declarations.Variable;
+import compiler.nodes.declarations.VariableKind;
 
 /**
  * Represents an operand of an intermediate 3-address instruction.
  */
 public class Operand {
     /**
-     * The operand's 4-byte value. Not necessarily a "real" integer.
-     */
-    public int integerValue;
-    /**
      * The operand's addressing mode.
      */
     public OperandKind kind;
+    /**
+     * The register referred to by this operand.
+     * Only used by the "Register" kind.
+     */
     public IntermediateRegister register;
+    /**
+     * The operand's 4-byte value. Not necessarily a "real" integer.
+     * Only used by the "Immediate" kind.
+     */
+    public int integerValue;
+    /**
+     * The operand's variable.
+     * Only used by the "GlobalVariable", "LocalVariable" kinds.
+     */
+    private Variable variable;
 
     /**
      * Initializes a new instance of the Operand class.
@@ -26,8 +37,17 @@ public class Operand {
 		this.kind = kind;
 	}
 
+    /**
+     * Initializes a new instance of the Operand class.
+     * @param register The operand's register.
+     * @param kind The operand's addressing mode.
+     */
     public Operand(IntermediateRegister register, OperandKind kind) {
         this.register = register;
+        this.kind = kind;
+    }
+    private Operand(Variable variable, OperandKind kind) {
+        this.variable = variable;
         this.kind = kind;
     }
 
@@ -42,23 +62,15 @@ public class Operand {
                 return "MEM(REG(" + integerValue + "))";
             case Register:
                 return "REG(" + integerValue + ")";
+            case LocalVariable:
+                return "LOCAL(" + variable.index + ")";
+            case GlobalVariable:
+                return "GLOBAL(" + variable.name + ")";
         }
         throw new EnumConstantNotPresentException(OperandKind.class, "kind");
     }
 
-    /**
-     * Generates MIPS instructions that load the value of this operand into the specified register. The instructions are terminated by a newline character, if any are generated at all.
-     * @param registerName Mnemonic for the register.
-     * @return MIPS instructions.
-     */
-    public String toMipsLoadIntoRegister(String registerName) {
-        switch (kind) {
-            case Immediate:
-                return "\tli " + registerName + "," + integerValue + "\n";
-            default:
-                    return "!!ERROR This addressing mode is not yet supported.!!";
-        }
-    }
+
 
     /**
      * Creates an operand that should never be used. This is useful for example for procedures that don't return any
@@ -68,6 +80,62 @@ public class Operand {
      */
     public static Operand createOperandWithoutValue() {
         return new Operand(77, OperandKind.Immediate);
+    }
+
+    /**
+     * Creates an operand from a variable.
+     * Sets the operand's kind based on the variable kind.
+     * @param variable Any kind of variable.
+     * @return An operand encapsulating the variable.
+     */
+    public static Operand createFromVariable(Variable variable) {
+        switch (variable.kind) {
+            case Global:
+                return new Operand(variable, OperandKind.GlobalVariable);
+            case Local:
+                return new Operand(variable, OperandKind.LocalVariable);
+            default:
+                throw new EnumConstantNotPresentException(VariableKind.class, "variable");
+        }
+    }
+
+    /**
+     * Generates MIPS instructions that load the value of the specified operand into this one.
+     * The instructions are terminated by a newline character, if any are generated at all.
+     * @param operand The operand whose value should be loaded into here.
+     * @return MIPS instructions.
+     */
+    public String toMipsAcquireFromOperand(Operand operand) {
+        switch (operand.kind) {
+            case Immediate:
+                switch(this.kind) {
+                    case Immediate:
+                        throw new RuntimeException("Immediate operand is not an l-value.");
+                    case GlobalVariable:
+
+                        return
+                                "\tli " + MipsRegisters.TEMPORARY_VALUE_0 + "," + operand.integerValue + "\n" +
+                                "\tsw " + MipsRegisters.TEMPORARY_VALUE_0  + "," + this.variable.name + "\n";
+                }
+                break;
+        }
+        return "!!ERROR(Operand " + operand + " was not saved to " + this + ".)";
+    }
+    /**
+     * Generates MIPS instructions that load the value of this operand into the specified register.
+     * The instructions are terminated by a newline character, if any are generated at all.
+     * @param registerName Mnemonic for the register.
+     * @return MIPS instructions.
+     */
+    public String toMipsLoadIntoRegister(String registerName) {
+        switch (kind) {
+            case Immediate:
+                return "\tli " + registerName + "," + integerValue + "\n";
+            case GlobalVariable:
+                return "\tlw " + registerName + "," + variable.name + "\n";
+            default:
+                return "!!ERROR This addressing mode is not yet supported.!!";
+        }
     }
 }
 

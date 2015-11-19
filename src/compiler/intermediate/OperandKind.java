@@ -19,5 +19,7 @@ public enum OperandKind {
 	/**
 	 * The operand is an integer memory address.
 	 */
-	MemoryDirect
+	MemoryDirect,
+	GlobalVariable,
+	LocalVariable
 }

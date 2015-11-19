@@ -1,8 +1,10 @@
+a : integer;
+b : integer;
 procedure hello() {
     print_int (2);
 }
 procedure main() {
-    hello();
-    hello();
+    a = 2;
+    print_int(a);
 }
 

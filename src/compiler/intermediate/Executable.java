@@ -11,6 +11,7 @@ import compiler.nodes.declarations.*;
  * Represents a program that passed semantic analysis and is being converted to assembler format.
  */
 public class Executable {
+    public static final String REGISTERS_SPACE = "____registers";
 
     /**
      * Set this variable to a LabelInstruction prior to generating intermediate code for a cycle's body.
@@ -28,6 +29,17 @@ public class Executable {
 	 */
 	public Executable(Compilation compilation) {
 		ProgramNode programNode = compilation.abstractSyntaxTree;
+        for (Declaration declaration : programNode.Declarations) {
+            if (declaration instanceof TypeOrTypeTemplate) {
+                System.out.println("Type and type template definitions are not supported yet.");
+                continue;
+            }
+            if (declaration instanceof Variable) {
+                Variable vGlobal = (Variable)declaration;
+                vGlobal.kind = VariableKind.Global;
+                globalVariables.add(vGlobal);
+            }
+        }
 		for (Subroutine subroutine : programNode.Subroutines) {
 			functions.add(IntermediateFunction.create(subroutine, this));
 		}
@@ -38,6 +50,7 @@ public class Executable {
      * Types not yet done. Maybe later.
      */
 	public ArrayList<Object> types;
+    public ArrayList<Variable> globalVariables = new ArrayList<>();
     /**
      * Contains all subroutines of the source code transformed to intermediate code, but no predefined subroutines.
      */
@@ -46,6 +59,9 @@ public class Executable {
 	@Override
 	public String toString() {
 		String intermediateCode = "";
+        for (Variable global : globalVariables) {
+            intermediateCode += "GLOBAL VARIABLE " + global.name + "\n";
+        }
 		for (IntermediateFunction function : functions) {
 			intermediateCode += "SUBROUTINE " + function.getName() + ": \n";
 			intermediateCode += function.toString() + "\n";
@@ -60,7 +76,14 @@ public class Executable {
      */
     public String toMipsAssembler() {
         String s = "";
+        s += ".data\n";
+        s += "\t " + REGISTERS_SPACE + ": .space 4000 # Temporary values are stored in this memory.\n";
+        for (Variable global : globalVariables) {
+            s += "\t" + global.name + ": .word 0\n";
+        }
         s += ".text\n";
+        s += ".globl main\n";
+        s += "main: \n";
         for (IntermediateFunction func : functions) {
             if (func.getUniqueLabel().equals("main_procedure")) {
                 s += "\tjal main_procedure # Jump to entry point.\n";

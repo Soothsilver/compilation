@@ -9,6 +9,8 @@ import java.util.ArrayList;
  */
 public class Variable extends Declaration {
     private Type type;
+    public VariableKind kind;
+    public int index;
 
     /**
      * Gets the complete type of this variables.
