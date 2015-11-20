@@ -9,7 +9,7 @@ public abstract class Declaration extends Node {
     /**
      * The identifier of this declaration, i.e. name of variable, of type or type template or of a subroutine.
      */
-    public String name;
+    public final String name;
 
     protected Declaration(String name, int line, int column) {
         super(line, column);

@@ -1,5 +1,8 @@
 procedure main ()
 {
+     // If anyone wants to make this work for code generation,
+     // have fun. :)
+
      c : list of integer;
 	 b : integer;
 	 d : boolean;

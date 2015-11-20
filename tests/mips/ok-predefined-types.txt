@@ -1,3 +1,4 @@
+//okok2.4e-57
 procedure main()
 {
     i : integer;
@@ -5,9 +6,15 @@ procedure main()
     b : boolean;
     s : string;
     c : character;
+
     b = true;
     b = false;
     c = 'A';
     f = 2.4e-5;
     i = 7;
+
+    if (!b) print_string("ok");
+    if ('A' == c) print_string("ok");
+    print_float(f);
+    print_int(7);
 }

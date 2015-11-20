@@ -72,14 +72,14 @@ public class ArrayInferenceCreationExpression extends CallExpression {
     }
 
     @Override
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+    public OperandWithCode generateIntermediateCode(Executable executable) {
         Instructions instructions = new Instructions();
         IntermediateRegister reference = executable.summonNewRegister();
 
         instructions.add(new AllocateInstruction(reference, new Operand( size, OperandKind.Immediate)));
         IntermediateRegister junkRegister = executable.summonNewRegister();
         for (int i = 0; i < arguments.size(); i++) {
-            ExpressionEvaluationResult eer = arguments.get(i).generateIntermediateCode(executable);
+            OperandWithCode eer = arguments.get(i).generateIntermediateCode(executable);
             instructions.addAll(eer.code);
             IntermediateRegister regAddressOfElement = executable.summonNewRegister();
             instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,
@@ -94,6 +94,6 @@ public class ArrayInferenceCreationExpression extends CallExpression {
                     ));
         }
         Operand operand = new Operand(reference, OperandKind.Register);
-        return new ExpressionEvaluationResult(instructions, operand);
+        return new OperandWithCode(instructions, operand);
     }
 }

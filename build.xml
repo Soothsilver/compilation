@@ -153,7 +153,7 @@
  <!-- =================================
       target: rebuild-all
       ================================= -->
-    <target name="rebuild-all" depends="clean, test"
-        description="Destroys all generated files, then runs all tests.">
+    <target name="rebuild-all" depends="clean, compile-all"
+        description="Destroys all generated files, then recompiles the project.">
     </target>
 </project>

@@ -3,7 +3,7 @@ package compiler.nodes.statements;
 import compiler.Compilation;
 import compiler.analysis.Uniqueness;
 import compiler.intermediate.Executable;
-import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.OperandWithCode;
 import compiler.intermediate.IntermediateFunction;
 import compiler.intermediate.instructions.*;
 import compiler.nodes.declarations.Type;
@@ -47,7 +47,7 @@ public class WhileStatement extends CycleStatement {
     public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
         Instructions instructions = new Instructions();
 
-        ExpressionEvaluationResult eer = booleanTest.generateIntermediateCode(executable);
+        OperandWithCode eer = booleanTest.generateIntermediateCode(executable);
         LabelInstruction cycleStart = new LabelInstruction("while_" + Uniqueness.getUniqueId());
         LabelInstruction cycleEnd = new LabelInstruction("endwhile_" + Uniqueness.getUniqueId());
         instructions.add(cycleStart);

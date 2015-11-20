@@ -1,6 +1,9 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
+import compiler.intermediate.*;
+import compiler.intermediate.instructions.BinaryOperatorInstruction;
+import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.declarations.Variable;
 
@@ -66,5 +69,17 @@ public class MemberVariableExpression extends VariableExpression {
     @Override
     public String toString() {
         return parent + "." + name;
+    }
+
+    @Override
+    public OperandWithCode generateIntermediateCode(Executable executable) {
+        Instructions instructions = new Instructions();
+        IntermediateRegister variableRegister = executable.summonNewRegister();
+
+        OperandWithCode owcParent = parent.generateIntermediateCode(executable);
+        instructions.addAll(owcParent.code);
+        instructions.add( new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,
+                owcParent.operand, new Operand(variable.index * 4, OperandKind.Immediate), variableRegister));
+        return new OperandWithCode(instructions, new Operand(variableRegister, OperandKind.RegisterContainsHeapAddress));
     }
 }

@@ -1,0 +1,7 @@
+//EXPECT-RUNTIME-ERROR:out of bounds
+a : list of integer;
+procedure main()
+{
+    a = [8];
+    a[1] = 0;
+}

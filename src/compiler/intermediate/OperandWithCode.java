@@ -9,7 +9,7 @@ import java.util.List;
  * An expression must provide a list of instructions to generate its return value (code) and information
  * on how to access this return value (operand).
  */
-public class ExpressionEvaluationResult {
+public class OperandWithCode {
 	/**
 	 * List of instructions to generate the expression's return value.
 	 */
@@ -22,7 +22,7 @@ public class ExpressionEvaluationResult {
     /**
      * Initializes a new instance of the ExpressionEvaluationResult class.
      */
-    public ExpressionEvaluationResult(List<Instruction> code, Operand operand) {
+    public OperandWithCode(List<Instruction> code, Operand operand) {
         this.code = code;
         this.operand = operand;
     }

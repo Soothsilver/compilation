@@ -1,7 +1,7 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
-import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.OperandWithCode;
 import compiler.intermediate.Executable;
 import compiler.intermediate.Operand;
 import compiler.intermediate.OperandKind;
@@ -108,8 +108,8 @@ public abstract class Expression extends Node {
      * @param executable The Executable object.
      * @return Intermediate code, and return value access information.
      */
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
-    	return new ExpressionEvaluationResult(new ArrayList<>(), new Operand(77, OperandKind.Immediate));
+    public OperandWithCode generateIntermediateCode(Executable executable) {
+    	return new OperandWithCode(new ArrayList<>(), new Operand(77, OperandKind.Immediate));
     }
     
 }

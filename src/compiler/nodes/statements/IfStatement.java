@@ -2,7 +2,7 @@ package compiler.nodes.statements;
 
 import compiler.Compilation;
 import compiler.analysis.Uniqueness;
-import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.OperandWithCode;
 import compiler.intermediate.Executable;
 import compiler.intermediate.IntermediateFunction;
 import compiler.intermediate.instructions.*;
@@ -70,7 +70,7 @@ public class IfStatement extends Statement {
     @Override
     public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
         Instructions instructions = new Instructions();
-        ExpressionEvaluationResult expressionResult = test.generateIntermediateCode(executable);
+        OperandWithCode expressionResult = test.generateIntermediateCode(executable);
         instructions.addAll(expressionResult.code);
         LabelInstruction labelElse = new LabelInstruction("else_" + Uniqueness.getUniqueId());
         LabelInstruction labelEnd = new LabelInstruction("endif_" + Uniqueness.getUniqueId());

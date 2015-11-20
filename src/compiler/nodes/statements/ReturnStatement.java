@@ -2,7 +2,7 @@ package compiler.nodes.statements;
 
 import compiler.Compilation;
 import compiler.intermediate.Executable;
-import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.OperandWithCode;
 import compiler.intermediate.IntermediateFunction;
 import compiler.intermediate.instructions.Instruction;
 import compiler.intermediate.instructions.Instructions;
@@ -54,7 +54,7 @@ public class ReturnStatement extends Statement {
     @Override
     public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
         Instructions instructions = new Instructions();
-        ExpressionEvaluationResult eer = expression.generateIntermediateCode(executable);
+        OperandWithCode eer = expression.generateIntermediateCode(executable);
         instructions.addAll(eer.code);
         instructions.add(new ReturnInstruction(eer.operand));
         return instructions;

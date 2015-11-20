@@ -91,11 +91,11 @@ public class BinaryExpression extends CallExpression {
     }
 
     @Override
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+    public OperandWithCode generateIntermediateCode(Executable executable) {
         Instructions instructions = new Instructions();
         ArrayList<Operand> operands = new ArrayList<>();
         for (Expression argument : arguments) {
-            ExpressionEvaluationResult eer = argument.generateIntermediateCode(executable);
+            OperandWithCode eer = argument.generateIntermediateCode(executable);
             operands.add(eer.operand);
             instructions.addAll(eer.code);
         }
@@ -103,6 +103,6 @@ public class BinaryExpression extends CallExpression {
 
         instructions.add(new BinaryOperatorInstruction(this.operator, this.callee.formalTypes.get(0), this.callee.formalTypes.get(1), operands.get(0), operands.get(1), returnRegisterIndex));
 
-        return new ExpressionEvaluationResult(instructions, new Operand(returnRegisterIndex, OperandKind.Register));
+        return new OperandWithCode(instructions, new Operand(returnRegisterIndex, OperandKind.Register));
     }
 }

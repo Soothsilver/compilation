@@ -1,8 +1,16 @@
-type s = structure { };
+//23.28
+type s = structure { a : integer; };
 procedure main()
 {
     a : list of float;
     b : list of s;
+    sth : s;
+    sth = new s();
+    sth.a = 8;
     a = [2, 3.2];
-    b = [ null, new s()];
+    b = [ null, sth];
+
+    print_float(a[0]);
+    print_float(a[1]);
+    print_int(b[1].a);
 }

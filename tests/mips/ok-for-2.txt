@@ -1,8 +1,7 @@
-//2
-    i : integer;
+//234
 procedure main() {
+    i : integer;
     for ( i = 2; i < 5; i++ ) {
         print_int(i);
-        break;
     }
 }

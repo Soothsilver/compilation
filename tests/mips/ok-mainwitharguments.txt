@@ -1,4 +1,9 @@
+//HelloHiBye
+//WITH-ARGS: Hello Hi Bye
 procedure main(number : integer, arguments : list of string)
 {
-
+   i : integer;
+   for ( i = 0; i < number; i++) {
+    print_string(arguments[i]);
+   }
 }

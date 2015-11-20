@@ -1,3 +1,4 @@
+//1552315123
 procedure main()
 {
     a : list of integer;
@@ -9,5 +10,17 @@ procedure main()
     b[1] = 2;
     b[2] = 3;
     c = a @ b;
-    b[0] = a[0];
+    b[0] = a[1];
+    print_int(a[0]);  // 1
+    print_int(a[1]);  // 5
+    print_int(b[0]);  // 5
+    print_int(b[1]);  // 2
+    print_int(b[2]);  // 3
+
+    //15123
+    print_int(c[0]);
+    print_int(c[1]);
+    print_int(c[2]); // this should still be the old value.
+    print_int(c[3]);
+    print_int(c[4]);
 }

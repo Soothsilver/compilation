@@ -6,15 +6,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a type.
+ * There are several ways to create a type:
+ * - By declaring a new non-generic type using the "type" keywords.
+ * - Some types are predefined, such as "integer".
+ * - Type parameters of classes and subroutines become types at their interior.
+ * - By constructing a type from a type template using a constructor.
+ *
+ * Notably, type templates are not types, but type variables are types. However, type variables should only occur while
+ * the overload resolution process is in progress. Before and after that point, no type variables should exist.
+ */
 public class Type extends TypeOrTypeTemplate {
     public TypeKind kind;
     public ArrayList<Type> typeArguments;
+    /**
+     * If this is a type variable and it is inferred that it must be an integer or a float, then this is true.
+     */
     public boolean boundToNumeric;
+    /**
+     * If this is a type variable and it is inferred that it must be a reference type (because it is compatible with
+     * null), then this is true.
+     */
     public boolean boundToReferenceType;
+    /**
+     * If unification bound this type variable to a type, this field indicates where. If this field is non-null, then
+     * the fields "boundToNumeric" and "boundToReferenceType" have no meaning.
+     */
     public Type boundToSpecificType;
+    /**
+     * Indicates whether this is a reference type.
+     * Arrays, structures and classes are reference types.
+     */
     public boolean isReferenceType;
+    /**
+     * The number of times this type variable was bound to an integer while it was still only boundToNumeric and not yet
+     * float. This is important for badness calculation. The first assignment (the one that causes it to be bound to numeric)
+     * also counts.
+     */
     public int integerBindCount;
 
+    /**
+     * Gets a value that indicates whether the literal "null" can be converted to an object of this type.
+     */
     public boolean canBeNulled() {
         return isReferenceType || kind == TypeKind.ClassTypeParameter || kind == TypeKind.SubroutineTypeParameter;
     }
@@ -71,6 +105,15 @@ public class Type extends TypeOrTypeTemplate {
         throw new EnumConstantNotPresentException(TypeKind.class, "kind");
     }
 
+    /**
+     * Searches the environment symbol table for a type and returns it. Triggers a semantic error if the type does not
+     * exist or if the type is generic.
+     * @param identifier Identifier of the type to find.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     * @return The found type.
+     */
     public static Type findType(String identifier, int line, int column, Compilation compilation) {
         TypeOrTypeTemplate type = compilation.environment.findType(identifier);
         if (type == null) {
@@ -111,6 +154,7 @@ public class Type extends TypeOrTypeTemplate {
         } else return name;
     }
 
+    @SuppressWarnings("NonFinalFieldReferenceInEquals")
     @Override
     public boolean equals(Object obj) {
         if (!( obj instanceof Type )) return false;
@@ -131,7 +175,7 @@ public class Type extends TypeOrTypeTemplate {
 
 
 
-    public static Type createPredefinedType(String name) {
+    private static Type createPredefinedType(String name) {
         Type t = new Type(name, -1, -1);
         t.kind = TypeKind.SimpleType;
         return t;
@@ -301,6 +345,14 @@ public class Type extends TypeOrTypeTemplate {
     }
 
     /**
+     * Gets the number of words this type occupies in memory.
+     * Implementation Notes: This is 1*(number of local variables), because all of our types are 32 bits.
+     */
+    public int getSizeInWords() {
+        return declarations.size();
+    }
+
+    /**
      * A utility enumeration that indicates how this type works during type unification.
      */
     public enum UnificationKind {
@@ -308,7 +360,15 @@ public class Type extends TypeOrTypeTemplate {
          * This is a type variable. It may be bound, partially bound or unbound.
          */
         Variable,
+        /**
+         * This is not a type variable and has no type arguments. For example, "s", "T" or "integer" are simple types.
+         * (Provided T is the current class's type parameter, for example, rather than a type variable.
+         */
         Simple,
+        /**
+         * This is not a type variable but may contain type variables. It has type arguments. For example, "List[[T]]"
+         * and "List[[integer]]" are type arguments.
+         */
         Structured
     }
 

@@ -85,7 +85,7 @@ public class Executable {
         s += ".data\n";
         s += "\t " + REGISTERS_SPACE + ": .space 4000 # Temporary values are stored in this memory.\n";
         for (Variable global : globalVariables) {
-            s += "\t" + global.name + ": .word 1\n";
+            s += "\t" + global.name + ": .word 0 # global 32-bit variable with default value '0'\n";
         }
         s += ".text\n";
         s += ".globl main\n";

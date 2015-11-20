@@ -2,7 +2,7 @@ package compiler.nodes.expressions;
 
 import compiler.Compilation;
 import compiler.intermediate.Executable;
-import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.OperandWithCode;
 import compiler.intermediate.Operand;
 import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
@@ -79,7 +79,7 @@ public class VariableExpression extends Expression {
     }
 
     @Override
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
-        return new ExpressionEvaluationResult(new Instructions(), Operand.createFromVariable(variable));
+    public OperandWithCode generateIntermediateCode(Executable executable) {
+        return new OperandWithCode(new Instructions(), Operand.createFromVariable(variable));
     }
 }

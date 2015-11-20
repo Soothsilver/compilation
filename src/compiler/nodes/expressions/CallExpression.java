@@ -122,11 +122,11 @@ public class CallExpression extends Expression {
 
 
     @Override
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+    public OperandWithCode generateIntermediateCode(Executable executable) {
         Instructions instructions = new Instructions();
         ArrayList<Operand> operands = new ArrayList<>();
         for (Expression argument : arguments) {
-            ExpressionEvaluationResult eer = argument.generateIntermediateCode(executable);
+            OperandWithCode eer = argument.generateIntermediateCode(executable);
             operands.add(eer.operand);
             instructions.addAll(eer.code);
         }
@@ -134,9 +134,9 @@ public class CallExpression extends Expression {
         CallInstruction call = new CallInstruction(callee, operands, returnRegisterIndex);
         instructions.add(call);
         if (type.equals(Type.voidType)) {
-            return new ExpressionEvaluationResult(instructions, Operand.createOperandWithoutValue());
+            return new OperandWithCode(instructions, Operand.createOperandWithoutValue());
         } else {
-            return new ExpressionEvaluationResult(instructions, new Operand(returnRegisterIndex, OperandKind.Register));
+            return new OperandWithCode(instructions, new Operand(returnRegisterIndex, OperandKind.Register));
         }
     }
 }

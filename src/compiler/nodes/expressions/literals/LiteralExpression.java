@@ -2,7 +2,7 @@ package compiler.nodes.expressions.literals;
 
 import compiler.Compilation;
 import compiler.intermediate.Executable;
-import compiler.intermediate.ExpressionEvaluationResult;
+import compiler.intermediate.OperandWithCode;
 import compiler.intermediate.Operand;
 import compiler.intermediate.OperandKind;
 import compiler.intermediate.instructions.Instructions;
@@ -41,7 +41,7 @@ public abstract class LiteralExpression extends Expression {
     }
 
     @Override
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
-        return new ExpressionEvaluationResult(new Instructions(), generateOperand(executable));
+    public OperandWithCode generateIntermediateCode(Executable executable) {
+        return new OperandWithCode(new Instructions(), generateOperand(executable));
     }
 }

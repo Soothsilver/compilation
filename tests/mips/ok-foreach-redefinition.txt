@@ -1,7 +1,8 @@
+//234
 procedure main()
 {
     int : integer;
     foreach (int in [2,3,4]) {
-        
+        print_int(int);
     }
 }

@@ -1,4 +1,7 @@
+//1
 procedure main()
 {
+    print_int(1);
     stop;
+    print_int(2);
 }

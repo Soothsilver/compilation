@@ -1,4 +1,10 @@
+//120
+function factorial ( n : integer ) : integer
+{
+    if (n == 0) return 1;
+    return n * factorial( n - 1);
+}
 procedure main()
 {
-    main();
+    print_int(factorial(5));
 }

@@ -73,12 +73,12 @@ public class ArrayAccessExpression extends Expression {
     }
 
     @Override
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+    public OperandWithCode generateIntermediateCode(Executable executable) {
         Instructions instructions = new Instructions();
         IntermediateRegister register = executable.summonNewRegister();
 
-        ExpressionEvaluationResult eerArray = array.generateIntermediateCode(executable);
-        ExpressionEvaluationResult eerIndex = index.generateIntermediateCode(executable);
+        OperandWithCode eerArray = array.generateIntermediateCode(executable);
+        OperandWithCode eerIndex = index.generateIntermediateCode(executable);
 
         instructions.addAll(eerArray.code);
         instructions.addAll(eerIndex.code);
@@ -86,6 +86,6 @@ public class ArrayAccessExpression extends Expression {
         instructions.add(new BinaryOperatorInstruction("*", Type.integerType, Type.integerType, new Operand(4, OperandKind.Immediate), eerIndex.operand, multipliedByFour));
         instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType, eerArray.operand, new Operand(multipliedByFour, OperandKind.Register), register));
         Operand operand = new Operand(register, OperandKind.RegisterContainsHeapAddress);
-        return new ExpressionEvaluationResult(instructions, operand);
+        return new OperandWithCode(instructions, operand);
     }
 }

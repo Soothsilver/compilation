@@ -1,9 +1,9 @@
-
+//50truth
 global : integer;
 type s = class {
     global : float;
     procedure hello() {
-
+        print_float(global);
     }
 };
 procedure hello() { }
@@ -11,12 +11,23 @@ procedure hello() { }
 procedure main()
 {
     a : integer;
+    s : s;
     global = 5;
     {
+        print_int(global);
+        s = new s();
+        s.hello();
         global : boolean;
         a : boolean;
         {
             a : string;
+            a = "truth";
+            global = true;
+            if (global) {
+                print_string(a);
+            } else {
+                print_string("false");
+            }
         }
     }
 

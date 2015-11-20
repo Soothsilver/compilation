@@ -25,6 +25,10 @@ public class Variable extends Declaration {
      * Indicates whether this is a foreach iteration variable. If yes, then it cannot be modified.
      */
     public boolean readonly;
+    /**
+     * If this is a member field of a class, then that class is the owner, otherwise null.
+     */
+    public TypeOrTypeTemplate owner;
 
     /**
      * Gets the complete type of this variables.

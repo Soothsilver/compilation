@@ -1,6 +1,9 @@
+//5
 procedure main()
 {
     f : float;
     i : integer;
+    i = 5;
     f = i;
+    print_float(f);
 }

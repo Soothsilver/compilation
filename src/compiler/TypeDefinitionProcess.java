@@ -8,9 +8,15 @@ import compiler.nodes.declarations.TypeTemplate;
 import java.util.ArrayList;
 
 /**
- * Static
+ * Static class that handles the process of defining a new class or structure.
+ * Because of some bad design (notably the syntax and the fact that TypeTemplate and Type are not the same class),
+ * we needed a special class to create types and templates from CUP.
+ *
+ * Implementation Notes: Inside this class, in the comments, we will refer to both Type and TypeTemplate as "type"
+ * (lowercase).
  */
 public final class TypeDefinitionProcess {
+    // Static class: Not instantiable.
     private TypeDefinitionProcess() { }
 
 
@@ -18,6 +24,9 @@ public final class TypeDefinitionProcess {
     private static int line;
     private static int column;
     private static ArrayList<TypeParameter> typeParameters;
+    /**
+     * The type currently being constructed.
+     */
     public static TypeOrTypeTemplate currentType;
 
     @SuppressWarnings("UnusedParameters")

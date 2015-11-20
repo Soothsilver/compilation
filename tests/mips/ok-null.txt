@@ -1,6 +1,7 @@
+//yy
 type s = structure { };
 procedure a(a : s) {
-    
+    print_string("y");
 }
 procedure main()
 {

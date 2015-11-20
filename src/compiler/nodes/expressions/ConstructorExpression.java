@@ -1,6 +1,9 @@
 package compiler.nodes.expressions;
 
 import compiler.Compilation;
+import compiler.intermediate.*;
+import compiler.intermediate.instructions.AllocateInstruction;
+import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
 
 import java.util.ArrayList;
@@ -12,6 +15,14 @@ import java.util.Set;
 public class ConstructorExpression extends Expression {
     private String typeName;
 
+    /**
+     * Initializes a new ConstructorExpression for a non-generic type. Sets the expression's type immediately.
+     * Triggers a semantic error if the specified type does not exist or is generic.
+     * @param typeName Identifier of the type to be created.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     */
     public ConstructorExpression(String typeName, int line, int column, Compilation compilation) {
         this.typeName = typeName;
         this.line = line;
@@ -28,6 +39,17 @@ public class ConstructorExpression extends Expression {
             this.setErrorType();
         }
     }
+
+    /**
+     * Initializes a new ConstructorExpression for a generic type. Creates a new type by instantiating the specified
+     * template. Triggers an error if the instantiation fails (for example, because the template did not exist, or
+     * was not a template. Sets the expression's type immediately.
+     * @param typeName Identifier of the type template to be instantiated.
+     * @param typeArguments Type arguments for the template.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     */
     public ConstructorExpression(String typeName, ArrayList<Type> typeArguments, int line, int column, Compilation compilation) {
         this.typeName = typeName;
         this.line = line;
@@ -50,5 +72,16 @@ public class ConstructorExpression extends Expression {
     @Override
     public String toString() {
         return "new " + this.type + "()";
+    }
+
+    @Override
+    public OperandWithCode generateIntermediateCode(Executable executable) {
+        IntermediateRegister referenceRegister = executable.summonNewRegister();
+
+        Instructions instructions = new Instructions();
+        instructions.add(new AllocateInstruction(referenceRegister, new Operand(  type.getSizeInWords()  , OperandKind.Immediate)  ));
+
+        Operand operand = new Operand(referenceRegister, OperandKind.Register);
+        return new OperandWithCode(instructions, operand);
     }
 }

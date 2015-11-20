@@ -51,15 +51,15 @@ public class ArrayConstructorExpression extends Expression {
     }
 
     @Override
-    public ExpressionEvaluationResult generateIntermediateCode(Executable executable) {
+    public OperandWithCode generateIntermediateCode(Executable executable) {
         IntermediateRegister referenceRegister = executable.summonNewRegister();
 
         Instructions instructions = new Instructions();
-        ExpressionEvaluationResult sizeResult = size.generateIntermediateCode(executable);
+        OperandWithCode sizeResult = size.generateIntermediateCode(executable);
         instructions.addAll(sizeResult.code);
         instructions.add(new AllocateInstruction(referenceRegister, sizeResult.operand));
 
         Operand operand = new Operand(referenceRegister, OperandKind.Register);
-        return new ExpressionEvaluationResult(instructions, operand);
+        return new OperandWithCode(instructions, operand);
     }
 }

@@ -1,8 +1,14 @@
+//-300
 procedure main()
 {
     a : integer;
     b : integer;
-    a = a + b;
-    b = 2 * 5;
+    a = a + b; // 0
+    b = 2 * 5; // 10
     a = a + (b * (a - b) * 3);
+    // -10
+    // -100
+    // -300
+    // -300
+    print_int(a);
 }

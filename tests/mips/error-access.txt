@@ -1,4 +1,4 @@
-//EXPECT-RUNTIME-ERROR: null reference
+//EXPECT-RUNTIME-ERROR:Null
 type s = class {
     a : integer;
     procedure func() { print_int(2); }

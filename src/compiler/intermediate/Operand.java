@@ -1,6 +1,5 @@
 package compiler.intermediate;
 
-import compiler.nodes.declarations.SystemCall;
 import compiler.nodes.declarations.Variable;
 import compiler.nodes.declarations.VariableKind;
 
@@ -13,7 +12,7 @@ public class Operand {
      */
     public OperandKind kind;
     /**
-     * The register referred to by this operand.
+     * The register referred to by this operand. This is an intermediate code register, not an MIPS register.
      * Only used by the "Register" kind.
      */
     public IntermediateRegister register;
@@ -40,7 +39,7 @@ public class Operand {
 
     /**
      * Initializes a new instance of the Operand class.
-     * @param register The operand's register.
+     * @param register The operand's intermediate register.
      * @param kind The operand's addressing mode.
      */
     public Operand(IntermediateRegister register, OperandKind kind) {
@@ -102,6 +101,9 @@ public class Operand {
                 return new Operand(variable, OperandKind.GlobalVariable);
             case Local:
                 return new Operand(variable, OperandKind.LocalVariable);
+            case Member:
+                // Members require code, not only operand. They also require the parent expression.
+                throw new RuntimeException("This must be handled in other ways.");
             default:
                 throw new EnumConstantNotPresentException(VariableKind.class, "variable");
         }

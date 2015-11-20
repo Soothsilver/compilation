@@ -1,9 +1,26 @@
-procedure hello (a : integer) { }
-procedure hello (b : integer, c : string) { }
-procedure hello () { }
-procedure hello (a : string, b : integer) { }
+//hello_ahello_b_chellohello_a_b20goody
+procedure hello (a : integer) { print_string("hello_a"); }
+procedure hello (b : integer, c : string) { print_string("hello_b_c"); }
+procedure hello () {print_string("hello");  }
+procedure hello (a : string, b : integer) {print_string("hello_a_b");  }
 function hello() : integer { return 2; }
 function hello(a : integer) : integer { return 0; }
-function hello() : string  { return ""; }
+function hello() : string  { return "good"; }
 function hello(a:string,b:integer):boolean  { return false; }
-procedure main() { }
+procedure main() {
+    hello(5);
+    hello(5, "a");
+    expect_void(hello());
+      // The expect_void predefined procedure accepts "Type.voidType" as an argument.
+      // It does not create any actual intermediate code.
+      // It's only useful for overload resolution.
+    expect_void(hello("a", 5));
+    print_int(hello());
+    print_int(hello(2));
+    print_string(hello());
+    if (hello("a", 5)) {
+        print_string("n");
+    } else {
+        print_string("y");
+    }
+}
