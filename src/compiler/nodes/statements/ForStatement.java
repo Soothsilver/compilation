@@ -85,15 +85,18 @@ public class ForStatement extends CycleStatement{
 	        
 	        OperandWithCode eer = test.generateIntermediateCode(executable);
 	        LabelInstruction testFor = new LabelInstruction("testfor_" + Uniqueness.getUniqueId());
-	        LabelInstruction endFor = new LabelInstruction("endfor_" + Uniqueness.getUniqueId());
+	        LabelInstruction cycleEnd = new LabelInstruction("endfor_" + Uniqueness.getUniqueId());
 	        instructions.addAll(initialisation.generateIntermediateCode(executable).code);
 	        instructions.add(testFor);
 	        instructions.addAll(eer.code);
-	        instructions.add(new BranchIfZeroInstruction(eer.operand, endFor));
+	        instructions.add(new BranchIfZeroInstruction(eer.operand, cycleEnd));
+	        LabelInstruction previous = executable.enclosingLoopEnd;
+	        executable.enclosingLoopEnd = cycleEnd;
 	        instructions.addAll(body.generateIntermediateCode(executable, function));
+	        executable.enclosingLoopEnd = previous;
 	        instructions.addAll(incrementation.generateIntermediateCode(executable).code);
 	        instructions.add(new JumpInstruction(testFor));
-	        instructions.add(endFor);
+	        instructions.add(cycleEnd);
 	        
 	        return instructions;
 	 }
