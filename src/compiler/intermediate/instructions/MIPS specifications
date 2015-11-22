@@ -1,0 +1,2 @@
+For boolean values, we will adopt the convention that the 0 word means false, 
+and any non zero word means true.

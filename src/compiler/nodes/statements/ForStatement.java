@@ -1,10 +1,20 @@
 package compiler.nodes.statements;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 import compiler.Compilation;
+import compiler.analysis.Uniqueness;
+import compiler.intermediate.Executable;
+import compiler.intermediate.IntermediateFunction;
+import compiler.intermediate.OperandWithCode;
+import compiler.intermediate.instructions.BranchIfZeroInstruction;
+import compiler.intermediate.instructions.Instruction;
+import compiler.intermediate.instructions.Instructions;
+import compiler.intermediate.instructions.JumpInstruction;
+import compiler.intermediate.instructions.LabelInstruction;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
@@ -68,4 +78,23 @@ public class ForStatement extends CycleStatement{
 	 public String toString() {
 	      	return "for(" + initialisation + ";" + test + ";" + incrementation + ") " + body;
 	    }
+	 
+	 @Override
+	 public List<Instruction> generateIntermediateCode (Executable executable, IntermediateFunction function) {
+	        Instructions instructions = new Instructions();
+	        
+	        OperandWithCode eer = test.generateIntermediateCode(executable);
+	        LabelInstruction testFor = new LabelInstruction("testfor_" + Uniqueness.getUniqueId());
+	        LabelInstruction endFor = new LabelInstruction("endfor_" + Uniqueness.getUniqueId());
+	        instructions.addAll(initialisation.generateIntermediateCode(executable).code);
+	        instructions.add(testFor);
+	        instructions.addAll(eer.code);
+	        instructions.add(new BranchIfZeroInstruction(eer.operand, endFor));
+	        instructions.addAll(body.generateIntermediateCode(executable, function));
+	        instructions.addAll(incrementation.generateIntermediateCode(executable).code);
+	        instructions.add(new JumpInstruction(testFor));
+	        instructions.add(endFor);
+	        
+	        return instructions;
+	 }
 }

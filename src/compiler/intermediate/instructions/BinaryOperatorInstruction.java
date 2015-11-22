@@ -64,6 +64,16 @@ public class BinaryOperatorInstruction extends Instruction {
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
+                
+            case "<":
+                if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
+                    return
+                            left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                                    right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+                                    "\tsub " + MipsRegisters.TEMPORARY_VALUE_1 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "\n" +
+                                    saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
+                            ;
+                }
 
         }
         return "\t!!ERROR(MIPS binary operator not implemented for operator '" + operator + "' and types '" + leftType +"' and '" + rightType + "'.)\n";
