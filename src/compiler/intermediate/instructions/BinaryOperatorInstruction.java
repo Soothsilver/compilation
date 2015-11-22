@@ -70,7 +70,7 @@ public class BinaryOperatorInstruction extends Instruction {
                     return
                             left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
                                     right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
-                                    "\tsub " + MipsRegisters.TEMPORARY_VALUE_1 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "\n" +
+                                    "\tsub " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "\n" +
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
