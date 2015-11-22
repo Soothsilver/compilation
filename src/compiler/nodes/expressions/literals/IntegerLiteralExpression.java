@@ -10,7 +10,7 @@ public class IntegerLiteralExpression extends LiteralExpression {
     int data;
 
     public IntegerLiteralExpression(int data, int line, int column, Compilation compilation) {
-        super(line, column, compilation);
+        super(line, column);
         this.data = data;
         this.type = Type.integerType;
         this.possibleTypes.add(this.type);
@@ -30,7 +30,7 @@ public class IntegerLiteralExpression extends LiteralExpression {
     }
     
     @Override
-    public Operand generateOperand(Executable executable) {
+    public Operand generateOperand() {
     	return new Operand(data, OperandKind.Immediate);
     }
 }

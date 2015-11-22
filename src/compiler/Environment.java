@@ -5,9 +5,23 @@ import compiler.nodes.declarations.*;
 
 import java.util.LinkedList;
 
+/**
+ * Represents the symbol tables and other information that must be stored during syntactic analysis.
+ */
+@SuppressWarnings("Convert2Diamond")
 public class Environment {
+    /**
+     * We are currently processing a procedure definition.
+     */
     public boolean inProcedure = false;
+    /**
+     * We are currently processing a function definition.
+     */
     public boolean inFunction = false;
+    /**
+     * The declared return type of the function we are currently processing. This is used to check that
+     * ReturnStatement has a correct type.
+     */
     public TypeOrTypeTemplate returnType = null;
     private Compilation compilation;
     private ScopeTree<Subroutine> subroutineTable = null;
@@ -18,6 +32,10 @@ public class Environment {
     private LinkedList<ScopeTree<TypeOrTypeTemplate>> typeStack;
     private int depth = 0;
 
+    /**
+     * Initializes a new Environment object with empty symbol tables.
+     * @param compilation The compilation object.
+     */
     public Environment(Compilation compilation) {
         this.compilation = compilation;
         subroutineStack = new LinkedList<ScopeTree<Subroutine>>();
@@ -97,6 +115,7 @@ public class Environment {
         }
 
         public ScopeTree<T> add(T decl, ScopeTree<T> tree) {
+            assert  decl != null;
             debug("Adding " + (decl == null ? "null" : decl) + " to " + (tree == null ? "null" : tree.decl) + ", this is " + (decl == null ? "null" : decl));
             if (tree == null) {
                 throw new RuntimeException("This should never happen.");
@@ -354,12 +373,17 @@ public class Environment {
     }
 
     private void debug(String line) {
-        boolean doDebug = false;
-        if (doDebug) {
-            System.out.println(line);
-        }
+       //     System.out.println(line);
     }
-    public <T extends Declaration> void debugPrint (ScopeTree<T> tree, String sign, int level) {
+
+    /**
+     * Prints the tree that stores symbols for a particular namespace in a way that is readable for humans.
+     * @param tree The namespace to print out.
+     * @param sign Text that should be prepended to the symbol.
+     * @param level Number of spaces to put before each symbol.
+     * @param <T> Namespace type.
+     */
+    private  <T extends Declaration> void debugPrint (ScopeTree<T> tree, String sign, int level) {
         if (tree == null) return;
         for (int i =0; i < level; i++)
             System.out.print(" ");
@@ -368,6 +392,10 @@ public class Environment {
         debugPrint(tree.left, "L", level+1);
         debugPrint(tree.right, "R", level+1);
     }
+
+    /**
+     *
+     */
     public void debugPrintSubroutines() {
         debugPrint(subroutineTable, "ROOT", 0);
     }

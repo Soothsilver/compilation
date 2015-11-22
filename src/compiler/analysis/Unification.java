@@ -4,6 +4,10 @@ import compiler.nodes.declarations.Type;
 
 import static compiler.analysis.OverloadResolution.debug;
 
+/**
+ * This static class provides functions that perform type unification during type inference.
+ */
+@SuppressWarnings("UnusedParameters")
 public class Unification {
 
     /**
@@ -124,6 +128,7 @@ public class Unification {
      * @param formal The type of the formal parameter.
      * @param actual The type of the actual argument.
      * @param badness A boxed integer that will be increased if this unification increases badness.
+     * @param exactly This parameter exists only for consistency.
      * @return True if the unification succeeds.
      */
     private static boolean unifySimpleTypes(Type formal, Type actual, IntegerHolder badness, boolean exactly, UnificationSubstitution substitution) {

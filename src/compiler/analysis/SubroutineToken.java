@@ -14,7 +14,7 @@ public class SubroutineToken {
     /**
      * The underlying subroutine. This field is read only.
      */
-    public Subroutine subroutine;
+    public final Subroutine subroutine;
     /**
      * List of type arguments for the subroutine. This will be "null" if the underlying subroutine is not generic/
      */
@@ -29,6 +29,7 @@ public class SubroutineToken {
      */
     public Types formalTypes;
 
+    @SuppressWarnings("NonFinalFieldReferenceInEquals")
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof  SubroutineToken)) return false;
@@ -42,6 +43,11 @@ public class SubroutineToken {
             // TODO MAYBE FORMAL TYPES, TOO?
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0; // We don't need no efficiency.
     }
 
     @Override

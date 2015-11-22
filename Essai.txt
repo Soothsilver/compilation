@@ -1,7 +1,10 @@
-    i : integer;
+
+procedure printboth(i : integer, j : integer) {
+    print_int(i);
+    print_int(j);
+}
 procedure main() {
-    for ( i = 2; i < 5; i = i+1 ) {
-        print_int(i);
-        break;
-    }
+    printboth(2, 3);
+
+    printboth(2, 3+ 4);
 }

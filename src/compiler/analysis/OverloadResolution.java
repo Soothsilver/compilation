@@ -153,7 +153,7 @@ public final class OverloadResolution {
         debug_level++;
             for (int sti = legalSubroutines.size() - 1; sti >= 0; sti--) {
                 boolean unifiableAtLeastInOneWay = false;
-                boolean unifiableWihtoutBadnessIncrease = false;
+                boolean unifiableWithoutBadnessIncrease = false;
                 SubroutineToken st = legalSubroutines.get(sti);
                 if (returnTypes != null) {
                     for (Type rType : returnTypes) {
@@ -166,9 +166,9 @@ public final class OverloadResolution {
                             for (int i = 0; i < call.arguments.size(); i++) {
                                 argumentTypes.get(i).add(st.formalTypes.get(i).objectify());
                             }
-                            unifiableWihtoutBadnessIncrease = isBad.getValue() == 0;
+                            unifiableWithoutBadnessIncrease = isBad.getValue() == 0;
                             substitution.undoAll();
-                            if (unifiableWihtoutBadnessIncrease) {
+                            if (unifiableWithoutBadnessIncrease) {
                                 break;
                             }
                         } else {
@@ -181,7 +181,7 @@ public final class OverloadResolution {
                     }
                     unifiableAtLeastInOneWay = true;
                 }
-                if (!unifiableWihtoutBadnessIncrease) {
+                if (!unifiableWithoutBadnessIncrease) {
                     st.setBadness(st.getBadness() + 2);
                 }
                 if (!unifiableAtLeastInOneWay) {
@@ -251,7 +251,7 @@ public final class OverloadResolution {
 
 
         debug("Phase 2: We are propagating from among " + legalSubroutines.size() + " subroutines.");
-        int oldlevel = debug_level;
+        int old_level = debug_level;
 //        5. If there is exactly one subroutine left, launch this phase for all of its arguments with the unification made, and sending only a single possible return type.
 //        6. If there are still at least two inferred subroutines considered, send their combined types for each argument to the parents.
         Types types = new Types();
@@ -278,7 +278,7 @@ public final class OverloadResolution {
         types.add(returnType);
 //        6a. After that, with the specific types from parents, discover if one is better than all others. A subroutine is better than another subroutine if it has less badness. If there is one best subroutine, consider it best. If not, signal an error.
 
-        debug_level = oldlevel;
+        debug_level = old_level;
         debug("Phase 3 begins for " + call + ": We are selecting from among " + legalSubroutines.size() + " subroutines.");
         debug_level++;
         for (SubroutineToken consideredSubroutine : legalSubroutines) {
@@ -289,12 +289,12 @@ public final class OverloadResolution {
         int bestBadness = Integer.MAX_VALUE;
         SubroutineToken bestSubroutine = null;
 
-        nextsubroutine:
+        nextSubroutine:
         for (SubroutineToken consideredSubroutine : legalSubroutines) {
             for (int i = 0; i < call.arguments.size(); i++) {
                 if (!types.get(i).convertibleTo(consideredSubroutine.formalTypes.get(i))) {
                     debug("Removing " + consideredSubroutine + " from consideration because " + types.get(i) + " is not convertible to " + consideredSubroutine.formalTypes.get(i));
-                    continue nextsubroutine;
+                    continue nextSubroutine;
                 }
             }
             if (consideredSubroutine.getBadness() < bestBadness) {
@@ -329,77 +329,30 @@ public final class OverloadResolution {
         }
         debug_level--;
 //        6b. End.
+    }
 
 
+
+    // Utilities
+    /**
+     * Prints a line of debugging information on standard output.
+     * Prepends a number of spaces to the line equal to the number "debug_level".
+     *
+     * @param line The line to print out.
+     */
+    @SuppressWarnings("UnusedParameters")
+    public static void debug(String line) {
         /*
-
-        // TODO make a complete overhaul of this
-
-//        5. If there is exactly one subroutine left, launch this phase for all of its arguments with the unification made, and sending only a single possible return type.
-        if (legalSubroutines.size() == 1) {
-            bestSubroutineSelected(legalSubroutines.get(0), call, compilation);
-            return;
-            // TODO
-            // TODO
+        for (int i = 0; i < debug_level; i++) {
+            System.out.print("-");
         }
-
-
-//        6. If there are still at least two inferred subroutines considered, then discover if one is better than all others. A subroutine is better than another subroutine if it has less badness. If there is one best subroutine, consider it best. If not, signal an error (TODO this can be made better perhaps).
-        for (SubroutineToken consideredSubroutine : legalSubroutines) {
-            debug(consideredSubroutine + ": badness " + consideredSubroutine.getBadness());
-            if (consideredSubroutine.getBadness() < bestBadness) {
-                bestBadness = consideredSubroutine.getBadness();
-                bestSubroutine = consideredSubroutine;
-            } else if (consideredSubroutine.getBadness() == bestBadness) {
-                bestSubroutine = null;
-            }
-        }
-        if (bestSubroutine != null) {
-            bestSubroutineSelected(bestSubroutine, call, compilation);
-        } else {
-            final int finalBestBadness = bestBadness;
-            legalSubroutines.removeIf(sbrt -> sbrt.getBadness() > finalBestBadness);
-            compilation.semanticError("The call is ambiguous between the following subroutines: " + legalSubroutines.stream().map(sbtk -> "'" + sbtk.subroutine.getSignature(false, false) + "'").collect(Collectors.joining(",")) + ".", call.line, call.column);
-            call.setErrorType();
-        }
+        System.out.println(" " + line);
         */
     }
 
-    /*
-    private static void bestSubroutineSelected(SubroutineToken bestSubroutine, CallExpression call, Compilation compilation) {
-        call.callee = bestSubroutine;
-        call.type = bestSubroutine.formalTypes.get(bestSubroutine.formalTypes.size() - 1).objectify();
-        debug("Best subroutine: " + call);
-        for (int i = 0; i < call.arguments.size(); i++) {
-            Expression argument = call.arguments.get(i);
-            Type formalType = bestSubroutine.formalTypes.get(i).objectify();
-            // TODO if still contains a free variable, throw error? or is that already guaranteed?
-            debug("Propagating at index " + i + " to " + argument);
-            argument.propagateTypes(new HashSet<>(Arrays.asList(formalType)), compilation);
-            Type actualType = argument.type.objectify();
-
-            if (Objects.equals(actualType.name, Type.integerType.name) && Objects.equals(formalType.name, Type.floatType.name)) {
-
-
-                call.arguments.set(i, new IntegerToFloatExpression(argument));
-                if (i == 0 && call.kind == ExpressionKind.Assignment) {
-                    compilation.semanticError("Cannot implicitly convert from float to integer.", call.line, call.column);
-                    call.setErrorType();
-                    return;
-                }
-            }
-        }
-        // TODO Propagate
-    }
-    */
-    // Utilities
-    public static void debug(String line) {
-        for (int i = 0; i < debug_level; i++) {
-         //   System.out.print("-");
-        }
-       // System.out.println(" " + line);
-    }
-
+    /**
+     * The number of spaces that should be prepended to each debugging message.
+     */
     public static int debug_level;
 
 }

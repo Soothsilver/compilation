@@ -7,7 +7,7 @@ public class CharacterLiteralExpression extends LiteralExpression {
     char data;
 
     public CharacterLiteralExpression(char data, int line, int column, Compilation compilation) {
-        super(line, column, compilation);
+        super(line, column);
         this.data = data;
         this.type = Type.characterType;
         this.possibleTypes.add(this.type);

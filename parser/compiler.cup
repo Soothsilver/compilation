@@ -30,8 +30,10 @@ parser code {:
   @Override
   public void unrecovered_syntax_error(Symbol cur_token)
   {
-    compilation.syntaxAnalysisFatalFailure = true;
+    // Do nothing. We already handle syntax errors otherwise.
+    // This override exists to prevent CUP from terminating with an exception.
   }
+
 :};
 action code {:
     Environment getEnvironment() {
@@ -204,18 +206,12 @@ optional_subroutines ::= {: RESULT = new Subroutines(); :}
                     
 procedure       ::= procedure_header:p unscoped_block:b {:
                         getEnvironment().leaveSubroutine();
-                        if (Subroutine.typeParametersEntered) {
-                            Subroutine.leaveTypeParameters(parser.compilation);
-                        }
                         p.block = b;
                         p.block.flowAnalysis(parser.compilation);
                         RESULT = p;
                     :};
 function        ::= function_header:h unscoped_block:b {:
                         getEnvironment().leaveSubroutine();
-                        if (Subroutine.typeParametersEntered) {
-                            Subroutine.leaveTypeParameters(parser.compilation);
-                        }
                         h.block = b;
                         if (h.block.flowAnalysis(parser.compilation)) {
                             parser.compilation.semanticError("Not all execution paths of the function '" + h.name + "' return a value.", hleft, hright);

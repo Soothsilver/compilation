@@ -138,6 +138,7 @@ public class Type extends TypeOrTypeTemplate {
     public static Type characterType = Type.createPredefinedType("character");
     public static Type floatType = Type.createPredefinedType("float");
 
+    @SuppressWarnings("VariableNotUsedInsideIf")
     @Override
     public String toString() {
         if (kind == TypeKind.TypeVariable) {

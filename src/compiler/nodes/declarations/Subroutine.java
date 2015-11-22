@@ -55,10 +55,7 @@ public class Subroutine extends Declaration {
         return subroutine;
     }
 
-    /**
-     * A static field used during subroutine creation during CUP parsing. It does magic.
-     */
-    public static boolean typeParametersEntered = false;
+
     protected Subroutine(String name, int line, int column) {
         super(name, line, column);
     }
@@ -88,16 +85,20 @@ public class Subroutine extends Declaration {
             this.typeParameterNames.add(parameter.name);
         }
     }
+
+    /**
+     * Set "Subroutine.typeParametersEntered = true;" and then creates a type variable from each type parameter
+     * and adds them to the environment.
+     * @param typeParameters Type parameters for the subroutine being declared.
+     * @param compilation The compilation object.
+     */
     public static void enterTypeParameters(ArrayList<TypeParameter> typeParameters, Compilation compilation) {
-        Subroutine.typeParametersEntered = true;
         for (TypeParameter typename : typeParameters) {
             Type subroutineTypeVariable = Type.createSubroutineTypeVariable(typename.name, typename.line, typename.column);
             compilation.environment.addType(subroutineTypeVariable);
         }
     }
-    public static void leaveTypeParameters(Compilation compilation) {
-        Subroutine.typeParametersEntered = false;
-    }
+
 
 
     @Override

@@ -29,12 +29,31 @@ public class Compilation {
      * Indicates whether any syntax error triggered. This information is perhaps not useful.
      */
     public boolean syntaxErrorTriggered = false;
-    public boolean ignoreSemanticErrors = false;
-    public boolean syntaxAnalysisFatalFailure = false;
-	public ArrayList<String> errorMessages = new ArrayList<>();
-	public ArrayList<String> errorsExpected = new ArrayList<>();
-	public String firstLine = null;
-	public Environment environment = new Environment(this);
+	/**
+	 * If true, then whenever a semantic error would trigger, instead it doesn't trigger.
+	 */
+	public boolean ignoreSemanticErrors = false;
+    /**
+     * List of error messages for errors triggered during the compilation.
+     */
+    public ArrayList<String> errorMessages = new ArrayList<>();
+    /**
+     * List of error messages expected to happen during this compilation. A compilation test succeeds only if, for
+     * each expected error, an actual error message triggered. Each error message may be used only once.
+     */
+    public ArrayList<String> errorsExpected = new ArrayList<>();
+    /**
+     * The first line of the source code. This is used in code-generation tests because I was too lazy to write
+     * a proper testing comment and writing "//2" on the first line is faster than writing "//EXPECT:2" on any line.
+     */
+    public String firstLine = null;
+    /**
+     * The symbol tables associated with the compilation object. The environment is initialized in the initializer.
+     */
+    public Environment environment = new Environment(this);
+    /**
+     * The abstract syntax tree generated at the end of semantic analysis.
+     */
     public ProgramNode abstractSyntaxTree = null;
 
     /**
@@ -79,8 +98,13 @@ public class Compilation {
 			semanticError("The program has more than one valid 'main' entry point.");
 		}
     }
-	
-	public boolean hasTestRunOkay() {
+
+    /**
+     * Returns true if either both the expected errors list and the error messages list are empty, or,
+     * if there is at least one expected error, if for each expected error there exists an actual triggered error
+     * message that it matches. Each error message may be used only once.
+     */
+    public boolean hasTestRunOkay() {
 		if (!errorsExpected.isEmpty()) {
 			ArrayList<String> copy = new ArrayList<>();
 			for (String error : errorsExpected)
@@ -103,7 +127,16 @@ public class Compilation {
 		}
 	}
 
-	public Compilation(File source) {
+    /**
+     * Initializes a new compilation object. Create a new Compilation object at the beginning of each compilation.
+     * This constructor will load the file from disk, extract compiler and test related information from it (contained
+     * in its comments). But it will not run the parser.
+     *
+     * If the file cannot be loaded, the constructor fails silently and returns an object in an inconsistent state.
+     *
+     * @param source The file with the source code to compile.
+     */
+    public Compilation(File source) {
 		if (source != null) {
 			List<String> lines = null;
 			try {
@@ -142,6 +175,12 @@ public class Compilation {
 		environment.addPredefinedTypesConstantsAndFunctions();
 	}
 
+    /**
+     * Causes a semantic error to trigger and be put into the list of errors.
+     * @param message The error message. It will be prefixed with the text "Semantic error: ".
+     * @param line Line at which the error occurred.
+     * @param column Column at which the error occurred.
+     */
     public void semanticError(String message, int line, int column) {
         if (ignoreSemanticErrors) return;
         errorTriggered = true;
@@ -152,25 +191,65 @@ public class Compilation {
         errorTriggered = true;
         errorMessages.add("Semantic error: " + message);
     }
-	public void warning(String warningMessage, int line, int column) {
+
+    /**
+     * Causes a semantic warning to trigger. If the file contains the "warnings are errors" special comment,
+     * it also triggers an error. The warning text is added to the list of errors.
+     * @param warningMessage The warning message. It will be prefixed with the text "Warning:".
+     * @param line Source line.
+     * @param column Source column.
+     */
+    public void warning(String warningMessage, int line, int column) {
 		if (ignoreSemanticErrors) return;
 		if (warningsAreErrors) errorTriggered = true;
 		errorMessages.add("Warning at line " + (line+1) + ", column " + (column+1) + ": " + warningMessage);
 	}
-	public void lexicalError(String message, int line, int column) {
+
+    /**
+     * Causes a lexical error to trigger and be put into the list of errors.
+     * @param message The error message. It will be prefixed with the text "Lexical error: ".
+     * @param line Line at which the error occurred.
+     * @param column Column at which the error occurred.
+     */
+    public void lexicalError(String message, int line, int column) {
 		errorTriggered = true;
 		errorMessages.add("Lexical error at line " + (line+1) + ", column " + (column+1) + ": " + message);
 	}
-	public void notImplementedError(String message, int line, int column) {
+
+    /**
+     * Causes an error to trigger and be put into the list of errors.
+     *
+     * This method should be called during code generation when the code passes semantic analysis but we did not
+     * code it in code generation.
+     *
+     * @param message The error message. It will be prefixed with the text "Internal error: ".
+     * @param line Line at which the error occurred.
+     * @param column Column at which the error occurred.
+     */
+    public void notImplementedError(String message, int line, int column) {
         errorTriggered = true;
         errorMessages.add("Internal error at line " + (line+1) + ", column " + (column+1) + ": " + message);
     }
 
-	public void reportSyntaxError(CompilerParser parser, String message, Object something)
+    /**
+     * This method catches all uncaught errors from the CUP parser, mostly CUP internal errors.
+     * Normally, it should never be called.
+     *
+     * @param parser The CUP-generated parser object.
+     * @param message The CUP error message.
+     * @param something This is an argument that CUP passes to this method.
+     */
+    @SuppressWarnings("UnusedParameters")
+    public void reportSyntaxError(CompilerParser parser, String message, Object something)
 	{
         errorMessages.add(message);
 	}
-	public void addSuffix(String message) {
+
+    /**
+     * Adds a message to the end of the last triggered error.
+     * @param message The message to add to the last triggered error.
+     */
+    public void addSuffix(String message) {
 		if (errorMessages.size() > 0)
 		{
 			errorMessages.set(
@@ -179,7 +258,13 @@ public class Compilation {
 					);
 		}
 	}
-	public void syntaxError(CompilerParser parser, Symbol cur_token) {
+
+    /**
+     * Causes a syntax error to trigger and be put in the list of errors.
+     * @param parser The CUP-generated parser object.
+     * @param cur_token The token at which CUP recognized that a syntax error occurred.
+     */
+    public void syntaxError(CompilerParser parser, Symbol cur_token) {
         syntaxErrorTriggered = true;
 		errorTriggered = true;
 		String message =
@@ -198,6 +283,12 @@ public class Compilation {
         errorMessages.add(message);
       //  System.out.println("\n " + message);
 	}
+
+    /**
+     * Gets the name of the terminal identified by the given CUP identifier.
+     * @param symbol Internal CUP terminal identifier.
+     * @return A human-readable name of the terminal.
+     */
     public static String get_name_from_symbol_id(int symbol) {
         Class<CompilerSymbol> symbolClass = CompilerSymbol.class;
         Field[] fields = symbolClass.getDeclaredFields();

@@ -1,23 +1,18 @@
 package compiler.nodes.statements;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import compiler.Compilation;
 import compiler.analysis.Uniqueness;
 import compiler.intermediate.Executable;
 import compiler.intermediate.IntermediateFunction;
 import compiler.intermediate.OperandWithCode;
-import compiler.intermediate.instructions.BranchIfZeroInstruction;
-import compiler.intermediate.instructions.Instruction;
-import compiler.intermediate.instructions.Instructions;
-import compiler.intermediate.instructions.JumpInstruction;
-import compiler.intermediate.instructions.LabelInstruction;
+import compiler.intermediate.instructions.*;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 import compiler.nodes.expressions.ExpressionKind;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Represents the "for (init;cond;increment) body;" statement.

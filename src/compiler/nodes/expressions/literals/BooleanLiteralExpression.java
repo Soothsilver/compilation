@@ -1,7 +1,6 @@
 package compiler.nodes.expressions.literals;
 
 import compiler.Compilation;
-import compiler.intermediate.Executable;
 import compiler.intermediate.Operand;
 import compiler.intermediate.OperandKind;
 import compiler.nodes.declarations.Type;
@@ -16,7 +15,7 @@ public class BooleanLiteralExpression extends LiteralExpression {
      * Initializes a new boolean literal expression. Cannot fail.
      */
     public BooleanLiteralExpression(boolean data, int line, int column, Compilation compilation) {
-        super(line, column, compilation);
+        super(line, column);
         this.data = data;
         this.type = Type.booleanType;
         this.possibleTypes.add(this.type);
@@ -29,7 +28,7 @@ public class BooleanLiteralExpression extends LiteralExpression {
 
 
     @Override
-    public Operand generateOperand(Executable executable) {
+    public Operand generateOperand() {
         return new Operand(data ? 1 : 0, OperandKind.Immediate);
     }
 }

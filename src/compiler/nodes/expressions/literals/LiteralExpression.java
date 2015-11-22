@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public abstract class LiteralExpression extends Expression {
 
-    protected LiteralExpression( int line, int column, Compilation compilation) {
+    protected LiteralExpression(int line, int column) {
         this.line = line;
         this.column = column;
         this.kind = ExpressionKind.Literal;
@@ -36,12 +36,12 @@ public abstract class LiteralExpression extends Expression {
      * The operand's kind should always be immediate.
      * @return An operand.
      */
-    public Operand generateOperand(Executable executable) {
+    public Operand generateOperand() {
     	return new Operand(1, OperandKind.Immediate);
     }
 
     @Override
     public OperandWithCode generateIntermediateCode(Executable executable) {
-        return new OperandWithCode(new Instructions(), generateOperand(executable));
+        return new OperandWithCode(new Instructions(), generateOperand());
     }
 }

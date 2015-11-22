@@ -8,7 +8,7 @@ import java.util.Objects;
  */
 public class SystemCall extends Subroutine {
     /**
-     * The MIPS sytem call code for this system call.
+     * The MIPS system call code for this system call.
      */
     public int systemCallCode;
 

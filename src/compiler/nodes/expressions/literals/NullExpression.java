@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class NullExpression extends LiteralExpression {
     public NullExpression(int line, int column, Compilation compilation) {
-        super(line, column, compilation);
+        super(line, column);
         this.type = Type.nullType;
         this.possibleTypes.add(this.type);
     }

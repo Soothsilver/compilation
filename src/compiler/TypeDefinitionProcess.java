@@ -43,11 +43,16 @@ public final class TypeDefinitionProcess {
     public static void setTypeParameters(ArrayList<TypeParameter> parameters) {
         TypeDefinitionProcess.typeParameters = parameters;
     }
+    @SuppressWarnings("VariableNotUsedInsideIf")
     public static void createClass(Compilation compilation) {
         // 1. Create the type
         TypeOrTypeTemplate newType;
-        if (TypeDefinitionProcess.typeParameters == null) newType = Type.createClass(TypeDefinitionProcess.typename, TypeDefinitionProcess.line, TypeDefinitionProcess.column);
-        else newType = TypeTemplate.createTemplate(TypeDefinitionProcess.typename, TypeDefinitionProcess.line, TypeDefinitionProcess.column);
+        if (TypeDefinitionProcess.typeParameters == null) {
+            newType = Type.createClass(TypeDefinitionProcess.typename, TypeDefinitionProcess.line, TypeDefinitionProcess.column);
+        } else {
+            newType = TypeTemplate.createTemplate(TypeDefinitionProcess.typename, TypeDefinitionProcess.line, TypeDefinitionProcess.column);
+        }
+
 
         // 2. Add it to the environment
         compilation.environment.addType(newType); // This may fail, but we don't care at this point.

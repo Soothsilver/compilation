@@ -5,6 +5,9 @@ import compiler.intermediate.MipsRegisters;
 import compiler.intermediate.Operand;
 import compiler.nodes.declarations.Type;
 
+/**
+ * Represents an intermediate code instruction that takes two operands, an operator a return register.
+ */
 public class BinaryOperatorInstruction extends Instruction {
     private String operator;
     private Operand left;
