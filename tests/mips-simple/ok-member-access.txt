@@ -1,0 +1,12 @@
+//22
+type s = structure {
+ a : integer;
+ b : integer;
+};
+ s : s;
+procedure main() {
+ s = new s();
+ s.a = s.b = 2;
+ print_int(s.a);
+ print_int(s.b);
+}

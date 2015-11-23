@@ -32,6 +32,12 @@ public class IntermediateRegister {
         return "REG(" + index + ")";
     }
 
+    /**
+     * Generates MIPS code that saves the value of this intermediate register into the specified MIPS register.
+     * This method MUST NOT use the registers TEMPORARY_VALUE_0 nor TEMPORARY_VALUE_1.
+     * @param saveTheValueIntoThis The register where the value should be saved.
+     * @return MIPS code.
+     */
     public String mipsSaveValueToRegister(String saveTheValueIntoThis) {
         return "\tlw " + saveTheValueIntoThis + "," + Executable.REGISTERS_SPACE + "+" + (4*index) + "\n";
     }

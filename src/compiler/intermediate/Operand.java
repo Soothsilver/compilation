@@ -58,6 +58,8 @@ public class Operand {
                 return Integer.toString(integerValue);
             case Register:
                 return register.toString();
+            case Parameter:
+                return "PARAM(" + variable.index + ")";
             case LocalVariable:
                 return "LOCAL(" + variable.index + ")";
             case GlobalVariable:
@@ -101,6 +103,8 @@ public class Operand {
                 return new Operand(variable, OperandKind.GlobalVariable);
             case Local:
                 return new Operand(variable, OperandKind.LocalVariable);
+            case Parameter:
+                return new Operand(variable, OperandKind.Parameter);
             case Member:
                 // Members require code, not only operand. They also require the parent expression.
                 throw new RuntimeException("This must be handled in other ways.");
@@ -116,38 +120,27 @@ public class Operand {
      * @return MIPS instructions.
      */
     public String toMipsAcquireFromOperand(Operand fromOperand) {
-        switch (fromOperand.kind) {
+        String mipsCode = fromOperand.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0);
+        switch (this.kind) {
             case Immediate:
-                switch(this.kind) {
-                    case Immediate:
-                        throw new RuntimeException("Immediate operand is not an l-value.");
-                    case GlobalVariable:
-                         return
-                                "\tli " + MipsRegisters.TEMPORARY_VALUE_0 + "," + fromOperand.integerValue + "\n" +
-                                "\tsw " + MipsRegisters.TEMPORARY_VALUE_0  + "," + this.variable.name + "\n";
-                    case RegisterContainsHeapAddress:
-                        return
-                                "\tli " + MipsRegisters.TEMPORARY_VALUE_0 + "," + fromOperand.integerValue + "\n" +
-                                this.register.mipsSaveValueToRegister(MipsRegisters.TEMPORARY_VALUE_1) +
-                                "\tsw " +  MipsRegisters.TEMPORARY_VALUE_0 + ",(" + MipsRegisters.TEMPORARY_VALUE_1 + ")\n"
-                                ;
-                }
+                throw new RuntimeException("Values cannot be loaded into an immediate value.");
+            case GlobalVariable:
+                mipsCode += "\tsw " + MipsRegisters.TEMPORARY_VALUE_0  + "," + this.variable.name + "\n";
                 break;
-            case Register:
-                switch (this.kind) {
-                    case RegisterContainsHeapAddress:
-                        return
-                               fromOperand.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
-                               this.register.mipsSaveValueToRegister(MipsRegisters.TEMPORARY_VALUE_1) +
-                                "\tsw " +  MipsRegisters.TEMPORARY_VALUE_0 + ",(" + MipsRegisters.TEMPORARY_VALUE_1 + ")\n"
-                                ;
-                    case GlobalVariable:
-                        return
-                                fromOperand.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
-                                "\tsw " + MipsRegisters.TEMPORARY_VALUE_0  + "," + this.variable.name + "\n";
-                }
+            case RegisterContainsHeapAddress:
+                mipsCode +=  this.register.mipsSaveValueToRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+                        "\tsw " +  MipsRegisters.TEMPORARY_VALUE_0 + ",(" + MipsRegisters.TEMPORARY_VALUE_1 + ")\n";
+                break;
+            case Parameter:
+                mipsCode +=
+                        "\tsw " + MipsRegisters.TEMPORARY_VALUE_0 + "," + (4 * this.variable.reverseIndex) + "($sp)\n";
+                break;
+            default:
+                throw new RuntimeException("The operand kind " + this.kind + " was not yet implemented.");
+
+
         }
-        return "\t!!ERROR(Operand " + fromOperand + " was not saved to " + this + ".)\n";
+        return mipsCode;
     }
     /**
      * Generates MIPS instructions that load the value of this operand into the specified register.
@@ -167,6 +160,8 @@ public class Operand {
             case RegisterContainsHeapAddress:
                 return register.mipsSaveValueToRegister(registerName) +
                        "\tlw " + registerName + ",(" + registerName + ")\n";
+            case Parameter:
+                return "\tlw " + registerName + "," + (4*variable.reverseIndex) + "($sp)\n";
             default:
                 return "\t!!ERROR This addressing mode is not yet supported.!!\n";
         }

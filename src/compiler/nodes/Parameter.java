@@ -3,6 +3,7 @@ package compiler.nodes;
 import compiler.Compilation;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.declarations.Variable;
+import compiler.nodes.declarations.VariableKind;
 
 /**
  * Represents a formal parameter of a subroutine declaration. Not a type parameter. Not an actual argument.
@@ -16,7 +17,7 @@ public class Parameter extends Node {
      * Type of the formal parameter, e.g. Type.integerType for "a : integer"
      */
     public Type type;
-    private Variable variable; // If the variable's type is generic in a specific way, it stays that way... it's complicated.
+    public Variable variable; // If the variable's type is generic in a specific way, it stays that way... it's complicated.
 
     /**
      * Creates a parameter and adds it to the current environment.
@@ -26,6 +27,7 @@ public class Parameter extends Node {
         this.name = name;
         this.type = type;
         this.variable = Variable.createAndAddToEnvironment(name, type, line, column, compilation);
+        this.variable.kind = VariableKind.Parameter;
     }
 
     /**

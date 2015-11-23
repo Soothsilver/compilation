@@ -22,6 +22,12 @@ public class Variable extends Declaration {
      */
     public int index;
     /**
+     * If this is a parameter, then this is the zero-based index of the parameter, except that the latest parameter comes first.
+     * For example, in the subroutine hello(a : float, b : float), the parameter "b" has reverseIndex = 0,
+     * and the parameter "a" has reverseIndex = 1.
+     */
+    public int reverseIndex;
+    /**
      * Indicates whether this is a foreach iteration variable. If yes, then it cannot be modified.
      */
     public boolean readonly;

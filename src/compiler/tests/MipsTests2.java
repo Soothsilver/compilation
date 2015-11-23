@@ -13,18 +13,18 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class MipsTests extends TestCase {
+public class MipsTests2 extends TestCase {
 
 
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
-        return TestUtilities.getFiles("mips");
+        return TestUtilities.getFiles("mips-simple");
     }
 
     private File file;
 
-    public MipsTests(final String name, final File file) {
+    public MipsTests2(final String name, final File file) {
         this.file = file;
     }
 

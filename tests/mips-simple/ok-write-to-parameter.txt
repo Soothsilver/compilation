@@ -1,0 +1,13 @@
+//38
+type s = structure {
+ a : integer;
+ b : integer;
+};
+procedure hello( a : integer, b :integer) {
+    print_int(a);
+    a = 8;
+    print_int(a);
+}
+procedure main() {
+ hello(3,4+5);
+}

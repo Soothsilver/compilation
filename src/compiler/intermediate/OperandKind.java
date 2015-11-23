@@ -20,5 +20,5 @@ public enum OperandKind {
 	 * This operand's IntermediateRegister holds a memory address. This operand represents whatever is stored at that memory address.
 	 */
 	RegisterContainsHeapAddress,
-    LocalVariable
+	Parameter, LocalVariable
 }

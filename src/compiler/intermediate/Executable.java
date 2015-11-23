@@ -44,6 +44,10 @@ public class Executable {
             }
         }
 		for (Subroutine subroutine : programNode.Subroutines) {
+            for (int i = 0; i < subroutine.parameters.size(); i++) {
+                subroutine.parameters.get(i).variable.index = i;
+                subroutine.parameters.get(i).variable.reverseIndex = subroutine.parameters.size() - i - 1;
+            }
 			functions.add(IntermediateFunction.create(subroutine, this));
 		}
 	}
