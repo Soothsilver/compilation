@@ -41,4 +41,11 @@ addiu $sp,$sp,4*/
     public static String clearStackItems(int count) {
         return "\taddiu $sp,$sp," + 4 * count + " # Pop " + (count) + " words from stack\n";
     }
+    
+    /**
+     * Tests if a string represents the name of a MIPS floating point register.
+     */
+    public static Boolean isFloatRegister(String registerName) {
+    	return registerName.charAt(1) == 'f';
+    }
 }

@@ -363,6 +363,9 @@ public class Environment {
         SystemCall printInt = new SystemCall("print_int", 1, Type.voidType);
         printInt.parameters.add((new Parameter("$a0", Type.integerType)));
         addSubroutine(printInt);
+        SystemCall printFloat = new SystemCall("print_float", 2, Type.voidType);
+        printFloat.parameters.add((new Parameter("$f12", Type.floatType)));
+        addSubroutine(printFloat);
     }
 
     private void addBinaryOperator(String symbol, Type firstOperand, Type secondOperand, Type returnType) {

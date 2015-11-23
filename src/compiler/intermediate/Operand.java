@@ -150,6 +150,7 @@ public class Operand {
      * @return MIPS instructions.
      */
     public String toMipsLoadIntoRegister(String registerName) {
+    	if (!MipsMacros.isFloatRegister(registerName))
         switch (kind) {
             case Immediate:
                 return "\tli " + registerName + "," + integerValue + "\n";
@@ -162,6 +163,14 @@ public class Operand {
                        "\tlw " + registerName + ",(" + registerName + ")\n";
             case Parameter:
                 return "\tlw " + registerName + "," + (4*variable.reverseIndex) + "($sp)\n";
+            default:
+                return "\t!!ERROR This addressing mode is not yet supported.!!\n";
+        }
+    	else
+            switch (kind) {
+            case Immediate:
+                return "\tli " + MipsRegisters.TEMPORARY_VALUE_0 + "," + integerValue + "\n" +
+            		"\tmtc1 " + MipsRegisters.TEMPORARY_VALUE_0 + "," + registerName + "\n";
             default:
                 return "\t!!ERROR This addressing mode is not yet supported.!!\n";
         }
