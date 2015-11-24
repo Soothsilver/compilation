@@ -1,0 +1,8 @@
+//s
+s : string;
+procedure main()
+{
+    print_character('s');
+    exit();
+    print_character('t');
+}

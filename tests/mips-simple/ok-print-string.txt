@@ -1,0 +1,6 @@
+//HELLO
+s : string;
+procedure main()
+{
+   print_string("HELLO");
+}

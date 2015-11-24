@@ -3,6 +3,7 @@ package compiler.intermediate;
 import java.util.ArrayList;
 
 import compiler.Compilation;
+import compiler.analysis.Uniqueness;
 import compiler.intermediate.instructions.LabelInstruction;
 import compiler.nodes.*;
 import compiler.nodes.declarations.*;
@@ -62,6 +63,10 @@ public class Executable {
      */
     public ArrayList<Variable> globalVariables = new ArrayList<>();
     /**
+     * List of string literals to put in code.
+     */
+    public ArrayList<IntermediateStringLiteral> stringLiterals = new ArrayList<>();
+    /**
      * Contains all subroutines of the source code transformed to intermediate code, but no predefined subroutines.
      */
     public ArrayList<IntermediateFunction> functions = new ArrayList<>();
@@ -71,6 +76,9 @@ public class Executable {
 		String intermediateCode = "";
         for (Variable global : globalVariables) {
             intermediateCode += "GLOBAL VARIABLE " + global.name + "\n";
+        }
+        for (IntermediateStringLiteral isl : stringLiterals) {
+            intermediateCode += "LITERAL " + isl.getLabel() + ": " + isl.getData() + "\n";
         }
 		for (IntermediateFunction function : functions) {
 			intermediateCode += "SUBROUTINE " + function.getName() + ": \n";
@@ -90,6 +98,9 @@ public class Executable {
         s += "\t " + REGISTERS_SPACE + ": .space 4000 # Temporary values are stored in this memory.\n";
         for (Variable global : globalVariables) {
             s += "\t" + global.name + ": .word 0 # global 32-bit variable with default value '0'\n";
+        }
+        for (IntermediateStringLiteral isl : stringLiterals) {
+            s += "\t" + isl.getLabel() +": .asciiz \"" + isl.getData() + "\"\n";
         }
         s += ".text\n";
         s += ".globl main\n";
@@ -120,5 +131,17 @@ public class Executable {
     public IntermediateRegister summonNewRegister() {
         registerCount++;
         return new IntermediateRegister(registerCount);
+    }
+
+    /**
+     * Creates a new IntermediateStringLiteral from the specified textual data and adds the literal
+     * to the compilation's list of string literals.
+     * @param data The textual data that will be contained by the literal.
+     * @return Reference to the created literal.
+     */
+    public IntermediateStringLiteral createStringLiteral(String data) {
+        IntermediateStringLiteral isl = new IntermediateStringLiteral("____str" + Uniqueness.getUniqueId(), data);
+        stringLiterals.add(isl);
+        return isl;
     }
 }

@@ -60,7 +60,12 @@ public class ArrayInferenceCreationExpression extends CallExpression {
     @Override
     public void propagateTypes(Set<Type> types, Compilation compilation) {
         super.propagateTypes(types, compilation);
-        this.innerType = this.type.typeArguments.get(0);
+        if (this.type != null && !this.type.equals(Type.errorType) && this.type.typeArguments != null && this.type.typeArguments.size() > 0) {
+            this.innerType = this.type.typeArguments.get(0);
+        }
+        else {
+            this.innerType = Type.errorType;
+        }
     }
 
     @Override

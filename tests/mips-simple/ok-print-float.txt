@@ -1,0 +1,5 @@
+//3.14
+procedure main()
+{
+    print_float(3.14);
+}

@@ -1,5 +1,7 @@
 package compiler.intermediate;
 
+import compiler.analysis.Uniqueness;
+
 /**
  * Contains static function useful when generating MIPS assembly.
  */
@@ -47,5 +49,30 @@ addiu $sp,$sp,4*/
      */
     public static Boolean isFloatRegister(String registerName) {
     	return registerName.charAt(1) == 'f';
+    }
+
+    public static String nonShortCircuitingBooleanOperator(String operator, Operand left, Operand right, IntermediateRegister saveToWhere) {
+        if (operator.equals("&&")) {
+            String labelYes = "_yes" + Uniqueness.getUniqueId();
+            String labelNo  = "_no"  + Uniqueness.getUniqueId();
+            String labelEnd = "_end" + Uniqueness.getUniqueId();
+
+            return
+                    left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                    MipsAssembly.beqz(MipsRegisters.TEMPORARY_VALUE_0, labelNo) +
+                    right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                    MipsAssembly.beqz(MipsRegisters.TEMPORARY_VALUE_0, labelNo) +
+                    MipsAssembly.li(MipsRegisters.TEMPORARY_VALUE_0, 1) +
+                    saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                    MipsAssembly.jmp(labelEnd) +
+                    MipsAssembly.label(labelNo) +
+                    MipsAssembly.li(MipsRegisters.TEMPORARY_VALUE_0, 0) +
+                    saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                    MipsAssembly.label(labelEnd);
+
+        } else {
+            // ||
+            throw new RuntimeException("||");
+        }
     }
 }

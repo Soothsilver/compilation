@@ -22,6 +22,11 @@ public class Operand {
      */
     public int integerValue;
     /**
+     * The operand may refer to a string literal.
+     * Only used by the "StringLiteral" kind.
+     */
+    public IntermediateStringLiteral intermediateStringLiteral;
+    /**
      * The operand's variable.
      * Only used by the "GlobalVariable", "LocalVariable" kinds.
      */
@@ -51,6 +56,17 @@ public class Operand {
         this.kind = kind;
     }
 
+    /**
+     * Initializes a new operand with a string literal.
+     * This constructor should only be used to construct StringLiteral operands.
+     * @param isl The string literal.
+     * @param stringLiteral This should always be OperandKind.StringLiteral.
+     */
+    public Operand(IntermediateStringLiteral isl, OperandKind stringLiteral) {
+        this.kind = OperandKind.StringLiteral;
+        this.intermediateStringLiteral = isl;
+    }
+
     @Override
     public String toString() {
         switch (kind){
@@ -66,6 +82,8 @@ public class Operand {
                 return "GLOBAL(" + variable.name + ")";
             case RegisterContainsHeapAddress:
                 return "HEAP(" + register + ")";
+            case StringLiteral:
+                return "STRING(" + intermediateStringLiteral.getLabel() + ")";
         }
         throw new EnumConstantNotPresentException(OperandKind.class, "kind");
     }
@@ -163,8 +181,10 @@ public class Operand {
                        "\tlw " + registerName + ",(" + registerName + ")\n";
             case Parameter:
                 return "\tlw " + registerName + "," + (4*variable.reverseIndex) + "($sp)\n";
+            case StringLiteral:
+                return "\tla " + registerName + "," + intermediateStringLiteral.getLabel() + "\n";
             default:
-                return "\t!!ERROR This addressing mode is not yet supported.!!\n";
+                throw new RuntimeException("This addressing mode ('" + kind + "') is not yet supported.");
         }
     	else
             switch (kind) {

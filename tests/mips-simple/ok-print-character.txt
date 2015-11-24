@@ -1,0 +1,7 @@
+//st
+s : string;
+procedure main()
+{
+    print_character('s');
+    print_character('t');
+}

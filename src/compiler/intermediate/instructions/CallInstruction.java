@@ -52,9 +52,7 @@ public class CallInstruction  extends Instruction {
             String assembly = "";
             assembly += "\tli $v0," + ((SystemCall)function.subroutine).systemCallCode + "\n";
             if (operands.size() == 1) {
-                // TODO non integers
                 assembly += operands.get(0).toMipsLoadIntoRegister(((SystemCall)function.subroutine).parameters.get(0).name);
-                //assembly += "\tli $a0," + operands.get(0).integerValue + "\n";
             }
             assembly += "\tsyscall # " + ((SystemCall) function.subroutine).name + "\n";
             return assembly;

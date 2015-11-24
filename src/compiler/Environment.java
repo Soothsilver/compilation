@@ -116,7 +116,7 @@ public class Environment {
 
         public ScopeTree<T> add(T decl, ScopeTree<T> tree) {
             assert  decl != null;
-            debug("Adding " + (decl == null ? "null" : decl) + " to " + (tree == null ? "null" : tree.decl) + ", this is " + (decl == null ? "null" : decl));
+            debug("Adding " + (decl) + " to " + (tree == null ? "null" : tree.decl) + ", this is " + (decl));
             if (tree == null) {
                 throw new RuntimeException("This should never happen.");
                 //return new ScopeTree<T>(decl);
@@ -155,6 +155,10 @@ public class Environment {
             return typeTable.find(identifier);
     }
 
+    /**
+     * Searches the symbol tables for a variable with the specified name. Returns null if it doesn't find the variable.
+     * @param identifier The variable name.
+     */
     public Variable findVariable(String identifier) {
         if (variableTable == null)
             return null;
@@ -162,6 +166,11 @@ public class Environment {
             return variableTable.find(identifier);
     }
 
+    /**
+     * Searches the symbol tables for a subroutine with the specified name. Returns a list of all subroutines,
+     * in an unspecified order, that have the same. It returns both generic and non-generic subroutines.
+     * @param identifier The subroutine name.
+     */
     public LinkedList<Subroutine> findSubroutines(String identifier) {
         if (subroutineTable == null) {
             return null;
@@ -169,6 +178,15 @@ public class Environment {
             return subroutineTable.findGroup(identifier);
     }
 
+    /**
+     * Adds a new subroutine to the symbol tables. Triggers an error if a subroutine with the specified signature
+     * already exists.
+     *
+     * Once the subroutine enters the symbol tables, it is the user's responsibility that the
+     * subroutine's signature does not change because it is put in a search tree.
+     *
+     * @param subroutine The subroutine to add.
+     */
     public void addSubroutine(Subroutine subroutine) {
         if (subroutineTable == null) {
             subroutineTable = new ScopeTree<Subroutine>(subroutine);
@@ -176,7 +194,15 @@ public class Environment {
             subroutineTable = subroutineTable.add(subroutine, subroutineTable);
         debug("Added subroutine " + subroutine);
     }
-
+    /**
+     * Adds a new type or type template to the symbol tables. Triggers an error if a type or type template with specified
+     * name already exists. Types and type templates share the same namespace.
+     *
+     * Once the type enters the symbol tables, it is the user's responsibility to ensure that the
+     * type's name does not change because it is put in a search tree.
+     *
+     * @param type The type or type template to add.
+     */
     public void addType(TypeOrTypeTemplate type) {
         if (typeTable == null) {
             typeTable = new ScopeTree<TypeOrTypeTemplate>(type);
@@ -185,6 +211,15 @@ public class Environment {
     }
 
 
+    /**
+     * Adds a new variable to the symbol tables. Triggers an error if a variable with the same name was already declared
+     * in the innermost active scope. Hiding is an option.
+     *
+     * Once the variable enters the symbol tables, it is the user's responsibility to ensure that the
+     * variable's name does not change because it is put in a search tree.
+     *
+     * @param variable The variable to add.
+     */
     public void addVariable(Variable variable) {
         if (variableTable == null) {
             variableTable = new ScopeTree<Variable>(variable);
@@ -193,14 +228,24 @@ public class Environment {
     }
 
 
+    /**
+     * Sets "inFunction = true". This is useful to analyze whether a return statement is legal.
+     */
     public void enterFunction() {
         inFunction = true;
     }
 
+    /**
+     * Sets "inProcedure = "true". This is useful to analyze whether a stop statement is legal.
+     */
     public void enterProcedure() {
         inProcedure = true;
     }
 
+    /**
+     * Clears the flags inProcedure and inFunction, clears the return type and leaves variable and type scope,
+     * but not subroutine scope.
+     */
     public void leaveSubroutine() {
         inFunction = inProcedure = false;
         returnType = null;
@@ -209,16 +254,29 @@ public class Environment {
     }
 
 
+    /**
+     * The number of cycles we are in. This is used to determine whether a break statement is legal.
+     */
     public int cycleDepth = 0;
 
+    /**
+     * Executes "cycleDepth++".
+     */
     public void enterCycle() {
         cycleDepth++;
     }
 
+    /**
+     * Executes "cycleDepth--".
+     */
     public void leaveCycle() {
         cycleDepth--;
     }
 
+    /**
+     * Indicates whether the node currently analyzed is inside a loop.
+     * Implementation Notes: This is done by testing "cycleDepth > 0".
+     */
     public boolean inCycle() {
         return cycleDepth > 0;
     }
@@ -263,6 +321,10 @@ public class Environment {
         debug("Leave variable scope.");
     }
 
+    /**
+     * Adds vast amount of symbols to the symbol tables - notably all five predefined types
+     * (integer, boolean, character, float, string), all operators and all system calls.
+     */
     public void addPredefinedTypesConstantsAndFunctions() {
         addType(Type.integerType);
         addType(Type.booleanType);
@@ -271,7 +333,6 @@ public class Environment {
         addType(Type.stringType);
 
         // Add operators
-
 //terminal TIMES, DIVIDE, MODULO;
         addBinaryOperator("*", Type.integerType, Type.integerType, Type.integerType);
         addBinaryOperator("*", Type.floatType, Type.floatType, Type.floatType);
@@ -366,6 +427,13 @@ public class Environment {
         SystemCall printFloat = new SystemCall("print_float", 2, Type.voidType);
         printFloat.parameters.add((new Parameter("$f12", Type.floatType)));
         addSubroutine(printFloat);
+        SystemCall printString = new SystemCall("print_string", 4, Type.voidType);
+        printString.parameters.add((new Parameter("$a0", Type.stringType)));
+        addSubroutine(printString);
+        SystemCall printCharacter = new SystemCall("print_character", 11, Type.voidType);
+        printCharacter.parameters.add((new Parameter("$a0", Type.characterType)));
+        addSubroutine(printCharacter);
+
     }
 
     private void addBinaryOperator(String symbol, Type firstOperand, Type secondOperand, Type returnType) {
@@ -397,7 +465,7 @@ public class Environment {
     }
 
     /**
-     *
+     * Prints a human-readable version of the subroutine namespace.
      */
     public void debugPrintSubroutines() {
         debugPrint(subroutineTable, "ROOT", 0);
