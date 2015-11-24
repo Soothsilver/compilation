@@ -1,11 +1,22 @@
 package compiler.nodes.statements;
 
 import compiler.Compilation;
+import compiler.analysis.Uniqueness;
+import compiler.intermediate.Executable;
+import compiler.intermediate.IntermediateFunction;
+import compiler.intermediate.OperandWithCode;
+import compiler.intermediate.instructions.BranchIfNotZeroInstruction;
+import compiler.intermediate.instructions.BranchIfZeroInstruction;
+import compiler.intermediate.instructions.Instruction;
+import compiler.intermediate.instructions.Instructions;
+import compiler.intermediate.instructions.JumpInstruction;
+import compiler.intermediate.instructions.LabelInstruction;
 import compiler.nodes.declarations.Type;
 import compiler.nodes.expressions.Expression;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Represents the statement "repeat { body; } while ( expression );".
@@ -35,5 +46,24 @@ public class RepeatStatement extends CycleStatement {
     @Override
     public String toString() {
         return "repeat " + body + " while (" + this.booleanTest + ");";
+    }
+    
+    @Override
+    public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
+        Instructions instructions = new Instructions();
+
+        OperandWithCode eer = booleanTest.generateIntermediateCode(executable);
+        LabelInstruction cycleStart = new LabelInstruction("while_" + Uniqueness.getUniqueId());
+        LabelInstruction cycleEnd = new LabelInstruction("endwhile_" + Uniqueness.getUniqueId());
+        instructions.add(cycleStart);
+        LabelInstruction previous = executable.enclosingLoopEnd;
+        executable.enclosingLoopEnd = cycleEnd;
+        instructions.addAll(this.body.generateIntermediateCode(executable, function));
+        executable.enclosingLoopEnd = previous;
+        instructions.addAll(eer.code);
+        instructions.add(new BranchIfNotZeroInstruction(eer.operand, cycleStart));        
+        instructions.add(cycleEnd);
+
+        return instructions;
     }
 }

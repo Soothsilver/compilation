@@ -110,7 +110,7 @@ public class BinaryOperatorInstruction extends Instruction {
             case "%":
 //        addBinaryOperator("%", Type.integerType, Type.integerType, Type.integerType);
                 throw getNotImplementedException();
-                
+
             case "<":
 //        addBinaryOperator("<", Type.integerType, Type.integerType, Type.booleanType);
 //        addBinaryOperator("<", Type.floatType, Type.floatType, Type.booleanType);
@@ -118,7 +118,34 @@ public class BinaryOperatorInstruction extends Instruction {
                     return
                             left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
                                     right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
-                                    "\tsub " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "\n" +
+                                    "\tslt " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "\n" +
+                                    saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
+                            ;
+                }
+            case ">":
+                if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
+                    return
+                            left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                                    right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+                                    "\tsgt " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "\n" +
+                                    saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
+                            ;
+                }
+            case "<=":
+                if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
+                    return
+                            left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                                    right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+                                    "\tsle " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "\n" +
+                                    saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
+                            ;
+                }
+            case ">=":
+                if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
+                    return
+                            left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+                                    right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+                                    "\tsge " + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_0 + "," + MipsRegisters.TEMPORARY_VALUE_1 + "\n" +
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
@@ -200,7 +227,6 @@ public class BinaryOperatorInstruction extends Instruction {
 //        addSubroutine(OperatorFunction.createSpecialAssignment("|=", Type.integerType, Type.integerType));
 //        addSubroutine(OperatorFunction.createSpecialAssignment("&=", Type.integerType, Type.integerType));
              throw getNotImplementedException();
-
 
         }
     }

@@ -1,18 +1,10 @@
-//truetrue && true3xtrue
+//120
+function factorial ( n : integer ) : integer
+{
+    if (n > 9) return 1;
+    return n * factorial( n + 1);
+}
 procedure main()
 {
-    if (true)
-        print_string("true");
-    if (true && true)
-        print_string("true && true");
-    if (false)
-        print_string("false");
-    if (true && false)
-        print_string("true && false");
-    if (false && true)
-        print_string("false && true");
-    if (false && false)
-        print_string("false && false");
-    if (true && true && true)
-        print_string("3xtrue");
+    print_int(factorial(5));
 }
