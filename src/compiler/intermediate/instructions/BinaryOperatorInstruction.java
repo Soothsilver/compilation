@@ -150,17 +150,13 @@ public class BinaryOperatorInstruction extends Instruction {
                             ;
                 }
                 throw getNotImplementedException();
-            case ">":
 //        addBinaryOperator(">", Type.integerType, Type.integerType, Type.booleanType);
 //        addBinaryOperator(">", Type.floatType, Type.floatType, Type.booleanType);
-                throw getNotImplementedException();
-            case "<=":
-            case ">=":
+
 //        addBinaryOperator("<=", Type.integerType, Type.integerType, Type.booleanType);
 //        addBinaryOperator("<=", Type.floatType, Type.floatType, Type.booleanType);
 //        addBinaryOperator(">=", Type.integerType, Type.integerType, Type.booleanType);
 //        addBinaryOperator(">=", Type.floatType, Type.floatType, Type.booleanType);
-                throw getNotImplementedException();
             case "&&":
             case "||":
                 return MipsMacros.nonShortCircuitingBooleanOperator(operator, left, right, saveToWhere);
