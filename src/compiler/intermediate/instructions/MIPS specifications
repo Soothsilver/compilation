@@ -1,2 +1,1 @@
-For boolean values, we will adopt the convention that the 0 word means false, 
-and any non zero word means true.
+We will always represent boolean values by words containing 0 or 1.

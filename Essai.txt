@@ -1,10 +1,10 @@
-//23456789
-i : integer;
+//120
+function factorial ( n : integer ) : integer
+{
+    if (n > 9) return 1;
+    return n * factorial( n + 1);
+}
 procedure main()
 {
-	i = 2;
-	repeat {
-		print_int(i);
-		i = i + 1;
-	} while (i < 10);
+    print_int(factorial(5));
 }
