@@ -81,10 +81,25 @@ public class ArrayInferenceCreationExpression extends CallExpression {
         Instructions instructions = new Instructions();
         IntermediateRegister reference = executable.summonNewRegister();
 
-        instructions.add(new AllocateInstruction(reference, new Operand( size, OperandKind.Immediate)));
+        Operand sizeOperand = new Operand(size, OperandKind.Immediate);
         IntermediateRegister junkRegister = executable.summonNewRegister();
-        for (int i = 0; i < arguments.size(); i++) {
-            OperandWithCode eer = arguments.get(i).generateIntermediateCode(executable);
+        IntermediateRegister fullSize = executable.summonNewRegister();
+        
+        instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,
+                sizeOperand,
+                new Operand(1, OperandKind.Immediate),
+                fullSize
+                ));
+        instructions.add(new AllocateInstruction(reference, new Operand (fullSize, OperandKind.Register)));
+        instructions.add(new BinaryOperatorInstruction("=", Type.integerType, Type.integerType,
+                new Operand(reference, OperandKind.RegisterContainsHeapAddress),
+                sizeOperand,
+                junkRegister
+                ));
+        
+        
+        for (int i = 1; i < size + 1; i++) {
+            OperandWithCode eer = arguments.get(i-1).generateIntermediateCode(executable);
             instructions.addAll(eer.code);
             IntermediateRegister regAddressOfElement = executable.summonNewRegister();
             instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,

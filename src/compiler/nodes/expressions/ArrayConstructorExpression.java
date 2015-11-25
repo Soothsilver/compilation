@@ -3,6 +3,7 @@ package compiler.nodes.expressions;
 import compiler.Compilation;
 import compiler.intermediate.*;
 import compiler.intermediate.instructions.AllocateInstruction;
+import compiler.intermediate.instructions.BinaryOperatorInstruction;
 import compiler.intermediate.instructions.Instructions;
 import compiler.nodes.declarations.Type;
 
@@ -56,8 +57,15 @@ public class ArrayConstructorExpression extends Expression {
 
         Instructions instructions = new Instructions();
         OperandWithCode sizeResult = size.generateIntermediateCode(executable);
+        IntermediateRegister fullSize = executable.summonNewRegister();
+        
         instructions.addAll(sizeResult.code);
-        instructions.add(new AllocateInstruction(referenceRegister, sizeResult.operand));
+        instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,
+                sizeResult.operand,
+                new Operand(1, OperandKind.Immediate),
+                fullSize
+                ));
+        instructions.add(new AllocateInstruction(referenceRegister, new Operand (fullSize, OperandKind.Register)));
 
         Operand operand = new Operand(referenceRegister, OperandKind.Register);
         return new OperandWithCode(instructions, operand);
