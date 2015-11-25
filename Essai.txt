@@ -1,27 +1,42 @@
-//yy
-type s = structure {
-	a : integer;
-};
-i : integer;
-	a : s;
-	b : s;
-	c : s;
+//1552315123
+    a : list of integer;
+
+    b : list of integer;
+    c : list of integer;
+    
 procedure main()
 {
-	a = new s();
-	b = new s();
-	c = a;
+	print_string("Begin.");
 	
-	a.a = 8;
-	b.a = 8;
-	
-	if (a.a == b.a) print_string("y");
-	
-	b.a = 9;
-	
-	if (a.a == b.a) print_string("n");
-	
-	if (b.a != 9) print_string("n");
-	if (a.a != 9) print_string("y");
-	
+    a = new integer [ 2 ];
+    
+    a[0] = 50; 
+    
+    a[1] = 60;
+    
+    
+    b = new integer [ 3 ];
+    
+    b[0] = 70;
+    a[1] = 4;
+    print_int(b[0]);
+    
+    /*
+    b[1] = 80;
+    
+    b[2] = 90;
+    */
+    
+    
+    
+    
+    print_int(a[0]);  // 1
+    print_int(a[1]);  // 5
+    
+    /*
+    print_int(b[0]);  // 5
+    print_int(b[1]);  // 2
+    print_int(b[2]);  // 3
+    */
+
 }

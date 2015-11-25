@@ -1,3 +1,12 @@
+erreur de type
+erreur de syntax avec continuation
+2x program correct : result correct
+3-4 pages ou plus sil faut
+
+
+
+
+
 package compiler.analysis;
 
 import compiler.Compilation;
