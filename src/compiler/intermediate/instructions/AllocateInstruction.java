@@ -30,6 +30,7 @@ public class AllocateInstruction extends Instruction {
     @Override
     public String toMipsAssembler() {
         return size.toMipsLoadIntoRegister(MipsRegisters.ARGUMENT_REGISTER_0) +
+               "\tsll " + MipsRegisters.ARGUMENT_REGISTER_0 + "," + MipsRegisters.ARGUMENT_REGISTER_0 + ",2 # <<2 means '*4'. \n" +
                "\tli $v0,9\n" +
                "\tsyscall # sbrk (memory allocation)\n" +
                 referenceRegister.mipsAcquireValueFromRegister(MipsRegisters.RETURN_VALUE)
