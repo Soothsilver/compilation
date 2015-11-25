@@ -18,6 +18,14 @@ public class OperatorFunction extends Subroutine {
         this.kind = SubroutineKind.FUNCTION;
     }
 
+    /**
+     * Creates a new predefined function that represents a binary operator.
+     * @param name Name of the operator.
+     * @param left Type of the first operand.
+     * @param right Type of the second operand.
+     * @param functionReturnType Return type.
+     * @return The created function.
+     */
     public static OperatorFunction create(
                                     String name,
                                     Type left,
@@ -29,6 +37,14 @@ public class OperatorFunction extends Subroutine {
         s.parameters.add(new Parameter("secondOperand", right));
         return s;
     }
+
+    /**
+     * Creates a new predefined function that represents a unary operator.
+     * @param name Name of the operator.
+     * @param operand Type of the only operand.
+     * @param functionReturnType Return type.
+     * @return The created function.
+     */
     public static OperatorFunction create(
             String name,
             Type operand,
@@ -40,6 +56,9 @@ public class OperatorFunction extends Subroutine {
     }
 
 
+    /**
+     * Creates the predefined function for the operator "=".
+     */
     public static OperatorFunction createGeneralAssignment() {
         String assignmentType = "!T";
         Type standInType = Type.createSubroutineTypeVariable(assignmentType, -1,-1);
@@ -51,6 +70,9 @@ public class OperatorFunction extends Subroutine {
         return s;
     }
 
+    /**
+     * Creates the predefined function for the operator "@" (array concatenation).
+     */
     public static OperatorFunction createConcatenate() {
         String assignmentType = "!T";
         Type standInType = Type.createSubroutineTypeVariable(assignmentType, -1,-1);
@@ -62,6 +84,9 @@ public class OperatorFunction extends Subroutine {
         return s;
     }
 
+    /**
+     * Creates the predefined function for the operator "==".
+     */
     public static OperatorFunction createEquality() {
         OperatorFunction s = new OperatorFunction("==", Type.booleanType);
         String assignmentType = "!T";
@@ -72,6 +97,9 @@ public class OperatorFunction extends Subroutine {
         return s;
     }
 
+    /**
+     * Creates the predefined function for the operator "!=".
+     */
     public static OperatorFunction createInequality() {
         OperatorFunction s = new OperatorFunction("!=", Type.booleanType);
         String assignmentType = "!T";
@@ -82,6 +110,13 @@ public class OperatorFunction extends Subroutine {
         return s;
     }
 
+    /**
+     * Creates a predefined function representing an assignment operator such as "+=" or "<<=".
+     * @param symbol The operator name.
+     * @param left Type of the left operand and also the return type.
+     * @param right Type of the right operand.
+     * @return The created function.
+     */
     public static OperatorFunction createSpecialAssignment(String symbol, Type left, Type right) {
         OperatorFunction s = new OperatorFunction(symbol, left);
         s.parameters.add(new Parameter("leftHand", left));

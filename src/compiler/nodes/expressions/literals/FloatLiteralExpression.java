@@ -5,9 +5,19 @@ import compiler.intermediate.Operand;
 import compiler.intermediate.OperandKind;
 import compiler.nodes.declarations.Type;
 
+/**
+ * Represents float literals such as "2.0" or "1e5".
+ */
 public class FloatLiteralExpression extends LiteralExpression {
     float data;
 
+    /**
+     * Initializes a new FloatLiteralExpression.
+     * @param data Float value from lexical analysis.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     */
     public FloatLiteralExpression(float data, int line, int column, Compilation compilation) {
         super(line, column);
         this.data = data;

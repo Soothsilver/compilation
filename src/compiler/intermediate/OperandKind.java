@@ -20,5 +20,16 @@ public enum OperandKind {
 	 * This operand's IntermediateRegister holds a memory address. This operand represents whatever is stored at that memory address.
 	 */
 	RegisterContainsHeapAddress,
-	Parameter, StringLiteral, LocalVariable
+	/**
+	 * This operand is one of the parameters of the current function.
+	 */
+	Parameter,
+	/**
+	 * This operand is a string literal.
+	 */
+    StringLiteral,
+    /**
+     * This operand is a local variable of a subroutine.
+     */
+    LocalVariable
 }

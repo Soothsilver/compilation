@@ -282,6 +282,9 @@ public class Environment {
     }
 
 
+    /**
+     * Descends to a new block for all three namespaces.
+     */
     public void enterScope() {
         subroutineStack.addFirst(subroutineTable);
         variableStack.addFirst(variableTable);
@@ -290,6 +293,9 @@ public class Environment {
         debug("Enter scope.");
     }
 
+    /**
+     * Returns to an upper block for all three namespaces.
+     */
     public void leaveScope() {
         depth--;
         subroutineTable = subroutineStack.removeFirst();
@@ -298,17 +304,31 @@ public class Environment {
         debug("Leave scope.");
     }
 
+    /**
+     * Creates a new scope for types and enters it.
+     * This means the types declared there won't be available when this scope is exited.
+     */
     public void enterTypeScope() {
         typeStack.addFirst(typeTable);
         depth++;
         debug("Enter type scope.");
     }
 
+    /**
+     * Exists the innermost scope for the type namespace only. Types declared since the last enterTypeScope call
+     * will no longer be accessible.
+     */
     public void leaveTypeScope() {
         depth--;
         typeTable = typeStack.removeFirst();
         debug("Leave type scope.");
     }
+
+    /**
+     * Creates a new scope for variables and enters it.
+     * Variables declared after this call will hide previous variables and will cease to to be visible after the
+     * corresponding leaveVariableScope call. The leaveVariableScope function is usually called by leaveSubroutine.
+     */
     public void enterVariableScope() {
         variableStack.addFirst(variableTable);
         depth++;

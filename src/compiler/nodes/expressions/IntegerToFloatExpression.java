@@ -34,15 +34,15 @@ public class IntegerToFloatExpression extends Expression {
     public void propagateTypes(Set<Type> types, Compilation compilation) {
         throw new RuntimeException("This should never be called.");
     }
-    
-    @Override
+
     /**
      * This method for IntegerToFloatExpression merely passes the enclosed expression. This is because we don't care about whether the operand
-     * is a float or an integer. Everything is stored as 4-byte integers in MIPS, and float-int disambugation for overloading was already handled
+     * is a float or an integer. Everything is stored as 4-byte integers in MIPS, and float-int disambiguation for overloading was already handled
      * during semantic analysis.
-     * 
+     *
      * Perhaps I'm wrong here. This may change later.
      */
+    @Override
     public OperandWithCode generateIntermediateCode(Executable executable) {
     	return integerExpression.generateIntermediateCode(executable);
     }

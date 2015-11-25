@@ -17,7 +17,11 @@ public class Parameter extends Node {
      * Type of the formal parameter, e.g. Type.integerType for "a : integer"
      */
     public Type type;
-    public Variable variable; // If the variable's type is generic in a specific way, it stays that way... it's complicated.
+    /**
+     * Variable representing this parameter.
+     * If the variable's type is generic in a specific way, it stays that way... it's complicated.
+     */
+    public Variable variable;
 
     /**
      * Creates a parameter and adds it to the current environment.

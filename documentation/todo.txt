@@ -1,5 +1,0 @@
-These tasks could be completed later on if we want to:
-
-- Statements must have a line and column, even cycles.
-- Do not permit casting of !array[[integer]] to !array[[float]].
-- If a local variable is used before it is initialized, report a warning.

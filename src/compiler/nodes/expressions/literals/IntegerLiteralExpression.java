@@ -6,9 +6,19 @@ import compiler.nodes.declarations.Type;
 
 import java.util.Set;
 
+/**
+ * Represents integer literals, such as "245".
+ */
 public class IntegerLiteralExpression extends LiteralExpression {
     int data;
 
+    /**
+     * Initializes a new IntegerLiteral expression.
+     * @param data Integer value from lexical analysis.
+     * @param line Source line.
+     * @param column Source column.
+     * @param compilation The compilation object.
+     */
     public IntegerLiteralExpression(int data, int line, int column, Compilation compilation) {
         super(line, column);
         this.data = data;

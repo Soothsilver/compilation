@@ -52,7 +52,15 @@ addiu $sp,$sp,4*/
     	return registerName.charAt(1) == 'f';
     }
 
-    public static String nonShortCircuitingBooleanOperator(String operator, Operand left, Operand right, IntermediateRegister saveToWhere) {
+	/**
+	 * Returns MIPS code that handles the "&&" and "||" operators.
+	 * @param operator "&&" or "||"
+	 * @param left The left boolean operand.
+	 * @param right The right boolean operand.
+	 * @param saveToWhere The register where "1" or "0" should be saved.
+	 * @return MIPS code.
+	 */
+	public static String nonShortCircuitingBooleanOperator(String operator, Operand left, Operand right, IntermediateRegister saveToWhere) {
         if (operator.equals("&&")) {
             String labelNo  = "_no"  + Uniqueness.getUniqueId();
             String labelEnd = "_end" + Uniqueness.getUniqueId();
@@ -80,7 +88,17 @@ addiu $sp,$sp,4*/
         }
     }
 
-	public static String equalityOperator(String operator,
+    /**
+     * Generates MIPS code handling the "==" and "!=" operators.
+     * @param operator "==" or "!="
+     * @param left The left operand.
+     * @param right The right operand.
+     * @param leftType Type of the left operand.
+     * @param rightType Type of the right operand.
+     * @param saveToWhere The register where "0" or "1" should be saved.
+     * @return MIPS code.
+     */
+    public static String equalityOperator(String operator,
 			Operand left, Operand right, 
 			Type leftType, Type rightType,
 			IntermediateRegister saveToWhere) {

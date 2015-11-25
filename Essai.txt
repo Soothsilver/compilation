@@ -1,16 +1,7 @@
-//1552315123
-    a : list of integer;
-    b : list of integer;
+i : integer; f : float;
 procedure main()
 {
-	a = new integer[4];
-	a[0] = 1;
-		a[1] = 5;
-			a[2] = 7;
-				a[3] = 8;
-    print_int(a[0]);
-    print_int(a[1]);
-    b = new integer[2];
-    print_int(b[0]);
-    print_int(b[1]);
+    2 = i;
+    i = f;
+    i = main();
 }
