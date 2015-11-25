@@ -1,5 +1,6 @@
 package compiler.intermediate;
 
+
 /**
  * Static class that contains function that generate MIPS assembly text.
  */
@@ -21,4 +22,12 @@ public final class MipsAssembly {
     public static String label(String label) {
         return label + ": \n";
     }
+
+	public static String or(String target, String left,	String right) {
+		return "\tor " + target + "," + left + "," + right + "\n";
+	}
+
+	public static String xor(String target, String left, String right) {
+		return "\txor " + target + "," + left + "," + right + "\n";
+	}
 }

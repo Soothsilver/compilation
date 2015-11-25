@@ -38,6 +38,19 @@
           <classpath refid="master-classpath"/>
       </java>
   </target>
+  
+  <!-- ================================= 
+       target: mips-tests              
+       ================================= -->
+  <target name="mips-tests" depends="parser, lexer, compile-all"
+      description="Creates the compiler and runs it against all tests in the directory tests/mips.">
+	  <java 
+	    fork = "true"
+	    dir = "${bin.dir}"
+		classname="compiler.MipsNonJUnitTests">
+          <classpath refid="master-classpath"/>
+      </java>
+  </target>
 
     <!-- =================================
        target: semantics-tests

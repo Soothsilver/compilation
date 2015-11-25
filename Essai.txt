@@ -1,10 +1,27 @@
-//120
-function factorial ( n : integer ) : integer
-{
-    if (n > 9) return 1;
-    return n * factorial( n + 1);
-}
+//yy
+type s = structure {
+	a : integer;
+};
+i : integer;
+	a : s;
+	b : s;
+	c : s;
 procedure main()
 {
-    print_int(factorial(5));
+	a = new s();
+	b = new s();
+	c = a;
+	
+	a.a = 8;
+	b.a = 8;
+	
+	if (a.a == b.a) print_string("y");
+	
+	b.a = 9;
+	
+	if (a.a == b.a) print_string("n");
+	
+	if (b.a != 9) print_string("n");
+	if (a.a != 9) print_string("y");
+	
 }

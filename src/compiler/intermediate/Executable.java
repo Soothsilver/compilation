@@ -35,7 +35,6 @@ public class Executable {
 		ProgramNode programNode = compilation.abstractSyntaxTree;
         for (Declaration declaration : programNode.Declarations) {
             if (declaration instanceof TypeOrTypeTemplate) {
-                System.out.println("Type and type template definitions are not supported yet.");
                 continue;
             }
             if (declaration instanceof Variable) {

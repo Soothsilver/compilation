@@ -172,22 +172,9 @@ public class BinaryOperatorInstruction extends Instruction {
 //        addBinaryOperator("^", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator("<<", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator(">>", Type.integerType, Type.integerType, Type.integerType);
-                throw getNotImplementedException();
+                throw getNotImplementedException("Bitwise operators are not implemented.");
 
 
-// Unary operators:
-//        addUnaryOperator("PRE++", Type.integerType, Type.integerType);
-//        addUnaryOperator("POST++", Type.integerType, Type.integerType);
-//        addUnaryOperator("PRE--", Type.integerType, Type.integerType);
-//        addUnaryOperator("POST--", Type.integerType, Type.integerType);
-//
-//        addUnaryOperator("!", Type.booleanType, Type.booleanType);
-//        addUnaryOperator("~", Type.integerType, Type.integerType);
-//
-//        addUnaryOperator("+", Type.integerType, Type.integerType);
-//        addUnaryOperator("-", Type.integerType, Type.integerType);
-//        addUnaryOperator("+", Type.floatType, Type.floatType);
-//        addUnaryOperator("-", Type.floatType, Type.floatType);
 //
             case "@":
 //        addSubroutine(OperatorFunction.createConcatenate());
@@ -196,7 +183,7 @@ public class BinaryOperatorInstruction extends Instruction {
             case "!=":
 //        addSubroutine(OperatorFunction.createEquality());
 //        addSubroutine(OperatorFunction.createInequality());
-                throw getNotImplementedException();
+                return MipsMacros.equalityOperator(operator, left, right, leftType, rightType, saveToWhere);
             default:
 //        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.integerType, Type.integerType));
 //        addSubroutine(OperatorFunction.createSpecialAssignment("+=", Type.floatType, Type.integerType));
@@ -222,12 +209,31 @@ public class BinaryOperatorInstruction extends Instruction {
 //        addSubroutine(OperatorFunction.createSpecialAssignment("^=", Type.integerType, Type.integerType));
 //        addSubroutine(OperatorFunction.createSpecialAssignment("|=", Type.integerType, Type.integerType));
 //        addSubroutine(OperatorFunction.createSpecialAssignment("&=", Type.integerType, Type.integerType));
-             throw getNotImplementedException();
+             throw getNotImplementedException("These special assignments are labor-intensive and boring.");
+             
+             
+
+          // Unary operators:
+//                  addUnaryOperator("PRE++", Type.integerType, Type.integerType);
+//                  addUnaryOperator("POST++", Type.integerType, Type.integerType);
+//                  addUnaryOperator("PRE--", Type.integerType, Type.integerType);
+//                  addUnaryOperator("POST--", Type.integerType, Type.integerType);
+          //
+//                  addUnaryOperator("!", Type.booleanType, Type.booleanType);
+//                  addUnaryOperator("~", Type.integerType, Type.integerType);
+          //
+//                  addUnaryOperator("+", Type.integerType, Type.integerType);
+//                  addUnaryOperator("-", Type.integerType, Type.integerType);
+//                  addUnaryOperator("+", Type.floatType, Type.floatType);
+//                  addUnaryOperator("-", Type.floatType, Type.floatType);
 
         }
     }
 
+    private RuntimeException getNotImplementedException(String reason) {
+        return new RuntimeException("This compiler is unable to generate code for the instruction '" + this + "'. Reason: " + reason);
+    }
     private RuntimeException getNotImplementedException() {
-        return new RuntimeException("This compiler is unable to generate code for the instruction '" + this + "'.");
+        return new RuntimeException("We did not yet implement this instruction: '" + this + "'. We should either implement it or use the overload getNotImplementedException(String reason) and add a reason.");
     }
 }

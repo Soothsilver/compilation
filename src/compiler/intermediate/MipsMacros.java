@@ -1,6 +1,7 @@
 package compiler.intermediate;
 
 import compiler.analysis.Uniqueness;
+import compiler.nodes.declarations.Type;
 
 /**
  * Contains static function useful when generating MIPS assembly.
@@ -53,7 +54,6 @@ addiu $sp,$sp,4*/
 
     public static String nonShortCircuitingBooleanOperator(String operator, Operand left, Operand right, IntermediateRegister saveToWhere) {
         if (operator.equals("&&")) {
-            String labelYes = "_yes" + Uniqueness.getUniqueId();
             String labelNo  = "_no"  + Uniqueness.getUniqueId();
             String labelEnd = "_end" + Uniqueness.getUniqueId();
 
@@ -72,7 +72,63 @@ addiu $sp,$sp,4*/
 
         } else {
             // ||
-            throw new RuntimeException("||");
+            return
+            		left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+            		right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+            		MipsAssembly.or(MipsRegisters.TEMPORARY_VALUE_0, MipsRegisters.TEMPORARY_VALUE_0, MipsRegisters.TEMPORARY_VALUE_1) +
+            		saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0);
         }
     }
+
+	public static String equalityOperator(String operator,
+			Operand left, Operand right, 
+			Type leftType, Type rightType,
+			IntermediateRegister saveToWhere) {
+		
+		// Perhaps floating point types should be handled using IEEE rules rather than by bit comparison ?
+		String intro =
+				left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+				right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+				MipsAssembly.xor(MipsRegisters.TEMPORARY_VALUE_0,
+								 MipsRegisters.TEMPORARY_VALUE_0,
+								 MipsRegisters.TEMPORARY_VALUE_1);
+				// $t0 = 0  => IDENTICAL
+				// $t0 != 0 => NOT IDENTICAL
+				
+			    // == => WANT 1 IF IDENTICAL, 0 OTHERWISE
+			    // != => WANT 0 IF IDENTICAL, 1 OTHERWISE
+		String mainPart;
+		String labelEnd = "_end" + Uniqueness.getUniqueId();
+		String labelIdentical = "_identical" + Uniqueness.getUniqueId();
+		if (operator.equals("==")) {
+			mainPart =
+					MipsAssembly.beqz(MipsRegisters.TEMPORARY_VALUE_0, labelIdentical) +
+					MipsAssembly.li(MipsRegisters.TEMPORARY_VALUE_0, 0) +
+					MipsAssembly.jmp(labelEnd) +
+					MipsAssembly.label(labelIdentical) +
+					MipsAssembly.li(MipsRegisters.TEMPORARY_VALUE_0, 1) +
+					MipsAssembly.label(labelEnd);
+		
+		} else {
+			// !=
+				mainPart =
+						MipsAssembly.beqz(MipsRegisters.TEMPORARY_VALUE_0, labelIdentical) +
+						MipsAssembly.li(MipsRegisters.TEMPORARY_VALUE_0, 1) +
+						MipsAssembly.jmp(labelEnd) +
+						MipsAssembly.label(labelIdentical) +
+						MipsAssembly.li(MipsRegisters.TEMPORARY_VALUE_0, 0) +
+						MipsAssembly.label(labelEnd);
+			
+		}
+		return
+				intro +
+				mainPart +
+				saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0);
+		
+		
+		
+		
+		
+		
+	}
 }
