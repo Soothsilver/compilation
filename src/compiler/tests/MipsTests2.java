@@ -42,7 +42,7 @@ public class MipsTests2 extends TestCase {
             }
             Process mars = null;
             try {
-                mars = Runtime.getRuntime().exec("java -jar ../lib/Mars4_5.jar 1000 nc test.asm");
+                mars = Runtime.getRuntime().exec("java -jar ../lib/Mars4_5.jar 10000 nc test.asm");
             } catch (IOException e) {
                 fail("Due to an I/O exception, the MARS emulator could not be launched.");
             }

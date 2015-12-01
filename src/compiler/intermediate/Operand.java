@@ -84,6 +84,7 @@ public class Operand {
                 return "HEAP(" + register + ")";
             case StringLiteral:
                 return "STRING(" + intermediateStringLiteral.getLabel() + ")";
+
         }
         throw new EnumConstantNotPresentException(OperandKind.class, "kind");
     }
@@ -115,7 +116,6 @@ public class Operand {
      * @return An operand encapsulating the variable.
      */
     public static Operand createFromVariable(Variable variable) {
-        System.out.println(variable.kind);
         switch (variable.kind) {
             case Global:
                 return new Operand(variable, OperandKind.GlobalVariable);
@@ -140,8 +140,9 @@ public class Operand {
     public String toMipsAcquireFromOperand(Operand fromOperand) {
         String mipsCode = fromOperand.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0);
         switch (this.kind) {
+            case StringLiteral:
             case Immediate:
-                throw new RuntimeException("Values cannot be loaded into an immediate value.");
+                throw new RuntimeException("Values cannot be loaded into an immediate value or into a string literal.");
             case GlobalVariable:
                 mipsCode += "\tsw " + MipsRegisters.TEMPORARY_VALUE_0  + "," + this.variable.name + "\n";
                 break;
@@ -152,6 +153,14 @@ public class Operand {
             case Parameter:
                 mipsCode +=
                         "\tsw " + MipsRegisters.TEMPORARY_VALUE_0 + "," + (4 * this.variable.reverseIndex) + "($sp)\n";
+                break;
+            case LocalVariable:
+                mipsCode +=
+                        "\tsw " + MipsRegisters.TEMPORARY_VALUE_0 + "," + (-4 * (this.variable.index+1)) + "($sp)\n";
+                break;
+            case Register:
+                mipsCode +=
+                        register.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0);
                 break;
             default:
                 throw new RuntimeException("The operand kind " + this.kind + " was not yet implemented.");
@@ -167,7 +176,7 @@ public class Operand {
      * @param registerName Mnemonic for the register.
      * @return MIPS instructions.
      */
-    public String toMipsLoadIntoRegister(String registerName) {
+    public String toMipsLoadIntoRegister(String registerName, int stackDisplacement) {
     	if (!MipsMacros.isFloatRegister(registerName))
         switch (kind) {
             case Immediate:
@@ -180,7 +189,9 @@ public class Operand {
                 return register.mipsSaveValueToRegister(registerName) +
                        "\tlw " + registerName + ",(" + registerName + ")\n";
             case Parameter:
-                return "\tlw " + registerName + "," + (4*variable.reverseIndex) + "($sp)\n";
+                return "\tlw " + registerName + "," + (4*variable.reverseIndex + 4 * stackDisplacement) + "($sp)\n";
+            case LocalVariable:
+                return "\tlw " + registerName + "," + (-4*(variable.index+1) + 4 * stackDisplacement) + "($sp)\n";
             case StringLiteral:
                 return "\tla " + registerName + "," + intermediateStringLiteral.getLabel() + "\n";
             default:
@@ -192,8 +203,12 @@ public class Operand {
                 return "\tli " + MipsRegisters.TEMPORARY_VALUE_0 + "," + integerValue + "\n" +
             		"\tmtc1 " + MipsRegisters.TEMPORARY_VALUE_0 + "," + registerName + "\n";
             default:
-                return "\t!!ERROR This addressing mode is not yet supported.!!\n";
+                throw new RuntimeException("This addressing mode ('" + kind + "') for floating-point numbers is not yet supported.");
         }
+    }
+
+    public String toMipsLoadIntoRegister(String registerName) {
+        return toMipsLoadIntoRegister(registerName, 0);
     }
 }
 

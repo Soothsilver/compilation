@@ -5,6 +5,7 @@ import compiler.intermediate.*;
 import compiler.nodes.declarations.SystemCall;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +25,8 @@ import java.util.stream.Collectors;
 public class CallInstruction  extends Instruction {
     SubroutineToken function;
     ArrayList<Operand> operands;
-    IntermediateRegister returnRegisterIndex;
+    IntermediateRegister returnRegister;
+    int localVariableCount;
 
     /**
      * Initializes a new CallInstruction object.
@@ -32,10 +34,11 @@ public class CallInstruction  extends Instruction {
      * @param operands A list of operands. Their code was already generated.
      * @param returnRegisterIndex The index of the register where the call's return value should be stored.
      */
-    public CallInstruction(SubroutineToken callee, ArrayList<Operand> operands, IntermediateRegister returnRegisterIndex) {
+    public CallInstruction(SubroutineToken callee, ArrayList<Operand> operands, IntermediateRegister returnRegisterIndex, int localVariableCount) {
         this.function = callee;
         this.operands = operands;
-        this.returnRegisterIndex = returnRegisterIndex;
+        this.returnRegister = returnRegisterIndex;
+        this.localVariableCount = localVariableCount;
     }
 
     @Override
@@ -43,8 +46,12 @@ public class CallInstruction  extends Instruction {
         // Yes, this is not a three-address instruction, but so what.
         // It's more useful this way. Different assembly languages will have different calling conventions so a single
         // instruction in the intermediate code is more useful than dozens.
-        return returnRegisterIndex + " = CALL " + function.subroutine.name + " WITH " + operands.stream().map(Operand::toString).collect(Collectors.joining(","));
+        return returnRegister +
+                " = CALL " + function.subroutine.name + " WITH " + operands.stream().map(Operand::toString).collect(Collectors.joining(","));
     }
+
+
+    public ArrayList<IntermediateRegister> savedRegisters = new ArrayList<>();
 
     @Override
     public String toMipsAssembler() {
@@ -60,24 +67,57 @@ public class CallInstruction  extends Instruction {
         else {
             String assembly = "\t # calling " + function.subroutine.getHumanSig() + "\n";
             /* For MIPS, this instruction does the following:
+             * - Moves the stack pointer beyond local variables.
+             * - Pushes intermediate registers on the stack.
              * - Pushes return address register on the stack.
              * - Pushes arguments into registers or on stack.
              * - Calls the callee.
              * - Clears arguments from stack.
              * - Pops the return value back into $ra.
+             * - Pops intermediate registers from the stack.
+             * - Moves the stack pointer back on the local variables.
              */
 
+            int stackDisplacement = 0;
+            assembly += MipsMacros.moveStackPointer(this.localVariableCount);
+            stackDisplacement += this.localVariableCount;
+            assembly += "\t   # pushing intermediate registers\n";
+            for (int i = 0; i < this.savedRegisters.size(); i++) {
+                assembly += this.savedRegisters.get(i).mipsSaveValueToRegister(MipsRegisters.TEMPORARY_VALUE_0);
+                assembly += MipsMacros.pushOntoStack(MipsRegisters.TEMPORARY_VALUE_0);
+                stackDisplacement += 1;
+            }
+            assembly += "\t   # end pushing intermediate registers\n";
+
+
             assembly += MipsMacros.pushOntoStack(MipsRegisters.RETURN_ADDRESS);
+            stackDisplacement += 1;
             for (Operand operand : operands) {
                 String operandCode = "";
-                operandCode += operand.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0);
+                operandCode += operand.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0, stackDisplacement);
                 operandCode += MipsMacros.pushOntoStack(MipsRegisters.TEMPORARY_VALUE_0);
+                stackDisplacement++;
                 assembly += operandCode;
             }
             assembly += "\tjal " + function.subroutine.getUniqueLabel() + "\n";
-            assembly += returnRegisterIndex.mipsAcquireValueFromRegister(MipsRegisters.RETURN_VALUE);
+
+            // Acquiring value into intermediate register must not use the stack.
+            assembly += returnRegister.mipsAcquireValueFromRegister(MipsRegisters.RETURN_VALUE);
             assembly += MipsMacros.clearStackItems(operands.size());
             assembly += MipsMacros.popIntoRegister(MipsRegisters.RETURN_ADDRESS);
+
+            assembly += "\t   # poping intermediate registers\n";
+            for (int i = savedRegisters.size() - 1; i >= 0; i--) {
+                if (Objects.equals(returnRegister, savedRegisters.get(i))) {
+                    assembly += MipsMacros.clearStackItems(1);
+                    continue;
+                }
+                assembly += MipsMacros.popIntoRegister(MipsRegisters.TEMPORARY_VALUE_0);
+                assembly += savedRegisters.get(i).mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0);
+            }
+            assembly += "\t   # end poping intermediate registers\n";
+
+            assembly += MipsMacros.clearStackItems(this.localVariableCount);
             assembly += "\t # end calling\n";
             return assembly;
         }

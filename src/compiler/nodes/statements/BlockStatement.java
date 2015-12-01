@@ -8,6 +8,9 @@ import compiler.intermediate.Executable;
 import compiler.intermediate.IntermediateFunction;
 import compiler.intermediate.instructions.Instruction;
 import compiler.nodes.Declarations;
+import compiler.nodes.declarations.Declaration;
+import compiler.nodes.declarations.Variable;
+import compiler.nodes.declarations.VariableKind;
 
 /**
  * Represents a block of scoped variables and statements. It is printed on one line if there are no declarations,
@@ -49,10 +52,21 @@ public class BlockStatement extends Statement {
    
     @Override
     public List<Instruction> generateIntermediateCode(Executable executable, IntermediateFunction function) {
+
+        for (Declaration declaration : declarations) {
+            Variable variable = (Variable)declaration;
+            variable.kind = VariableKind.Local;
+            variable.index = executable.localVariableMaximum;
+            executable.localVariableMaximum++;
+        }
+
+
     	ArrayList<Instruction> instructions = new ArrayList<>();
     	for( Statement stmt : statements) {
     		instructions.addAll(stmt.generateIntermediateCode(executable, function));
     	}
+
+        executable.localVariableMaximum -= declarations.size();
     	return instructions;
     }
 }

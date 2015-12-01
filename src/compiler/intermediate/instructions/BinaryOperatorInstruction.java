@@ -47,7 +47,8 @@ public class BinaryOperatorInstruction extends Instruction {
 //        addSubroutine(OperatorFunction.createGeneralAssignment());
                 if (
                         ( leftType.equals(Type.integerType) && rightType.equals(Type.integerType) ) ||
-                                leftType.isReferenceType
+                                leftType.isReferenceType ||
+                                leftType.equals(Type.stringType)
                 )
                 {
                     return left.toMipsAcquireFromOperand(right)
@@ -78,7 +79,16 @@ public class BinaryOperatorInstruction extends Instruction {
                             saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
-                throw getNotImplementedException();
+                else if (leftType.equals(Type.floatType) || rightType.equals(Type.floatType)) {
+                    throw getNotImplementedException("Floating point operation... bleh.");
+                }
+                else if (leftType.equals(Type.stringType) || rightType.equals(Type.stringType)) {
+                    return
+                            MipsMacros.stringConcatenation(
+                                left, right, leftType, rightType     , saveToWhere
+                            );
+                }
+                throw new RuntimeException("This should never happen.");
             case "-":
 //        addBinaryOperator("-", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator("-", Type.floatType, Type.floatType, Type.floatType);
@@ -90,7 +100,7 @@ public class BinaryOperatorInstruction extends Instruction {
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
-                throw getNotImplementedException();
+                throw getNotImplementedException("Floating point operation... bleh.");
             case "*":
 //        addBinaryOperator("*", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator("*", Type.floatType, Type.floatType, Type.floatType);
@@ -103,13 +113,23 @@ public class BinaryOperatorInstruction extends Instruction {
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
-                throw getNotImplementedException();
+                throw getNotImplementedException("Floating point operation... bleh.");
             case "/":
 //        addBinaryOperator("/", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator("/", Type.floatType, Type.floatType, Type.floatType);
+                if (leftType.equals(Type.floatType)) {
+                    throw getNotImplementedException("Floating point operation... bleh.");
+                }
+                return MipsMacros.loadOperands(left, right) +
+                        "\tdiv $t0,$t1\n" +
+                        "\tmflo $t0\n" +
+                        saveToWhere.mipsAcquireValueFromRegister("$t0");
             case "%":
 //        addBinaryOperator("%", Type.integerType, Type.integerType, Type.integerType);
-                throw getNotImplementedException();
+                return MipsMacros.loadOperands(left, right) +
+                       "\tdiv $t0,$t1\n" +
+                       "\tmfhi $t0\n" +
+                        saveToWhere.mipsAcquireValueFromRegister("$t0");
 
             case "<":
 //        addBinaryOperator("<", Type.integerType, Type.integerType, Type.booleanType);
@@ -122,7 +142,10 @@ public class BinaryOperatorInstruction extends Instruction {
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
+                throw getNotImplementedException("Floating point operation... bleh.");
             case ">":
+//        addBinaryOperator(">", Type.integerType, Type.integerType, Type.booleanType);
+//        addBinaryOperator(">", Type.floatType, Type.floatType, Type.booleanType);
                 if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
                     return
                             left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
@@ -131,7 +154,10 @@ public class BinaryOperatorInstruction extends Instruction {
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
+                throw getNotImplementedException("Floating point operation... bleh.");
             case "<=":
+//        addBinaryOperator("<=", Type.integerType, Type.integerType, Type.booleanType);
+//        addBinaryOperator("<=", Type.floatType, Type.floatType, Type.booleanType);
                 if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
                     return
                             left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
@@ -140,7 +166,10 @@ public class BinaryOperatorInstruction extends Instruction {
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
+                throw getNotImplementedException("Floating point operation... bleh.");
             case ">=":
+//        addBinaryOperator(">=", Type.integerType, Type.integerType, Type.booleanType);
+//        addBinaryOperator(">=", Type.floatType, Type.floatType, Type.booleanType);
                 if (leftType.equals(Type.integerType) && rightType.equals(Type.integerType)) {
                     return
                             left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
@@ -149,19 +178,13 @@ public class BinaryOperatorInstruction extends Instruction {
                                     saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
                 }
-                throw getNotImplementedException();
-//        addBinaryOperator(">", Type.integerType, Type.integerType, Type.booleanType);
-//        addBinaryOperator(">", Type.floatType, Type.floatType, Type.booleanType);
+                throw getNotImplementedException("Floating point operation... bleh.");
 
-//        addBinaryOperator("<=", Type.integerType, Type.integerType, Type.booleanType);
-//        addBinaryOperator("<=", Type.floatType, Type.floatType, Type.booleanType);
-//        addBinaryOperator(">=", Type.integerType, Type.integerType, Type.booleanType);
-//        addBinaryOperator(">=", Type.floatType, Type.floatType, Type.booleanType);
             case "&&":
             case "||":
-                return MipsMacros.nonShortCircuitingBooleanOperator(operator, left, right, saveToWhere);
 //        addBinaryOperator("&&", Type.booleanType, Type.booleanType, Type.booleanType);
 //        addBinaryOperator("||", Type.booleanType, Type.booleanType, Type.booleanType);
+                return MipsMacros.nonShortCircuitingBooleanOperator(operator, left, right, saveToWhere);
             case "&":
             case "|":
             case "^":
@@ -172,9 +195,7 @@ public class BinaryOperatorInstruction extends Instruction {
 //        addBinaryOperator("^", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator("<<", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator(">>", Type.integerType, Type.integerType, Type.integerType);
-                throw getNotImplementedException("Bitwise operators are not implemented.");
-
-
+                throw getNotImplementedException("Bitwise operators are not implemented. Nobody uses them, anyway.");
 //
             case "@":
 //        addSubroutine(OperatorFunction.createConcatenate());

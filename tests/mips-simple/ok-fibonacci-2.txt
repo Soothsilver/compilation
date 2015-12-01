@@ -10,8 +10,6 @@ function fibonacci ( n : integer ) : integer {
 procedure main()
 {
    print_int(fibonacci(8));
-   print_int( 11 / 3 );
-   print_int( 11 % 3 );
 }
 // Fibonaccis:
 // 1 = 1

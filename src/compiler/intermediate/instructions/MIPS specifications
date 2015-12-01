@@ -1,3 +1,32 @@
 We will always represent boolean values by words containing 0 or 1.
 
 The word pointed by an array reference will contain its size, the following words its elements.
+
+Normally, during a function, except possibly for the main method, the stack will look like this:
+
+HIGH STACK (beginning)
+...
+Argument 0
+Argument 1
+...
+Argument n <- Stack Pointer
+Local Variable 0
+Local Variable 1
+...
+Local Variable n
+NOTHING (end of stack)
+
+When a CALLER calls a CALLEE, immediately before the "jal" instruction, the stack should look like this:
+Caller argument 0
+...
+Caller argument n
+Caller local variable 0
+...
+Caller local variable n
+Caller's saved return address
+Argument 0
+Argument 1
+...
+Argument n <- Stack Pointer
+
+The stack should also look like this just after returning from jal.

@@ -31,11 +31,15 @@ public class IntermediateFunction {
 		IntermediateFunction function = new IntermediateFunction();
 		function.name = subroutine.name;
         function.subroutine = subroutine;
+		executable.localVariableMaximum = 0;
+		executable.registers.clear();
+		executable.registerCount = 0;
 		function.instructions = subroutine.block.generateIntermediateCode(executable, function);
 		
 		return function;
 	}
-	
+
+    @Override
 	public String toString() {
 		String functionCode = "";
 		for (Instruction instruction : instructions) {

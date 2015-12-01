@@ -44,6 +44,9 @@ addiu $sp,$sp,4*/
     public static String clearStackItems(int count) {
         return "\taddiu $sp,$sp," + 4 * count + " # Pop " + (count) + " words from stack\n";
     }
+	public static String moveStackPointer(int words) {
+		return "\tsub $sp,$sp," + 4 * words + " # Push " + (words) + " virtual words on stack\n";
+	}
     
     /**
      * Tests if a string represents the name of a MIPS floating point register.
@@ -149,4 +152,36 @@ addiu $sp,$sp,4*/
 		
 		
 	}
+
+	public static String loadOperands(Operand left, Operand right) {
+		return left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
+			   right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1);
+	}
+
+    public static String stringConcatenation(Operand left, Operand right, Type leftType, Type rightType, IntermediateRegister saveToWhere) {
+        String instructions = "";
+        // Let's use t2-t4 for internal calculations.
+        instructions += MipsMacros.stringifyTo(left, leftType, MipsRegisters.TEMPORARY_VALUE_0);
+        instructions += MipsMacros.stringifyTo(right, rightType, MipsRegisters.TEMPORARY_VALUE_1);
+        instructions += "\t# Concatenation of strings:\n";
+        // t0 = address of string "a"
+        // t1 = address of string "b"
+        // t2 = length
+        // t3
+
+        throw new RuntimeException("String concatenation was not implemented.");
+    }
+
+    private static String stringifyTo(Operand left, Type leftType, String targetRegister) {
+        if (leftType.equals(Type.stringType)) {
+            return left.toMipsLoadIntoRegister(targetRegister);
+        } else if (leftType.equals(Type.floatType)) {
+            throw new RuntimeException("Floating points to string? No way I am implementing that.");
+        } else if (leftType.equals(Type.characterType)) {
+            throw new RuntimeException("This would be easy to implement, but I don't want to.");
+        } else if (leftType.equals(Type.integerType)) {
+            throw new RuntimeException("Conversion to decimal? No way.");
+        }
+        throw new RuntimeException("This can never happen.");
+    }
 }

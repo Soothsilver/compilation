@@ -1,5 +1,6 @@
 package compiler.intermediate;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import compiler.Compilation;
@@ -16,6 +17,16 @@ public class Executable {
      * The MIPS label into static data portion of the assembler code, where excess intermediate registers are stored.
      */
     public static final String REGISTERS_SPACE = "____registers";
+
+    /**
+     * The number of local variables defined up to this point in this subroutine.
+     * This number increases during each block's declaration and decreases as a scope closes.
+     * The number is reinitialized to zero at the beginning of each subroutine.
+     * It is used to determine where on the stack local variables are, and how should the stack pointer be moved
+     * during subroutine calls.
+     */
+    public int localVariableMaximum = 0;
+
 
     /**
      * Set this variable to a LabelInstruction prior to generating intermediate code for a cycle's body.
@@ -105,8 +116,8 @@ public class Executable {
         s += ".globl main\n";
         s += "main: \n";
         for (IntermediateFunction func : functions) {
-            if (func.getUniqueLabel().equals("main_procedure")) {
-                s += "\tjal main_procedure # Jump to entry point.\n";
+            if (func.getUniqueLabel().equals("main__procedure")) {
+                s += "\tjal main__procedure # Jump to entry point.\n";
                 break;
             }
             if (func.getUniqueLabel().equals("main_integer_list_of_string_procedure")) {
@@ -122,14 +133,17 @@ public class Executable {
         return s;
     }
 
-    private int registerCount = 0;
+    public int registerCount = 0;
+    public ArrayList<IntermediateRegister> registers = new ArrayList<>();
 
     /**
      * Creates a new unique intermediate register.
      */
     public IntermediateRegister summonNewRegister() {
         registerCount++;
-        return new IntermediateRegister(registerCount);
+        IntermediateRegister newRegister = new IntermediateRegister(registerCount);
+        registers.add(newRegister);
+        return newRegister;
     }
 
     /**

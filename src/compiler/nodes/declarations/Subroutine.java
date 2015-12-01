@@ -219,7 +219,7 @@ public class Subroutine extends Declaration {
         Subroutine subroutine = this;
         // TODO This does not work with generics but so what.
         return subroutine.name + "_" + subroutine.parameters.stream().map(param -> param.type.name).collect(Collectors.joining("_"))
-                + (subroutine.kind == SubroutineKind.PROCEDURE ? "procedure" :
-                (subroutine.returnType.name + "_function"));
+                + (subroutine.kind == SubroutineKind.PROCEDURE ? "_procedure" :
+                ("_" + subroutine.returnType.name + "_function"));
     }
 }

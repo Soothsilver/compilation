@@ -131,7 +131,10 @@ public class CallExpression extends Expression {
             instructions.addAll(eer.code);
         }
         IntermediateRegister returnRegisterIndex = executable.summonNewRegister();
-        CallInstruction call = new CallInstruction(callee, operands, returnRegisterIndex);
+        CallInstruction call = new CallInstruction(callee, operands, returnRegisterIndex, executable.localVariableMaximum);
+        for (int i = 0 ; i  < executable.registerCount; i++) {
+            call.savedRegisters.add(executable.registers.get(i));
+        }
         instructions.add(call);
         if (type.equals(Type.voidType)) {
             return new OperandWithCode(instructions, Operand.createOperandWithoutValue());

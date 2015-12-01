@@ -1,0 +1,17 @@
+//13
+function factorial ( n : integer ) : integer
+{
+    return n;
+}
+
+procedure main()
+{
+    local : integer;
+    bambus : integer;
+    wa : integer;
+    nero : float;
+    arui : string;
+    local = 5;
+    wa = local + 8;
+    print_int(factorial(wa));
+}
