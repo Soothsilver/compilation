@@ -3,8 +3,7 @@ package compiler;
 import compiler.generated.*;
 import compiler.intermediate.Executable;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.nio.file.Paths;
 
 /**
@@ -21,6 +20,10 @@ public class Main {
         try {
             FileReader myFile = new FileReader(args[0]);
             compilation = new Compilation(new File(args[0]));
+            /*            
+            InputStream in = new SequenceInputStream(...);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            */
             CompilerLexer myLex = new CompilerLexer(myFile);
             myLex.compilation = compilation;
             CompilerParser myParser = new CompilerParser(myLex);

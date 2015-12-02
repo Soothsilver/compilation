@@ -117,6 +117,7 @@ float 		= [0-9]*\.[0-9]+(e-?[0-9]+)? | [0-9]+\.[0-9]*(e-?[0-9]+)?
 "null"        { return symbol(CompilerSymbol.NULL); }
 "true"        { return symbol(CompilerSymbol.BOOLEAN, true); }
 "false"       { return symbol(CompilerSymbol.BOOLEAN, false); }
+"allocate"	  { return symbol(CompilerSymbol.ALLOCATE); }
 "debug_spawn_structure" { return symbol(CompilerSymbol.DEBUG_SPAWN_STRUCTURE); } /* This is a provisional testing keyword until we can get types working. */
 
 /* -------------------------------------------------
@@ -199,6 +200,7 @@ float 		= [0-9]*\.[0-9]+(e-?[0-9]+)? | [0-9]+\.[0-9]*(e-?[0-9]+)?
 \'\\\'\'	{ return symbol(CompilerSymbol.CHARACTER, '\''); }
 \'\\\"\'	{ return symbol(CompilerSymbol.CHARACTER, '\"'); }
 \'\\n\'		{ return symbol(CompilerSymbol.CHARACTER, '\n'); }
+\'\\0\'		{ return symbol(CompilerSymbol.CHARACTER, '\0'); }
 \'\\r\'		{ return symbol(CompilerSymbol.CHARACTER, '\r'); }
 \'\\\\\'	{ return symbol(CompilerSymbol.CHARACTER, '\\'); }
 \'.\'	    { return symbol(CompilerSymbol.CHARACTER,  yytext().toCharArray()[1]); }

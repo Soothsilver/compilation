@@ -218,8 +218,8 @@ public class Subroutine extends Declaration {
     public String getUniqueLabel() {
         Subroutine subroutine = this;
         // TODO This does not work with generics but so what.
-        return subroutine.name + "_" + subroutine.parameters.stream().map(param -> param.type.name).collect(Collectors.joining("_"))
+        return subroutine.name + "_" + subroutine.parameters.stream().map(param -> param.type.name.replace("!", "ZZZ")).collect(Collectors.joining("_"))
                 + (subroutine.kind == SubroutineKind.PROCEDURE ? "_procedure" :
-                ("_" + subroutine.returnType.name + "_function"));
+                ("_" + subroutine.returnType.name.replace("!", "ZZZ") + "_function"));
     }
 }

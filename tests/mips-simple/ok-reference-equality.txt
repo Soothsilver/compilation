@@ -1,0 +1,31 @@
+//yyyyyyyy
+type s = structure {
+	a : integer;
+};
+i : integer;
+	a : s;
+	b : s;
+	c : s;
+procedure main()
+{
+	a = new s();
+	b = new s();
+	c = a;
+	
+	if (a == a) print_string("y");
+	if (a == b) print_string("n");
+	if (a == c) print_string("y");
+	if (a == a) print_string("y");
+	if (b == a) print_string("n");
+	if (c == a) print_string("y");
+	
+	a.a = 8;
+	
+	if (a == a) print_string("y");
+	if (a == b) print_string("n");
+	if (a == c) print_string("y");
+	if (a == a) print_string("y");
+	if (b == a) print_string("n");
+	if (c == a) print_string("y");
+	
+}

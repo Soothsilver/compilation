@@ -22,6 +22,7 @@ public class ArrayAccessExpression extends Expression {
      * The expression that evaluates to an integer and serves as the index to the array.
      */
     public Expression index;
+	private boolean isStringAccessor;
 
     /**
      * Creates a new ArrayAccessExpression.
@@ -46,8 +47,14 @@ public class ArrayAccessExpression extends Expression {
             expression.type = expression.array.type.typeArguments.get(0);
             expression.possibleTypes.add(expression.type);
             return  expression;
+        } else if (expression.array.type.equals(Type.stringType)) {
+        	index.propagateTypes(new HashSet<>(Arrays.asList(Type.integerType)), compilation);
+        	expression.type = Type.characterType;
+        	expression.isStringAccessor = true;
+            expression.possibleTypes.add(expression.type);   
+            return expression;
         } else {
-            compilation.semanticError("The expression '" + array + "' does not evaluate into an array.", array.line, array.column);
+            compilation.semanticError("The expression '" + array + "' does not evaluate into an array or a string.", array.line, array.column);
             expression.type = Type.errorType;
             return  expression;
         }
@@ -74,26 +81,46 @@ public class ArrayAccessExpression extends Expression {
 
     @Override
     public OperandWithCode generateIntermediateCode(Executable executable) {
-        Instructions instructions = new Instructions();
-        IntermediateRegister register = executable.summonNewRegister();
-        IntermediateRegister shiftedIndex = executable.summonNewRegister();
+    	
+    	if (isStringAccessor) {
+    		Instructions instructions = new Instructions();
+    		OperandWithCode eerArray = array.generateIntermediateCode(executable);
+   	        OperandWithCode eerIndex = index.generateIntermediateCode(executable);
+	        IntermediateRegister register = executable.summonNewRegister();
 
-        OperandWithCode eerArray = array.generateIntermediateCode(executable);
-        OperandWithCode eerIndex = index.generateIntermediateCode(executable);
-
-        instructions.addAll(eerArray.code);
-        instructions.addAll(eerIndex.code);
-        
-        instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,
-                eerIndex.operand,
-                new Operand(1, OperandKind.Immediate),
-                shiftedIndex
-                ));
-        
-        IntermediateRegister multipliedByFour = executable.summonNewRegister();
-        instructions.add(new BinaryOperatorInstruction("*", Type.integerType, Type.integerType, new Operand(4, OperandKind.Immediate), new Operand(shiftedIndex, OperandKind.Register), multipliedByFour));
-        instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType, eerArray.operand, new Operand(multipliedByFour, OperandKind.Register), register));
-        Operand operand = new Operand(register, OperandKind.RegisterContainsHeapAddress);
-        return new OperandWithCode(instructions, operand);
+   	        instructions.addAll(eerArray.code);
+   	        instructions.addAll(eerIndex.code);
+   	        instructions.add(
+   	        		new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,
+   	        				eerArray.operand, 
+   	        				eerIndex.operand, register));
+   	        return new OperandWithCode(instructions, new Operand(register, OperandKind.RegisterContainsHeapAddressOfSingleByte));
+   	        		
+	      
+    		
+    	}
+    	else {
+	        Instructions instructions = new Instructions();
+	        IntermediateRegister register = executable.summonNewRegister();
+	        IntermediateRegister shiftedIndex = executable.summonNewRegister();
+	
+	        OperandWithCode eerArray = array.generateIntermediateCode(executable);
+	        OperandWithCode eerIndex = index.generateIntermediateCode(executable);
+	
+	        instructions.addAll(eerArray.code);
+	        instructions.addAll(eerIndex.code);
+	        
+	        instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType,
+	                eerIndex.operand,
+	                new Operand(1, OperandKind.Immediate),
+	                shiftedIndex
+	                ));
+	        
+	        IntermediateRegister multipliedByFour = executable.summonNewRegister();
+	        instructions.add(new BinaryOperatorInstruction("*", Type.integerType, Type.integerType, new Operand(4, OperandKind.Immediate), new Operand(shiftedIndex, OperandKind.Register), multipliedByFour));
+	        instructions.add(new BinaryOperatorInstruction("+", Type.integerType, Type.integerType, eerArray.operand, new Operand(multipliedByFour, OperandKind.Register), register));
+	        Operand operand = new Operand(register, OperandKind.RegisterContainsHeapAddress);
+	        return new OperandWithCode(instructions, operand);
+    	}
     }
 }

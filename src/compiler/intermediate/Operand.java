@@ -84,6 +84,8 @@ public class Operand {
                 return "HEAP(" + register + ")";
             case StringLiteral:
                 return "STRING(" + intermediateStringLiteral.getLabel() + ")";
+            case RegisterContainsHeapAddressOfSingleByte:
+            	return "HEAP-SINGLE-BYTE(" + register + ")";
 
         }
         throw new EnumConstantNotPresentException(OperandKind.class, "kind");
@@ -162,6 +164,11 @@ public class Operand {
                 mipsCode +=
                         register.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0);
                 break;
+            case RegisterContainsHeapAddressOfSingleByte:
+            	mipsCode += 
+            			this.register.mipsSaveValueToRegister(MipsRegisters.TEMPORARY_VALUE_1) +
+            			"\tsb " + MipsRegisters.TEMPORARY_VALUE_0 + ",(" + MipsRegisters.TEMPORARY_VALUE_1 + ")\n";
+            	break;
             default:
                 throw new RuntimeException("The operand kind " + this.kind + " was not yet implemented.");
 
@@ -194,6 +201,9 @@ public class Operand {
                 return "\tlw " + registerName + "," + (-4*(variable.index+1) + 4 * stackDisplacement) + "($sp)\n";
             case StringLiteral:
                 return "\tla " + registerName + "," + intermediateStringLiteral.getLabel() + "\n";
+            case RegisterContainsHeapAddressOfSingleByte:
+            	return register.mipsSaveValueToRegister(registerName) +
+            		   "\tlb " + registerName + ",(" + registerName + ")\n";	
             default:
                 throw new RuntimeException("This addressing mode ('" + kind + "') is not yet supported.");
         }

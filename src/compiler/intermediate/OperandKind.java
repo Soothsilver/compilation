@@ -31,5 +31,6 @@ public enum OperandKind {
     /**
      * This operand is a local variable of a subroutine.
      */
-    LocalVariable
+    LocalVariable, 
+    RegisterContainsHeapAddressOfSingleByte
 }

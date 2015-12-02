@@ -45,20 +45,13 @@ public class BinaryOperatorInstruction extends Instruction {
         switch (operator) {
             case "=":
 //        addSubroutine(OperatorFunction.createGeneralAssignment());
-                if (
-                        ( leftType.equals(Type.integerType) && rightType.equals(Type.integerType) ) ||
-                                leftType.isReferenceType ||
-                                leftType.equals(Type.stringType)
-                )
-                {
                     return left.toMipsAcquireFromOperand(right)
                             +
                            right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             +
                            saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
-                }
-                throw getNotImplementedException();
+                    
             case "+":
 //        addBinaryOperator("+", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator("+", Type.floatType, Type.floatType, Type.floatType);

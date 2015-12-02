@@ -67,6 +67,7 @@ terminal LEFTTYPEBRACKET, RIGHTTYPEBRACKET;
 
 terminal PROCEDURE, FUNCTION, LIST, OF, CLASS, STRUCTURE, TYPE, RETURN, STOP,
 	 BREAK, IF, ELSE, FOREACH, FOR, IN, WHILE, REPEAT, NEW, NULL;
+terminal ALLOCATE;
 terminal DEBUG_SPAWN_STRUCTURE; /* For debug purposes only. */
 	 
 	 
@@ -543,6 +544,7 @@ expr1_subroutinegroup ::=
 expr0_simple ::=
     LPAR expression:e RPAR {: RESULT = e; :}
     | constant:e  {: RESULT = e; :}
+    | ALLOCATE LPAR expression:e RPAR {: RESULT = new PureAllocateExpression(e, parser.compilation); :}
     | NEW IDENTIFIER:id LPAR RPAR {: RESULT = new ConstructorExpression(id, idleft, idright, parser.compilation); :}
     | NEW IDENTIFIER:id LEFTTYPEBRACKET type_arguments:targ RIGHTTYPEBRACKET LPAR RPAR {: RESULT = new ConstructorExpression(id, targ, idleft, idright, parser.compilation); :}
     | IDENTIFIER:id {: RESULT = new VariableExpression(id, idleft, idright, parser.compilation); :}

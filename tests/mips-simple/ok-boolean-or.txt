@@ -1,0 +1,18 @@
+//truetrue || truetrue || falsefalse || true3xtrue
+procedure main()
+{
+    if (true)
+        print_string("true");
+    if (true || true)
+        print_string("true || true");
+    if (false)
+        print_string("false");
+    if (true || false)
+        print_string("true || false");
+    if (false || true)
+        print_string("false || true");
+    if (false || false)
+        print_string("false || false");
+    if (true || true || true)
+        print_string("3xtrue");
+}

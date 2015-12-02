@@ -1,0 +1,39 @@
+//
+// String length
+//
+function strlen ( s : string ) : integer {
+	 index : integer;
+	 while (s[index] != '\0') {
+	   index = index + 1;
+	 }
+	 return index;
+}
+
+//
+// String concatenation
+//
+function concat ( one : string, two : string ) : string { 
+	onelen : integer;
+	twolen : integer;
+	len : integer;
+	newstring : string;
+	i : integer;
+	
+	onelen = strlen(one);
+	twolen = strlen(two);
+	len = onelen + twolen;
+	newstring = allocate(len + 1);
+	
+	for ( i = 0; i < onelen; i = i + 1) {
+		newstring[i] = one[i];
+	}
+	for ( i = 0 ; i < twolen; i = i + 1) {
+	 	newstring[onelen + i] = two[i];
+	}
+	newstring[onelen + twolen] = '\0';
+	return newstring;		
+}
+ 
+procedure helloworld() {
+	print_string("Hello, world!\n");
+}

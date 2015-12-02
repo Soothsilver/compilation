@@ -1,0 +1,12 @@
+//HELP
+
+
+procedure main()
+{
+	c : character;
+	s : string;
+	s = "HELL";
+	c = s[2];
+	s[3] = 'P';
+	print_string(s);
+}

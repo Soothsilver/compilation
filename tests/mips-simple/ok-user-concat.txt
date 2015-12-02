@@ -1,0 +1,44 @@
+//HelloWorld
+function strlen ( s : string ) : integer {
+	 index : integer;
+	 while (s[index] != '\0') {
+	   index = index + 1;
+	 }
+	 return index;
+}
+function concat ( one : string, two : string ) : string { 
+	onelen : integer;
+	twolen : integer;
+	len : integer;
+	newstring : string;
+	i : integer;
+	
+	onelen = strlen(one);
+	twolen = strlen(two);
+	len = onelen + twolen;
+	newstring = allocate(len + 1);
+	
+	for ( i = 0; i < onelen; i = i + 1) {
+		newstring[i] = one[i];
+	}
+	for ( i = 0 ; i < twolen; i = i + 1) {
+	 	newstring[onelen + i] = two[i];
+	}
+	newstring[onelen + twolen] = '\0';
+	return newstring;		
+}
+ 
+
+
+procedure main()
+{
+	c : character;
+	s : string;
+	s = "HELL";
+	print_string(
+		concat ( "Hello" , "World" )
+	);
+	
+	i = (character) c;
+
+}
