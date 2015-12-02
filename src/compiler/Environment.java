@@ -437,7 +437,10 @@ public class Environment {
         addSubroutine(OperatorFunction.createSpecialAssignment("^=", Type.integerType, Type.integerType));
         addSubroutine(OperatorFunction.createSpecialAssignment("|=", Type.integerType, Type.integerType));
         addSubroutine(OperatorFunction.createSpecialAssignment("&=", Type.integerType, Type.integerType));
+        
         // Add predefined subroutines
+        addUnaryOperator("(character)", Type.integerType, Type.characterType);
+        addUnaryOperator("(integer)", Type.characterType, Type.integerType);
 
         SystemCall exit = new SystemCall("exit", 10, Type.voidType);
         addSubroutine(exit);

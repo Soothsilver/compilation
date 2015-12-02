@@ -51,7 +51,6 @@ public class BinaryOperatorInstruction extends Instruction {
                             +
                            saveToWhere.mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0)
                             ;
-                    
             case "+":
 //        addBinaryOperator("+", Type.integerType, Type.integerType, Type.integerType);
 //        addBinaryOperator("+", Type.floatType, Type.floatType, Type.floatType);
@@ -224,23 +223,6 @@ public class BinaryOperatorInstruction extends Instruction {
 //        addSubroutine(OperatorFunction.createSpecialAssignment("|=", Type.integerType, Type.integerType));
 //        addSubroutine(OperatorFunction.createSpecialAssignment("&=", Type.integerType, Type.integerType));
              throw getNotImplementedException("These special assignments are labor-intensive and boring.");
-             
-             
-
-          // Unary operators:
-//                  addUnaryOperator("PRE++", Type.integerType, Type.integerType);
-//                  addUnaryOperator("POST++", Type.integerType, Type.integerType);
-//                  addUnaryOperator("PRE--", Type.integerType, Type.integerType);
-//                  addUnaryOperator("POST--", Type.integerType, Type.integerType);
-          //
-//                  addUnaryOperator("!", Type.booleanType, Type.booleanType);
-//                  addUnaryOperator("~", Type.integerType, Type.integerType);
-          //
-//                  addUnaryOperator("+", Type.integerType, Type.integerType);
-//                  addUnaryOperator("-", Type.integerType, Type.integerType);
-//                  addUnaryOperator("+", Type.floatType, Type.floatType);
-//                  addUnaryOperator("-", Type.floatType, Type.floatType);
-
         }
     }
 

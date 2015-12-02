@@ -93,6 +93,13 @@ float 		= [0-9]*\.[0-9]+(e-?[0-9]+)? | [0-9]+\.[0-9]*(e-?[0-9]+)?
 "."      { return symbol(CompilerSymbol.PERIOD); }
 
 /* -------------------------------------------------
+        Explicit cast operators
+   ------------------------------------------------- */
+   
+"(character)"	{ return symbol(CompilerSymbol.CHARCAST); }
+"(integer)"		{ return symbol(CompilerSymbol.INTCAST); }
+   
+/* -------------------------------------------------
         Keywords 
    ------------------------------------------------- */
    

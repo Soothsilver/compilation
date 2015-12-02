@@ -54,6 +54,7 @@ terminal EQUAL;
 terminal UNARYPLUS, UNARYMINUS, UNARYTIMES, UNARYDIVIDE, UNARYMODULO;
 terminal UNARYSHIFTLEFT, UNARYSHIFTRIGHT, UNARYBITWISEAND, UNARYXOR,
 	 UNARYBITWISEOR;
+terminal INTCAST, CHARCAST;
 terminal INCREMENT, DECREMENT;
 terminal LOGICALNEGATION, BITWISENEGATION;
 terminal MINUS, PLUS;
@@ -524,6 +525,8 @@ expr2_prefix ::=
   | BITWISENEGATION:op expr2_prefix:right {: RESULT = UnaryExpression.create("~", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
   | PLUS:op expr2_prefix:right {: RESULT = UnaryExpression.create("+", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
   | MINUS:op expr2_prefix:right {: RESULT = UnaryExpression.create("-", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
+  | CHARCAST:op expr2_prefix:right {: RESULT = UnaryExpression.create("(character)", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
+  | INTCAST:op expr2_prefix:right {: RESULT = UnaryExpression.create("(integer)", UnaryExpressionSide.Prefix, right, opleft, opright, parser.compilation); :}
   | expr1_postfix:e  {: RESULT = e; :}
     ;
 expr1_postfix ::=

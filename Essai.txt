@@ -1,38 +1,12 @@
-//23496
-function concat_integer(one : list of integer, two : list of integer) : list of integer 
-{
-	lenone : integer;
-	lentwo : integer;
-	len : integer;
-	fin : list of integer;
-	i : integer;
-	
-	lenone = one[0-1];
-	lentwo = two[0-1];
-	len = lenone + lentwo;
-	fin = new integer[len];
-	for ( i = 0; i < lenone; i = i + 1) {
-		fin[i] = one[i];
-	}
-	for ( i = 0; i < lentwo; i = i + 1) { 
-		fin[i + lenone] = two[i];
-	}
-	return fin;
-}
-
+//
+i : integer;
+c : character;
 
 procedure main()
 {
-	c : character;
-	l : list of integer;
-	m : list of integer;
-	k : list of integer;
-	l = [ 2,3,4];
-	m = [ 9, 6];
-	print_int( (concat_integer(l,m)[0]));
-	print_int( (concat_integer(l,m)[1]));
-	print_int( (concat_integer(l,m)[2]));
-	print_int( (concat_integer(l,m)[3]));
-	print_int( (concat_integer(l,m)[4]));
-
+	c = 'a';
+	i = (integer) c;
+	i = i + 25;
+	c = (character) i;
+	print_character(c);
 }
