@@ -1,7 +1,17 @@
 package compiler.nodes.expressions;
 
+import java.util.ArrayList;
+
 import compiler.Compilation;
 import compiler.analysis.OverloadResolution;
+import compiler.intermediate.Executable;
+import compiler.intermediate.IntermediateRegister;
+import compiler.intermediate.Operand;
+import compiler.intermediate.OperandKind;
+import compiler.intermediate.OperandWithCode;
+import compiler.intermediate.instructions.BinaryOperatorInstruction;
+import compiler.intermediate.instructions.Instructions;
+import compiler.intermediate.instructions.UnaryOperatorInstruction;
 
 /**
  * Represents a unary expression such as "i++".
@@ -53,6 +63,22 @@ public class UnaryExpression extends CallExpression {
     @Override
     public String getErrorMessageTypeMismatch() {
         return "The unary operator '" + group.name + "' does not accept an operand of the type '" + arguments.get(0).type + "'.";
+    }
+    
+    @Override
+    public OperandWithCode generateIntermediateCode(Executable executable) {
+        Instructions instructions = new Instructions();
+        ArrayList<Operand> operands = new ArrayList<>();
+        for (Expression argument : arguments) {
+            OperandWithCode eer = argument.generateIntermediateCode(executable);
+            operands.add(eer.operand);
+            instructions.addAll(eer.code);
+        }
+        IntermediateRegister returnRegisterIndex = executable.summonNewRegister();
+
+        instructions.add(new UnaryOperatorInstruction(this.operator, this.callee.formalTypes.get(0), operands.get(0), returnRegisterIndex));
+
+        return new OperandWithCode(instructions, new Operand(returnRegisterIndex, OperandKind.Register));
     }
 }
 

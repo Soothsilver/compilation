@@ -1,7 +1,6 @@
 package compiler.intermediate.instructions;
 
 import compiler.intermediate.IntermediateRegister;
-import compiler.intermediate.MipsMacros;
 import compiler.intermediate.MipsRegisters;
 import compiler.intermediate.Operand;
 import compiler.nodes.declarations.Type;

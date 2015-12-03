@@ -1,0 +1,12 @@
+//z
+i : integer;
+c : character;
+
+procedure main()
+{
+	c = 'a';
+	i = (integer) c;
+	i = i + 25;
+	c = (character) i;
+	print_character(c);
+}
