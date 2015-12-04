@@ -43,7 +43,7 @@
        target: mips-tests              
        ================================= -->
   <target name="mips-tests" depends="parser, lexer, compile-all"
-      description="Creates the compiler and runs it against all tests in the directory tests/mips.">
+      description="Creates the compiler and runs it against all tests in the directory tests/mips-simple.">
 	  <java 
 	    fork = "true"
 	    dir = "${bin.dir}"

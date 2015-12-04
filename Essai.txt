@@ -1,12 +1,15 @@
-//
-i : integer;
-c : character;
-
+//HELLO
 procedure main()
 {
-	c = 'a';
-	i = (integer) c;
-	i = i + 25;
-	c = (character) i;
-	print_character(c);
+	s : string;
+	t : string;
+   s = "Hello ";
+   t = allocate(5);
+   print_string(s);
+   print_character('\n');
+   t[2] = 's';
+   t[1] = 'e';
+   t[0] = 't';
+   t[3] = 't';
+   print_string(t);
 }

@@ -13,12 +13,12 @@ procedure main()
     a : integer;
     s : s;
     global = 5;
+    print_int(global);
     {
-        print_int(global);
+    	global : boolean;
+    	a : boolean;
         s = new s();
         s.hello();
-        global : boolean;
-        a : boolean;
         {
             a : string;
             a = "truth";
@@ -30,5 +30,4 @@ procedure main()
             }
         }
     }
-
 }

@@ -38,7 +38,4 @@ procedure main()
 	print_string(
 		concat ( "Hello" , "World" )
 	);
-	
-	i = (character) c;
-
 }

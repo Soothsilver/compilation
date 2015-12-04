@@ -1,6 +1,15 @@
-//HELLO
-s : string;
+//HELLO  test
 procedure main()
 {
-   print_string("HELLO");
+	s : string;
+	t : string;
+   s = "HELLO ";
+   t = allocate(5);
+   print_string(s);
+   print_character(' ');
+   t[2] = 's';
+   t[1] = 'e';
+   t[0] = 't';
+   t[3] = 't';
+   print_string(t);
 }

@@ -50,7 +50,7 @@ public class MipsNonJUnitTests {
 
         System.out.println("Running MIPS tests:");
         File dir = new File("tests");
-        dir = new File(dir, "mips");
+        dir = new File(dir, "mips-simple");
         File[] listing = dir.listFiles();
         assert listing != null;
         int testNumber = 0;
@@ -129,7 +129,7 @@ public class MipsNonJUnitTests {
 	                }
 	                Process mars = null;
 	                try {
-	                    mars = Runtime.getRuntime().exec("java -jar ../lib/Mars4_5.jar 1000 nc test.asm");
+	                    mars = Runtime.getRuntime().exec("java -jar ../lib/Mars4_5.jar 100000 nc test.asm");
 	                } catch (IOException e) {
 	                	System.out.println("Due to an I/O exception, the MARS emulator could not be launched.");
 	                    continue;
@@ -152,7 +152,7 @@ public class MipsNonJUnitTests {
 	                   continue;
 	                }
 	                marsOutput = marsOutput.trim();
-	                if (expectedOutput == marsOutput) {
+	                if (expectedOutput.equals(marsOutput)) {
 	                	System.out.println("OK!");
 	                	successfulTests++;
 	                }
