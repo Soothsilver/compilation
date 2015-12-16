@@ -31,6 +31,9 @@ public enum OperandKind {
     /**
      * This operand is a local variable of a subroutine.
      */
-    LocalVariable, 
+    LocalVariable,
+	/**
+	 * This operand's IntermediateRegister holds a memory address. This operand represents the single byte stored at that memory address. The memory address need not be 4-byte aligned.
+	 */
     RegisterContainsHeapAddressOfSingleByte
 }

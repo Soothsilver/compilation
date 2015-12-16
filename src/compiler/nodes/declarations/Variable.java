@@ -70,6 +70,12 @@ public class Variable extends Declaration {
         return name + " : " + type + ";";
     }
 
+    /**
+     * Instantiates a specialized Variable from a generic one.
+     * @param typeParameters Types to be replaced.
+     * @param typeArguments Replacing types.
+     * @return A specialized variable.
+     */
     public Variable instantiate(ArrayList<Type> typeParameters, ArrayList<Type> typeArguments) {
         Variable v = this.copy();
         v.type = v.type.replaceTypes(typeParameters, typeArguments);

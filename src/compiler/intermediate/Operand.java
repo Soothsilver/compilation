@@ -181,6 +181,7 @@ public class Operand {
      * The instructions are terminated by a newline character, if any are generated at all.
      * The generated code must not use TEMPORARY_VALUE_0 nor TEMPORARY_VALUE_1.
      * @param registerName Mnemonic for the register.
+     * @param stackDisplacement This should really be explained here...
      * @return MIPS instructions.
      */
     public String toMipsLoadIntoRegister(String registerName, int stackDisplacement) {
@@ -217,6 +218,14 @@ public class Operand {
         }
     }
 
+
+    /**
+     * Generates MIPS instructions that load the value of this operand into the specified register.
+     * The instructions are terminated by a newline character, if any are generated at all.
+     * The generated code must not use TEMPORARY_VALUE_0 nor TEMPORARY_VALUE_1.
+     * @param registerName Mnemonic for the register.
+     * @return MIPS instructions.
+     */
     public String toMipsLoadIntoRegister(String registerName) {
         return toMipsLoadIntoRegister(registerName, 0);
     }

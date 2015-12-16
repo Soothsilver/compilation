@@ -1,5 +1,4 @@
 Intermediate Code Instructions:
-GETPARAM ( register , index ) : Copies the argument at index "index" to register "register".
 x = y operator z
 x = operator y
 x = y

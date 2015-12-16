@@ -1,13 +1,12 @@
 package compiler.intermediate;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 import compiler.Compilation;
 import compiler.analysis.Uniqueness;
 import compiler.intermediate.instructions.LabelInstruction;
-import compiler.nodes.*;
+import compiler.nodes.ProgramNode;
 import compiler.nodes.declarations.*;
+
+import java.util.ArrayList;
 
 /**
  * Represents a program that passed semantic analysis and is being converted to assembler format.
@@ -133,7 +132,14 @@ public class Executable {
         return s;
     }
 
+    /**
+     * The number of registers currently in use.
+     */
     public int registerCount = 0;
+
+    /**
+     * List of intermediate registers currently in use. This is cleared whenever a new function is being converted to intermediate code.
+     */
     public ArrayList<IntermediateRegister> registers = new ArrayList<>();
 
     /**

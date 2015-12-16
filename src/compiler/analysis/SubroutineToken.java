@@ -19,7 +19,9 @@ public class SubroutineToken {
      * List of type arguments for the subroutine. This will be "null" if the underlying subroutine is not generic/
      */
     public ArrayList<Type> types;
-    public boolean inferred;
+    /**
+     * Overloading-relevant badness of this subroutine token.
+     */
     private int badness = 0;
     public int getBadness() {
         return badness;
@@ -56,18 +58,27 @@ public class SubroutineToken {
                 + (badness != 0 ? ": badness " + badness : "");
     }
 
+    /**
+     * Creates a shallow copy of this object.
+     */
     public SubroutineToken copy()
     {
-        SubroutineToken subroutineToken = new SubroutineToken(subroutine, inferred);
+        SubroutineToken subroutineToken = new SubroutineToken(subroutine);
         subroutineToken.types = this.types; // NO COPY INTENDED.
         subroutineToken.badness = this.badness;
         return subroutineToken;
     }
-    public SubroutineToken(Subroutine subroutine, boolean inferred) {
+
+    /**
+     * Instantiates a new SubroutineToken from a subroutine.
+     */
+    public SubroutineToken(Subroutine subroutine) {
         this.subroutine = subroutine;
-        this.inferred = inferred;
     }
 
+    /**
+     * This should be improved.
+     */
     public Types createFormalTypes() {
         if (types == null) {
             types = new ArrayList<>();
@@ -85,6 +96,9 @@ public class SubroutineToken {
         return formalTypes;
     }
 
+    /**
+     * Replaces all bound type variables in "types" and "formalTypes" by their actual types.
+     */
     public void objectifySelf() {
         if (types != null) {
             for (int i = 0; i < types.size(); i++) {

@@ -60,6 +60,19 @@ public class Subroutine extends Declaration {
         super(name, line, column);
     }
 
+    /**
+     * Starts the creation of a new subroutine. Enters a new type and variable scope, but not a new subroutine scope.
+     *
+     * @param kind A subroutine or a procedure.
+     * @param name Subroutine name.
+     * @param typeParameters Null if no type parameters, otherwise their names.
+     * @param parameters Null if no parameters yet, otherwise the parameters.
+     * @param returnType Return type of the function, or null for procedures.
+     * @param compilation The compilation object.
+     * @param line Source line.
+     * @param column Source column.
+     * @return An instance of Subroutine class.
+     */
     public static Subroutine create(SubroutineKind kind,
                                     String name,
                                     ArrayList<String> typeParameters,
@@ -116,12 +129,34 @@ public class Subroutine extends Declaration {
         return getSignature(true, false, null, true);
     }
 
+    /**
+     * Gets this subroutine's signature.
+     * @param forSymbolTables Is the signature meant to be used by the symbol tables?
+     * @param callsite Is the signature demanded in the context of a callsite rather than in the context of a declaration?
+     * @return The signature.
+     */
     public String getSignature(boolean forSymbolTables, boolean callsite) {
         return getSignature(forSymbolTables, callsite, null);
     }
+
+    /**
+     * Gets this subroutine's signature.
+     * @param forSymbolTables Is the signature meant to be used by the symbol tables?
+     * @param callsite Is the signature demanded in the context of a callsite rather than in the context of a declaration?
+     * @param types Types substituted for this subroutine's type parameters.
+     * @return The signature.
+     */
     public String getSignature(boolean forSymbolTables, boolean callsite, ArrayList<Type> types) {
         return getSignature(forSymbolTables, callsite, types, false);
     }
+    /**
+     * Gets this subroutine's signature.
+     * @param forSymbolTables Is the signature meant to be used by the symbol tables?
+     * @param callsite Is the signature demanded in the context of a callsite rather than in the context of a declaration?
+     * @param types Types substituted for this subroutine's type parameters.
+     * @param humanSignature Is the signature meant to be displayed to the user?
+     * @return The signature.
+     */
     public String getSignature(boolean forSymbolTables, boolean callsite, ArrayList<Type> types, boolean humanSignature) {
         String signature = "";
         if (!callsite && !forSymbolTables) {
@@ -203,6 +238,13 @@ public class Subroutine extends Declaration {
         return subroutine;
     }
 
+    /**
+     * Instantiates this, creating a specialized form based on a generic form.
+     *
+     * @param typeParameters Types to be replaced.
+     * @param typeArguments The replacing types.
+     * @return The specialized form of this object.
+     */
     public Subroutine instantiate(ArrayList<Type> typeParameters, ArrayList<Type> typeArguments) {
         Subroutine subroutine = copy();
         subroutine.returnType = subroutine.returnType.replaceTypes(typeParameters, typeArguments);

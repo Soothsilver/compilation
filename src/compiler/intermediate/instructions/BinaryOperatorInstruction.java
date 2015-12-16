@@ -74,12 +74,6 @@ public class BinaryOperatorInstruction extends Instruction {
                 else if (leftType.equals(Type.floatType) || rightType.equals(Type.floatType)) {
                     throw getNotImplementedException("Floating point operation... bleh.");
                 }
-                else if (leftType.equals(Type.stringType) || rightType.equals(Type.stringType)) {
-                    return
-                            MipsMacros.stringConcatenation(
-                                left, right, leftType, rightType     , saveToWhere
-                            );
-                }
                 throw new RuntimeException("This should never happen.");
             case "-":
 //        addBinaryOperator("-", Type.integerType, Type.integerType, Type.integerType);

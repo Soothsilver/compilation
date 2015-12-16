@@ -51,6 +51,9 @@ public class CallInstruction  extends Instruction {
     }
 
 
+    /**
+     * List of registers that must be pushed on the stack before executing the branch. These must then be popped off the stack after the return.
+     */
     public ArrayList<IntermediateRegister> savedRegisters = new ArrayList<>();
 
     @Override
@@ -106,7 +109,7 @@ public class CallInstruction  extends Instruction {
             assembly += MipsMacros.clearStackItems(operands.size());
             assembly += MipsMacros.popIntoRegister(MipsRegisters.RETURN_ADDRESS);
 
-            assembly += "\t   # poping intermediate registers\n";
+            assembly += "\t   # popping intermediate registers\n";
             for (int i = savedRegisters.size() - 1; i >= 0; i--) {
                 if (Objects.equals(returnRegister, savedRegisters.get(i))) {
                     assembly += MipsMacros.clearStackItems(1);
@@ -115,7 +118,7 @@ public class CallInstruction  extends Instruction {
                 assembly += MipsMacros.popIntoRegister(MipsRegisters.TEMPORARY_VALUE_0);
                 assembly += savedRegisters.get(i).mipsAcquireValueFromRegister(MipsRegisters.TEMPORARY_VALUE_0);
             }
-            assembly += "\t   # end poping intermediate registers\n";
+            assembly += "\t   # end popping intermediate registers\n";
 
             assembly += MipsMacros.clearStackItems(this.localVariableCount);
             assembly += "\t # end calling\n";

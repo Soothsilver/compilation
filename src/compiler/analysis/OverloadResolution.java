@@ -55,7 +55,7 @@ public final class OverloadResolution {
 
         ArrayList<SubroutineToken> consideredSubroutines = new ArrayList<>();
         for (Subroutine sub : group.subroutines) {
-            SubroutineToken sToken = new SubroutineToken(sub, call.typeArguments != null);
+            SubroutineToken sToken = new SubroutineToken(sub);
             consideredSubroutines.add(sToken);
         }
 //4. Do the following procedure for all considered subroutines:

@@ -24,15 +24,6 @@ public class MipsMacros {
      */
     public static String popIntoRegister(String registerName) {
         return "\tlw " + registerName + ",0($sp)\n\taddiu $sp,$sp,4 # Pop 4 bytes from stack\n";
-
-                /* pop would be the opposite of a push. So if you use this to push $t2:
-
-sub $sp,$sp,4
-sw $t2,($sp)
-You would pop it with:
-
-lw $t2,($sp)
-addiu $sp,$sp,4*/
     }
 
     /**
@@ -44,6 +35,13 @@ addiu $sp,$sp,4*/
     public static String clearStackItems(int count) {
         return "\taddiu $sp,$sp," + 4 * count + " # Pop " + (count) + " words from stack\n";
     }
+
+	/**
+	 * Generates MIPS code that moves the stack pointer as though the specified number of integer (4-bytes) values were put on the stack. However, the values
+     * skipped by the stack pointer in this way are not overwritten.
+	 * @param words The number of 4-byte values to "push" on the stack.
+	 * @return The MIPS code.
+	 */
 	public static String moveStackPointer(int words) {
 		return "\tsub $sp,$sp," + 4 * words + " # Push " + (words) + " virtual words on stack\n";
 	}
@@ -153,35 +151,16 @@ addiu $sp,$sp,4*/
 		
 	}
 
-	public static String loadOperands(Operand left, Operand right) {
+    /**
+     * Generate MIPS code that loads the value of the left operand into the "$t0" register and the value of the right operand into the "$t1" register.
+     * @param left The operand to load into $t0.
+     * @param right The operand to load into $t1.
+     * @return The MIPS code.
+     */
+    public static String loadOperands(Operand left, Operand right) {
 		return left.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_0) +
 			   right.toMipsLoadIntoRegister(MipsRegisters.TEMPORARY_VALUE_1);
 	}
 
-    public static String stringConcatenation(Operand left, Operand right, Type leftType, Type rightType, IntermediateRegister saveToWhere) {
-        String instructions = "";
-        // Let's use t2-t4 for internal calculations.
-        instructions += MipsMacros.stringifyTo(left, leftType, MipsRegisters.TEMPORARY_VALUE_0);
-        instructions += MipsMacros.stringifyTo(right, rightType, MipsRegisters.TEMPORARY_VALUE_1);
-        instructions += "\t# Concatenation of strings:\n";
-        // t0 = address of string "a"
-        // t1 = address of string "b"
-        // t2 = length
-        // t3
 
-        throw new RuntimeException("String concatenation was not implemented.");
-    }
-
-    private static String stringifyTo(Operand left, Type leftType, String targetRegister) {
-        if (leftType.equals(Type.stringType)) {
-            return left.toMipsLoadIntoRegister(targetRegister);
-        } else if (leftType.equals(Type.floatType)) {
-            throw new RuntimeException("Floating points to string? No way I am implementing that.");
-        } else if (leftType.equals(Type.characterType)) {
-            throw new RuntimeException("This would be easy to implement, but I don't want to.");
-        } else if (leftType.equals(Type.integerType)) {
-            throw new RuntimeException("Conversion to decimal? No way.");
-        }
-        throw new RuntimeException("This can never happen.");
-    }
 }

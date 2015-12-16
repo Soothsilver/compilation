@@ -44,6 +44,10 @@ public class Parameter extends Node {
         this.type = type;
     }
 
+    /**
+     * Creates a shallow copy of this Parameter.
+     * @return A copy.
+     */
     public Parameter copy() {
         Parameter pNew = new Parameter(name, type);
         pNew.line = line;

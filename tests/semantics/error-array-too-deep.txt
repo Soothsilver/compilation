@@ -1,4 +1,4 @@
-//EXPECT-SEMANTICAL-ERROR: The expression 'a[0]' does not evaluate into an array.
+//EXPECT-SEMANTICAL-ERROR: The expression 'a[0]' does not evaluate into an array or a string.
 procedure main()
 {
     a : list of integer;

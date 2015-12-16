@@ -25,15 +25,12 @@ package compiler;
 import compiler.generated.CompilerLexer;
 import compiler.generated.CompilerParser;
 import compiler.intermediate.Executable;
-import compiler.tests.TestUtilities;
+import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -70,13 +67,13 @@ public class MipsNonJUnitTests {
                 try {
                     myParser.parse();
                     if (compilation.hasTestRunOkay()) {
-                       
-                            if (!compilation.errorTriggered) {
-                               
-                            } else {
-                                System.out.println("OK (correct error triggered)!");
-                            }
-                        
+
+                        if (compilation.errorTriggered) {
+                            System.out.println("OK (correct error triggered)!");
+                        } else {
+                            System.out.println("OK!");
+                        }
+
                     } else {
                         for (String message : compilation.errorMessages) {
                             System.out.println(" " + message);
@@ -116,59 +113,55 @@ public class MipsNonJUnitTests {
             
             
             
-            if (compilation != null && !compilation.errorTriggered) {
-            	try {
-	                Executable executable = new Executable(compilation);
-	                String assemblerCode = executable.toMipsAssembler();
-	                String expectedOutput = compilation.firstLine != null ? compilation.firstLine.substring(2).trim() : "";
-	                try {
-	                    java.nio.file.Files.write(Paths.get("test.asm"), assemblerCode.getBytes());
-	                } catch (IOException e) {
-	                    System.out.println("Due to an I/O exception, the assembler could not be saved to a file.");
-	                    continue;
-	                }
-	                Process mars = null;
-	                try {
-	                    mars = Runtime.getRuntime().exec("java -jar ../lib/Mars4_5.jar 100000 nc test.asm");
-	                } catch (IOException e) {
-	                	System.out.println("Due to an I/O exception, the MARS emulator could not be launched.");
-	                    continue;
-	                }
-	                try {
-	                    mars.waitFor();
-	                } catch (InterruptedException e) {
-	                	System.out.println("This will never happen.");
-	                    continue;
-	                }
-	                java.io.InputStream is = mars.getInputStream();
-	                byte b[]= new byte[0];
-	                String marsOutput = null;
-	                try {
-	                    b = new byte[is.available()];
-	                    is.read(b,0,b.length);
-	                    marsOutput = new String(b);
-	                } catch (IOException e) {
-	                	System.out.println("MARS output could not be redirected.");
-	                   continue;
-	                }
-	                marsOutput = marsOutput.trim();
-	                if (expectedOutput.equals(marsOutput)) {
-	                	System.out.println("OK!");
-	                	successfulTests++;
-	                }
-	                
-	                else {
-	                	System.out.println("ERROR (expected " + expectedOutput + ", actual " +marsOutput + ")");
-	                }
-            	} catch (Exception ex) {
-            		System.out.println("EXCEPTION "  + ex + ")");
-            	} catch (Error er) {
-            		System.out.println("ERROR "  + er + ")");
-            	}
-            } else {
+            if (compilation != null && !compilation.errorTriggered) try {
+                Executable executable = new Executable(compilation);
+                String assemblerCode = executable.toMipsAssembler();
+                String expectedOutput = compilation.firstLine != null ? compilation.firstLine.substring(2).trim() : "";
+                try {
+                    java.nio.file.Files.write(Paths.get("test.asm"), assemblerCode.getBytes());
+                } catch (IOException e) {
+                    System.out.println("Due to an I/O exception, the assembler could not be saved to a file.");
+                    continue;
+                }
+                Process mars;
+                try {
+                    mars = Runtime.getRuntime().exec("java -jar ../lib/Mars4_5.jar 100000 nc test.asm");
+                } catch (IOException e) {
+                    System.out.println("Due to an I/O exception, the MARS emulator could not be launched.");
+                    continue;
+                }
+                try {
+                    mars.waitFor();
+                } catch (InterruptedException e) {
+                    System.out.println("This will never happen.");
+                    continue;
+                }
+                java.io.InputStream is = mars.getInputStream();
+                byte b[];
+                String marsOutput;
+                try {
+                    b = new byte[is.available()];
+                    is.read(b, 0, b.length);
+                    marsOutput = new String(b);
+                } catch (IOException e) {
+                    System.out.println("MARS output could not be redirected.");
+                    continue;
+                }
+                marsOutput = marsOutput.trim();
+                if (expectedOutput.equals(marsOutput)) {
+                    System.out.println("OK!");
+                    successfulTests++;
+                } else {
+                    System.out.println("ERROR (expected " + expectedOutput + ", actual " + marsOutput + ")");
+                }
+            } catch (Exception ex) {
+                System.out.println("EXCEPTION " + ex + ")");
+            } catch (Error er) {
+                System.out.println("ERROR " + er + ")");
+            }
+            else {
             	System.out.println("An error triggered.");
-            	continue;
-            }  
+            }
         }
         System.out.println(successfulTests + " / " + testNumber + " tests passed.");
     }
