@@ -11,7 +11,7 @@ The full language specification can be found here (in French only): https://docs
 # Example
 Suppose you have this source code in the Aura language:
 
-```Pascal
+```
 1: result : integer;
 2: function factorial(n : integer) : integer {
 3:   if (n == 0) return 1;
